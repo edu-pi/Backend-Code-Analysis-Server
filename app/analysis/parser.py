@@ -96,6 +96,7 @@ def constant_parse(node):
 def for_parse(node):
     # 타겟 처리
     target_name = node.target.id
+    for_id = g_elem_manager.get_call_id()
 
     # Condition 객체 생성
     if isinstance(node.iter, ast.Call):
@@ -103,7 +104,7 @@ def for_parse(node):
 
     # For 객체 생성
     g_elem_manager.addStep(
-        For(id=id(condition), depth= g_elem_manager.depth, condition=condition)
+        For(id=for_id, depth=g_elem_manager.depth, condition=condition)
     )
 
     # Body 처리
@@ -118,11 +119,15 @@ def for_parse(node):
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
         new_condition = condition.copy_with_new_cur(i)
         g_elem_manager.addStep(
-            For(id=id(condition), depth=g_elem_manager.get_depth() - 1, condition=new_condition)
+            For(id=for_id, depth=g_elem_manager.get_depth() - 1, condition=new_condition)
         )
 
 
-def expr_parse(node, target_name):
+def expr_parse(node: ast.Expr, target_name):
+    # 함수가 있다면 함수 이름을 target_name 으로 지정
+    if node.value.func is not None:
+        target_name = node.value.func.id
+
     for cur_node in node.value.args:
         if isinstance(cur_node, ast.BinOp):
             # 연산 과정 리스트 생성
