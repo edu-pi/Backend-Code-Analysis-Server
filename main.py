@@ -32,6 +32,8 @@ code = '''
 a=5
 for i in range (2) :
     print('*'* (i+1))
+    for j in range (100, 102) :
+        print('*'* (i+1))
 '''
 
 

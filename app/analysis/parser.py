@@ -112,7 +112,7 @@ def for_parse(node):
     for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
-        g_elem_manager.addStep(
+        g_elem_manager.add_step(
             For(id=for_id, depth=g_elem_manager.get_depth(), condition=condition)
         )
         g_elem_manager.increase_depth()
@@ -124,7 +124,10 @@ def for_parse(node):
                     continue
 
                 for parsed_obj in parsed_objs:
-                    g_elem_manager.addStep(parsed_obj)
+                    g_elem_manager.add_step(parsed_obj)
+
+            elif isinstance(child_node, ast.For):
+                for_parse(child_node)
         g_elem_manager.decrease_depth()
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
         condition = condition.copy_with_new_cur(i + condition.step)
