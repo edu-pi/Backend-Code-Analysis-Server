@@ -4,7 +4,7 @@ class CodeElementManager:
         self.current_id = 0
         self.variables_id = {}
         self.variables_value = {}
-        self.g_depth = 1
+        self.depth = 1
         self.nodes = []
 
     def get_next_id(self):
@@ -26,3 +26,14 @@ class CodeElementManager:
 
     def getStep(self):
         return self.nodes
+
+    def increase_depth(self):
+        self.depth = self.depth + 1
+        return self.depth
+
+    def get_depth(self):
+        return self.depth
+
+    def decrease_depth(self):
+        self.depth = self.depth - 1
+        return self.depth
