@@ -7,6 +7,7 @@ from app.analysis.models import *
 g_elem_manager = CodeElementManager()
 print("CodeElementManager 생성")
 
+
 def assign_parse(node):
     for target in node.targets:
         depth = g_elem_manager.depth
@@ -82,7 +83,10 @@ def binOp_parse(node):
 
 
 def name_parse(node):
-    return g_elem_manager.get_variable_value(node.id)
+    try:
+        return g_elem_manager.get_variable_value(name=node.id)
+    except NameError as e:
+        print("#error:", e)
 
 
 def constant_parse(node):
@@ -90,7 +94,6 @@ def constant_parse(node):
 
 
 def for_parse(node):
-    target_name = node.target.id
     # 타겟 처리
     target_name = node.target.id
 
@@ -106,10 +109,10 @@ def for_parse(node):
     # Body 처리
     g_elem_manager.increase_depth()
     for i in range(condition.start, condition.end, condition.step):
+        # target 업데이트
+        g_elem_manager.add_variable_value(name=target_name, value=i)
         for child_node in node.body:
             if isinstance(child_node, ast.Expr):
-                # target 업데이트
-                g_elem_manager.add_variable_value(name=target_name, value=i)
                 expr_parse(child_node, target_name)
 
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
@@ -120,10 +123,8 @@ def for_parse(node):
 
 
 def expr_parse(node, target_name):
-    # TODO(taget_name을 넘기면 안될 것 같음 but, node 삽입엔 target_name이 필요)
     for cur_node in node.value.args:
         if isinstance(cur_node, ast.BinOp):
-            result = binOp_calculate_binOp(cur_node, ast.unparse(cur_node))
             # 연산 과정 리스트 생성
             parsed_expressions = binOp_parse(cur_node)
             # 중간 연산 과정이 포함된 노드 생성
@@ -134,10 +135,6 @@ def expr_parse(node, target_name):
 
 
 def create_condition(target_name, node: ast.Call):
-    # range 파싱
-    if node.func.id == "range":
-        print("range 파싱")
-
     # Condition - start, end, step
     start = 0
     end = None
@@ -156,12 +153,10 @@ def create_condition(target_name, node: ast.Call):
     return Condition(name=target_name, start=start, end=end, step=step, cur=start)
 
 
-def identifier_parse(node):
-    if isinstance(node, ast.Name):
-        try:
-            return g_elem_manager.get_variable_value(name=node.id)
-        except NameError as e:
-            print("#error:", e)
-            return g_elem_manager.add_variable_value(name=node.id, value=0)
-    elif isinstance(node, ast.Constant):
-        return node.value
+def identifier_parse(arg):
+    if isinstance(arg, ast.Name):  # 변수 이름인 경우
+        return name_parse(arg)
+    elif isinstance(arg, ast.Constant):  # 상수인 경우
+        return constant_parse(arg)
+    else:
+        raise TypeError(f"Unsupported node type: {type(arg)}")
