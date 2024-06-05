@@ -21,8 +21,8 @@ class CodeElementManager:
         self.variables_value[name] = value
         return value
 
-    def addStep(self, elem):
+    def add_step(self, elem):
         self.nodes.append(elem)
 
-    def getStep(self):
+    def get_all_step(self):
         return self.nodes
