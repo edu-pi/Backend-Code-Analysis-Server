@@ -114,7 +114,12 @@ def for_parse(node):
         g_elem_manager.add_variable_value(name=target_name, value=i)
         for child_node in node.body:
             if isinstance(child_node, ast.Expr):
-                expr_parse(child_node, target_name)
+                parsed_objs = expr_parse(child_node)
+                if parsed_objs is None:
+                    continue
+
+                for parsed_obj in parsed_objs:
+                    g_elem_manager.addStep(parsed_obj)
 
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
         new_condition = condition.copy_with_new_cur(i)
@@ -123,21 +128,31 @@ def for_parse(node):
         )
 
 
-def expr_parse(node: ast.Expr, target_name):
-    # 함수가 있다면 함수 이름을 target_name 으로 지정
-    if node.value.func is not None:
-        target_name = node.value.func.id
+def expr_parse(node: ast.Expr):
+    if isinstance(node.value, ast.Call):
+        return call_parse(node.value)
 
-    for cur_node in node.value.args:
+
+def call_parse(node: ast.Call):
+    func_name = node.func.id
+
+    if func_name == 'print':
+        return print_parse(node)
+
+
+def print_parse(node: ast.Call):
+    print_objects = []
+
+    for cur_node in node.args:
         if isinstance(cur_node, ast.BinOp):
             # 연산 과정 리스트 생성
             parsed_expressions = binOp_parse(cur_node)
             # 중간 연산 과정이 포함된 노드 생성
             for parsed_expression in parsed_expressions:
-                g_elem_manager.addStep(
-                    Variable(depth=g_elem_manager.get_depth(), name=target_name, expr=parsed_expression)
-                )
+                print_obj = Print(id=1, depth=g_elem_manager.get_depth(), name='print', expr=parsed_expression)
+                print_objects.append(print_obj)  # 리스트에 추가
 
+    return print_objects
 
 def create_condition(target_name, node: ast.Call):
     # Condition - start, end, step
