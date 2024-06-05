@@ -1,13 +1,13 @@
 class CodeElementManager:
 
     def __init__(self):
-        self.call_idx = 0
+        self.call_id = 0
         self.call_ids = {}
         self.variables_value = {}
         self.depth = 1
         self.nodes = []
 
-    def get_id(self, node):
+    def get_call_id(self, node):
         if node in self.call_ids:
             return self.call_ids[node]
 
@@ -16,8 +16,8 @@ class CodeElementManager:
         return new_id
 
     def get_next_call_id(self):
-        self.call_idx += 1
-        return self.call_idx
+        self.call_id += 1
+        return self.call_id
 
     def get_variable_value(self, name):
         if name in self.variables_value:

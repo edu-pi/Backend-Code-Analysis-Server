@@ -96,7 +96,7 @@ def constant_parse(node):
 def for_parse(node):
     # 타겟 처리
     target_name = node.target.id
-    for_id = g_elem_manager.get_id(node)
+    for_id = g_elem_manager.get_call_id(node)
 
     # Condition 객체 생성
     if isinstance(node.iter, ast.Call):
@@ -150,7 +150,7 @@ def print_parse(node: ast.Call):
             parsed_expressions = binOp_parse(cur_node)
             # 중간 연산 과정이 포함된 노드 생성
             for parsed_expression in parsed_expressions:
-                print_obj = Print(id=g_elem_manager.get_id(node), depth=g_elem_manager.get_depth(), name='print', expr=parsed_expression)
+                print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(), name='print', expr=parsed_expression)
                 print_objects.append(print_obj)  # 리스트에 추가
 
     return print_objects
