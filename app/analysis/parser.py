@@ -103,6 +103,8 @@ def constant_parse(node):
 def for_parse(node):
     # 타겟 처리
     target_name = node.target.id
+    for_id = g_elem_manager.get_call_id(node)
+
     # Condition 객체 생성
     condition = create_condition(target_name, node.iter)
 
@@ -110,31 +112,50 @@ def for_parse(node):
     for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
-        # for 객체 생성
-        g_elem_manager.add_step(
-            For(id=id(condition), depth=g_elem_manager.get_depth(), condition=condition)
+        g_elem_manager.addStep(
+            For(id=for_id, depth=g_elem_manager.get_depth(), condition=condition)
         )
         g_elem_manager.increase_depth()
-        # body 수행
+
         for child_node in node.body:
             if isinstance(child_node, ast.Expr):
-                expr_parse(child_node, target_name)
+                parsed_objs = expr_parse(child_node)
+                if parsed_objs is None:
+                    continue
+
+                for parsed_obj in parsed_objs:
+                    g_elem_manager.addStep(parsed_obj)
         g_elem_manager.decrease_depth()
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
         condition = condition.copy_with_new_cur(i + condition.step)
 
 
-def expr_parse(node, target_name):
-    for cur_node in node.value.args:
+def expr_parse(node: ast.Expr):
+    if isinstance(node.value, ast.Call):
+        return call_parse(node.value)
+
+
+def call_parse(node: ast.Call):
+    func_name = node.func.id
+
+    if func_name == 'print':
+        return print_parse(node)
+
+
+def print_parse(node: ast.Call):
+    print_objects = []
+
+    for cur_node in node.args:
         if isinstance(cur_node, ast.BinOp):
             # 연산 과정 리스트 생성
             parsed_expressions = binOp_parse(cur_node)
             # 중간 연산 과정이 포함된 노드 생성
             for parsed_expression in parsed_expressions:
-                g_elem_manager.add_step(
-                    Variable(depth=g_elem_manager.get_depth(), name=target_name, expr=parsed_expression)
-                )
+                print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(), name='print', expr=parsed_expression)
+                print_objects.append(print_obj)  # 리스트에 추가
 
+    return print_objects
+  
 
 def create_condition(target_name, node: ast.Call):
     # Condition - start, end, step

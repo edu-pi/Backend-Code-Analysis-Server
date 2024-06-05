@@ -29,8 +29,8 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 
 code = '''
-a = 10
-for i in range (a) :
+a=5
+for i in range (2) :
     print('*'* (i+1))
 '''
 

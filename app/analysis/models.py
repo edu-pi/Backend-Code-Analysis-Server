@@ -44,3 +44,21 @@ class For:
     @ condition: 조건절
     @ type : 타입
 '''
+
+
+@dataclass(frozen=True)
+class Print:
+    id: int
+    depth: int
+    name: str
+    expr: str
+    type: str = "func"
+
+
+'''
+    @ id: 식별값
+    @ depth: 깊이
+    @ name: 변수 이름
+    @ value: 변수 값
+
+'''
