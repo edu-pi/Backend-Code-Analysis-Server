@@ -8,29 +8,36 @@ g_elem_manager = CodeElementManager()
 print("CodeElementManager 생성")
 
 
+# ast.assign 을 받아 값을 할당하고 step에 추가
 def assign_parse(node):
     for target in node.targets:
         depth = g_elem_manager.depth
+
+        # BinOp인 경우
         if isinstance(node.value, ast.BinOp):
             parsed_expressions = binOp_parse(node.value)
             for parsed_expression in parsed_expressions:
-                g_elem_manager.addStep(
+                g_elem_manager.add_step(
                     Variable(depth=depth, name=target.id, expr=parsed_expression)
                 )
             g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
+
+        # 상수인 경우
         elif isinstance(node.value, ast.Constant):
             value = constant_parse(node.value)
             g_elem_manager.add_variable_value(name=target.id, value=value)
-            g_elem_manager.addStep(
+            g_elem_manager.add_step(
                 Variable(depth=depth, name=target.id, expr=g_elem_manager.get_variable_value(name=target.id))
             )
+
+        # 변수인 경우
         elif isinstance(node.value, ast.Name):
-            g_elem_manager.addStep(
+            g_elem_manager.add_step(
                 Variable(depth=depth, name=target.id, expr=node.id)
             )
             value = name_parse(node.value)
             g_elem_manager.add_variable_value(name=target.id, value=value)
-            g_elem_manager.addStep(
+            g_elem_manager.add_step(
                 Variable(depth=depth, name=target.id, expr=value)
             )
 
@@ -41,10 +48,15 @@ def replace_variable(expression, variable, key):
     return replaced_expression
 
 
-def binOp_calculate_binOp(node, expr):
+def binOp_parse(node):
+    value = __calculate_binOp_result(node, ast.unparse(node))
+    return __create_intermediate_expression(ast.unparse(node), value)
+
+
+def __calculate_binOp_result(node, expr):
     if isinstance(node, ast.BinOp):
-        left = binOp_calculate_binOp(node.left, expr)
-        right = binOp_calculate_binOp(node.right, expr)
+        left = __calculate_binOp_result(node.left, expr)
+        right = __calculate_binOp_result(node.right, expr)
         if isinstance(node.op, ast.Add):
             value = left + right
         elif isinstance(node.op, ast.Sub):
@@ -64,22 +76,17 @@ def binOp_calculate_binOp(node, expr):
         raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
 
-def binOp_calculate_expressions(expr, result):
-    ret = [expr]
+def __create_intermediate_expression(expr, result):
+    expr_results = [expr]
     pattern = r'\b[a-zA-Z]{1,2}\b'
     variables = re.findall(pattern, expr)
     for var in variables:
         value = g_elem_manager.get_variable_value(var)
         expr = replace_variable(expression=expr, variable=var, key=value)
     if len(variables) != 0:
-        ret.append(expr)
-    ret.append(result)
-    return ret
-
-
-def binOp_parse(node):
-    value = binOp_calculate_binOp(node, ast.unparse(node))
-    return binOp_calculate_expressions(ast.unparse(node), value)
+        expr_results.append(expr)
+    expr_results.append(result)
+    return expr_results
 
 
 def name_parse(node):
@@ -99,19 +106,16 @@ def for_parse(node):
     for_id = g_elem_manager.get_call_id(node)
 
     # Condition 객체 생성
-    if isinstance(node.iter, ast.Call):
-        condition = create_condition(target_name, node.iter)
+    condition = create_condition(target_name, node.iter)
 
-    # For 객체 생성
-    g_elem_manager.addStep(
-        For(id=for_id, depth=g_elem_manager.depth, condition=condition)
-    )
-
-    # Body 처리
-    g_elem_manager.increase_depth()
+    # for문 수행
     for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
+        g_elem_manager.addStep(
+            For(id=for_id, depth=g_elem_manager.get_depth(), condition=condition)
+        )
+        g_elem_manager.increase_depth()
 
         for child_node in node.body:
             if isinstance(child_node, ast.Expr):
@@ -121,13 +125,10 @@ def for_parse(node):
 
                 for parsed_obj in parsed_objs:
                     g_elem_manager.addStep(parsed_obj)
-
+        g_elem_manager.decrease_depth()
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
-        new_condition = condition.copy_with_new_cur(i)
-        g_elem_manager.addStep(
-            For(id=for_id, depth=g_elem_manager.get_depth() - 1, condition=new_condition)
-        )
-    g_elem_manager.decrease_depth()
+        condition = condition.copy_with_new_cur(i + condition.step)
+
 
 def expr_parse(node: ast.Expr):
     if isinstance(node.value, ast.Call):
@@ -154,7 +155,7 @@ def print_parse(node: ast.Call):
                 print_objects.append(print_obj)  # 리스트에 추가
 
     return print_objects
-
+  
 
 def create_condition(target_name, node: ast.Call):
     # Condition - start, end, step

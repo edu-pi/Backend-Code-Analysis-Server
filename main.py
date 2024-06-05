@@ -20,7 +20,7 @@ c = a + b + 10
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
     code_analyzer.visualize_code(parsed_ast)
-    return g_elem_manager.getStep()
+    return g_elem_manager.get_all_step()
 
 
 @app.get("/items/{item_id}")
@@ -45,7 +45,7 @@ c = a + b + 10
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
     code_analyzer.visualize_code(parsed_ast)
-    return g_elem_manager.getStep()
+    return g_elem_manager.get_all_step()
 
 
 if __name__ == "__main__":
