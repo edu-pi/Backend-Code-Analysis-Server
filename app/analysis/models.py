@@ -18,13 +18,13 @@ class Variable:
 '''
 
 
-@dataclass(frozen=True)
+@dataclass
 class Condition:
     name: str
-    start: str
-    end: str
-    step: str
-    cur: str
+    start: int
+    end: int
+    step: int
+    cur: int
 
     def copy_with_new_cur(self, new_cur):
         return Condition(self.name, self.start, self.end, self.step, new_cur)
