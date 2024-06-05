@@ -112,6 +112,7 @@ def for_parse(node):
     for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
+
         for child_node in node.body:
             if isinstance(child_node, ast.Expr):
                 parsed_objs = expr_parse(child_node)
@@ -126,9 +127,7 @@ def for_parse(node):
         g_elem_manager.addStep(
             For(id=for_id, depth=g_elem_manager.get_depth() - 1, condition=new_condition)
         )
-
-
-
+    g_elem_manager.decrease_depth()
 
 def expr_parse(node: ast.Expr):
     if isinstance(node.value, ast.Call):
