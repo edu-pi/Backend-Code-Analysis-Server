@@ -1,22 +1,25 @@
 import ast
 
+from app.analysis.element_manager import CodeElementManager
 from app.analysis.parser import assign_parse, for_parse
 
 
-def print_ast(node, level=0):
-    print('  ' * level + ast.dump(node))
-    for child in ast.iter_child_nodes(node):
-        print_ast(child, level + 1)
+class CodeAnalyzer:
 
+    def __init__(self, elem_manager: CodeElementManager):
+        self.elem_manager = elem_manager
 
-def visualize_code(parsed_ast):
-    for node in parsed_ast.body:
-        parse_node(node)
+    @staticmethod
+    def print_ast(node):
+        print(ast.dump(node, indent=4))
 
+    def visualize_code(self, parsed_ast):
+        for node in parsed_ast.body:
+            self.parse_node(node, self.elem_manager)
+        return self.elem_manager.get_all_step()
 
-def parse_node(node, target_name=None):
-    if isinstance(node, ast.Assign):
-        assign_parse(node)
-    elif isinstance(node, ast.For):
-        for_parse(node)
-
+    def parse_node(self, node, target_name=None):
+        if isinstance(node, ast.Assign):
+            assign_parse(node, self.elem_manager)
+        elif isinstance(node, ast.For):
+            for_parse(node, self.elem_manager)
