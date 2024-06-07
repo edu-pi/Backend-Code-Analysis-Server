@@ -106,22 +106,19 @@ def for_parse(node):
     for_id = g_elem_manager.get_call_id(node)
 
     # Condition 객체 생성
-    pre_condition = None
-    origin_condition = create_condition(target_name, node.iter)
+    condition = create_condition(target_name, node.iter)
 
     # for문 수행
-    for i in range(origin_condition.start, origin_condition.end, origin_condition.step):
+    for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
-        cur_condition = create_condition(target_name, node.iter)
 
         # 변경된 속성 이름 찾기
-        highlight = cur_condition.changed_attr(pre_condition)
-        pre_condition = cur_condition
+        highlight = condition.changed_attr()
 
         # for step 추가
         g_elem_manager.add_step(
-            For(id=for_id, depth=g_elem_manager.get_depth(), condition=cur_condition, highlight=highlight)
+            For(id=for_id, depth=g_elem_manager.get_depth(), condition=condition, highlight=highlight)
         )
         g_elem_manager.increase_depth()
 
@@ -137,6 +134,9 @@ def for_parse(node):
             elif isinstance(child_node, ast.For):
                 for_parse(child_node)
         g_elem_manager.decrease_depth()
+
+        # condition 객체에서 cur 값만 변경한 새로운 condition 생성
+        condition = condition.copy_with_new_cur(i + condition.step)
 
 
 def expr_parse(node: ast.Expr):
@@ -183,12 +183,7 @@ def create_condition(target_name, node: ast.Call):
     elif len(identifier_list) == 3:
         start, end, step = identifier_list
 
-    try:
-        cur = g_elem_manager.get_variable_value(target_name)
-    except NameError:
-        # 기존에 선언되지 않는 변수라면 0으로 초기화
-        cur = g_elem_manager.add_variable_value(target_name, 0)
-    return Condition(target=target_name, start=start, end=end, step=step, cur=cur)
+    return Condition(target=target_name, start=start, end=end, step=step, cur=start)
 
 
 def identifier_parse(arg):

@@ -27,20 +27,13 @@ class Condition:
     step: int
 
     def copy_with_new_cur(self, new_cur):
-        return Condition(self.target, self.start, self.end, self.step, new_cur)
+        return Condition(self.target, new_cur, self.start, self.end, self.step)
 
-    def changed_attr(self, new_condition):
-        if new_condition is None:
+    def changed_attr(self):
+        if self.start == self.cur:
             return list(self.__dict__.keys())
 
-        changed_attributes = []
-        attributes = ['cur', 'start', 'end']
-
-        for attr in attributes:
-            if getattr(self, attr) != getattr(new_condition, attr):
-                changed_attributes.append(attr)
-
-        return changed_attributes
+        return ['cur']
 
 
 @dataclass(frozen=True)
