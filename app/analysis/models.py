@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class Variable:
     depth: int
-    name: str
+    target: str
     expr: str
     type: str = "variable"
 
@@ -20,14 +20,20 @@ class Variable:
 
 @dataclass
 class Condition:
-    name: str
+    target: str
+    cur: int
     start: int
     end: int
     step: int
-    cur: int
 
     def copy_with_new_cur(self, new_cur):
-        return Condition(self.name, self.start, self.end, self.step, new_cur)
+        return Condition(self.target, new_cur, self.start, self.end, self.step)
+
+    def changed_attr(self):
+        if self.start == self.cur:
+            return list(self.__dict__.keys())
+
+        return ['cur']
 
 
 @dataclass(frozen=True)
@@ -35,6 +41,7 @@ class For:
     id: int
     depth: int
     condition: Condition
+    highlight: []
     type: str = "for"
 
 
@@ -50,9 +57,8 @@ class For:
 class Print:
     id: int
     depth: int
-    name: str
     expr: str
-    type: str = "func"
+    type: str = "print"
 
 
 '''
