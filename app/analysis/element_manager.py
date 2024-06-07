@@ -1,47 +1,55 @@
 class CodeElementManager:
 
-    def __init__(self):
-        self.call_id = 0
-        self.call_ids = {}
-        self.variables_value = {}
-        self.depth = 1
-        self.nodes = []
+    call_id = 0
+    call_ids = {}
+    variables_value = {}
+    depth = 1
+    nodes = []
 
-    def get_call_id(self, node):
-        if node in self.call_ids:
-            return self.call_ids[node]
+    @staticmethod
+    def get_call_id(node):
+        if node in CodeElementManager.call_ids:
+            return CodeElementManager.call_ids[node]
 
-        new_id = self.get_next_call_id()
-        self.call_ids[node] = new_id
+        new_id = CodeElementManager.get_next_call_id()
+        CodeElementManager.call_ids[node] = new_id
         return new_id
 
-    def get_next_call_id(self):
-        self.call_id += 1
-        return self.call_id
+    @staticmethod
+    def get_next_call_id():
+        CodeElementManager.call_id += 1
+        return CodeElementManager.call_id
 
-    def get_variable_value(self, name):
-        if name in self.variables_value:
-            return self.variables_value[name]
+    @staticmethod
+    def get_variable_value(name):
+        if name in CodeElementManager.variables_value:
+            return CodeElementManager.variables_value[name]
 
         raise NameError(f"변수 '{name}'가 정의되지 않았습니다. ")
 
-    def add_variable_value(self, name, value):
-        self.variables_value[name] = value
+    @staticmethod
+    def add_variable_value(name, value):
+        CodeElementManager.variables_value[name] = value
         return value
 
-    def add_step(self, elem):
-        self.nodes.append(elem)
+    @staticmethod
+    def add_step(elem):
+        CodeElementManager.nodes.append(elem)
 
-    def get_all_step(self):
-        return self.nodes
+    @staticmethod
+    def get_all_step():
+        return CodeElementManager.nodes
 
-    def increase_depth(self):
-        self.depth = self.depth + 1
-        return self.depth
+    @staticmethod
+    def increase_depth():
+        CodeElementManager.depth = CodeElementManager.depth + 1
+        return CodeElementManager.depth
 
-    def get_depth(self):
-        return self.depth
+    @staticmethod
+    def get_depth():
+        return CodeElementManager.depth
 
-    def decrease_depth(self):
-        self.depth = self.depth - 1
-        return self.depth
+    @staticmethod
+    def decrease_depth():
+        CodeElementManager.depth = CodeElementManager.depth - 1
+        return CodeElementManager.depth

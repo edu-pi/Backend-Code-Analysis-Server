@@ -20,9 +20,8 @@ c = a + b + 10
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
 
-    g_elem_manager = CodeElementManager()
-    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
-    return g_elem_manager.get_all_step()
+    code_analyzer.visualize_code(parsed_ast)
+    return CodeElementManager.get_all_step()
 
 
 @app.get("/items/{item_id}")
@@ -32,10 +31,8 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 code = '''
 a=5
-for i in range (2) :
+for i in range (a) :
     print('*'* (i+1))
-    for j in range (100, 102) :
-        print('*'* (i+1))
 '''
 
 
@@ -49,9 +46,8 @@ c = a + b + 10
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
 
-    g_elem_manager = CodeElementManager()
-    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
-    return g_elem_manager.get_all_step()
+    code_analyzer.visualize_code(parsed_ast)
+    return CodeElementManager.get_all_step()
 
 
 if __name__ == "__main__":
