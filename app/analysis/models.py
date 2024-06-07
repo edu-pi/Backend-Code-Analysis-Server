@@ -21,16 +21,26 @@ class Variable:
 @dataclass
 class Condition:
     target: str
+    cur: int
     start: int
     end: int
     step: int
-    cur: int
 
     def copy_with_new_cur(self, new_cur):
         return Condition(self.target, self.start, self.end, self.step, new_cur)
 
     def changed_attr(self, new_condition):
-        changed = []
+        if new_condition is None:
+            return list(self.__dict__.keys())
+
+        changed_attributes = []
+        attributes = ['cur', 'start', 'end']
+
+        for attr in attributes:
+            if getattr(self, attr) != getattr(new_condition, attr):
+                changed_attributes.append(attr)
+
+        return changed_attributes
 
 
 @dataclass(frozen=True)
@@ -38,6 +48,7 @@ class For:
     id: int
     depth: int
     condition: Condition
+    highlight: []
     type: str = "for"
 
 
