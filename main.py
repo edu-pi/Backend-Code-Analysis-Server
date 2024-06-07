@@ -15,14 +15,13 @@ a = 10
 b = a + 10
 c = a + b + 10
             '''
-    parsed_ast = ast.parse(source_code)
-    analyzer = CodeAnalyzer()
-    print("AST 구조:")
-    analyzer.print_ast(parsed_ast)
+    code_analyzer = CodeAnalyzer(CodeElementManager())
 
-    g_elem_manager = CodeElementManager()
-    analyzer.visualize_code(parsed_ast, g_elem_manager)
-    return g_elem_manager.get_all_step()
+    parsed_ast = ast.parse(source_code)
+    print("AST 구조:")
+    code_analyzer.print_ast(parsed_ast)
+
+    return code_analyzer.visualize_code(parsed_ast)
 
 
 code = '''
@@ -35,19 +34,18 @@ for i in range (2) :
 
 
 def main():
-    analyzer = CodeAnalyzer()
     source_code = '''
 a = 10
 b = a + 10
 c = a + b + 10
         '''
+    code_analyzer = CodeAnalyzer(CodeElementManager())
+
     parsed_ast = ast.parse(code)
     print("AST 구조:")
-    analyzer.print_ast(parsed_ast)
+    code_analyzer.print_ast(parsed_ast)
 
-    g_elem_manager = CodeElementManager()
-    analyzer.visualize_code(parsed_ast, g_elem_manager)
-    return g_elem_manager.get_all_step()
+    return code_analyzer.visualize_code(parsed_ast)
 
 
 if __name__ == "__main__":
