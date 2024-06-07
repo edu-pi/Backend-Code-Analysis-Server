@@ -18,7 +18,7 @@ def assign_parse(node):
             parsed_expressions = binOp_parse(node.value)
             for parsed_expression in parsed_expressions:
                 g_elem_manager.add_step(
-                    Variable(depth=depth, name=target.id, expr=parsed_expression)
+                    Variable(depth=depth, target=target.id, expr=parsed_expression)
                 )
             g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
 
@@ -27,18 +27,18 @@ def assign_parse(node):
             value = constant_parse(node.value)
             g_elem_manager.add_variable_value(name=target.id, value=value)
             g_elem_manager.add_step(
-                Variable(depth=depth, name=target.id, expr=g_elem_manager.get_variable_value(name=target.id))
+                Variable(depth=depth, target=target.id, expr=g_elem_manager.get_variable_value(name=target.id))
             )
 
         # 변수인 경우
         elif isinstance(node.value, ast.Name):
             g_elem_manager.add_step(
-                Variable(depth=depth, name=target.id, expr=node.id)
+                Variable(depth=depth, target=target.id, expr=node.id)
             )
             value = name_parse(node.value)
             g_elem_manager.add_variable_value(name=target.id, value=value)
             g_elem_manager.add_step(
-                Variable(depth=depth, name=target.id, expr=value)
+                Variable(depth=depth, target=target.id, expr=value)
             )
 
 
@@ -154,7 +154,7 @@ def print_parse(node: ast.Call):
             parsed_expressions = binOp_parse(cur_node)
             # 중간 연산 과정이 포함된 노드 생성
             for parsed_expression in parsed_expressions:
-                print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(), name='print', expr=parsed_expression)
+                print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(), expr=parsed_expression)
                 print_objects.append(print_obj)  # 리스트에 추가
 
     return print_objects
@@ -176,7 +176,7 @@ def create_condition(target_name, node: ast.Call):
     elif len(identifier_list) == 3:
         start, end, step = identifier_list
 
-    return Condition(name=target_name, start=start, end=end, step=step, cur=start)
+    return Condition(target=target_name, start=start, end=end, step=step, cur=start)
 
 
 def identifier_parse(arg):
