@@ -4,19 +4,17 @@ from app.analysis.parser import assign_parse, for_parse
 
 
 def print_ast(node, level=0):
-    print('  ' * level + ast.dump(node))
-    for child in ast.iter_child_nodes(node):
-        print_ast(child, level + 1)
+    print(ast.dump(node, indent=2))
 
 
-def visualize_code(parsed_ast):
+def visualize_code(parsed_ast, g_elem_manager):
     for node in parsed_ast.body:
-        parse_node(node)
+        parse_node(node, g_elem_manager)
 
 
-def parse_node(node, target_name=None):
+def parse_node(node, g_elem_manager, target_name=None):
     if isinstance(node, ast.Assign):
-        assign_parse(node)
+        assign_parse(node, g_elem_manager)
     elif isinstance(node, ast.For):
-        for_parse(node)
+        for_parse(node, g_elem_manager)
 

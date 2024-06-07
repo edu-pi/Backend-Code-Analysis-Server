@@ -3,8 +3,8 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from app.analysis import code_analyzer, element_manager
-from app.analysis.parser import g_elem_manager
+from app.analysis import code_analyzer
+from app.analysis.element_manager import CodeElementManager
 from app.utils import *
 app = FastAPI()
 
@@ -19,7 +19,9 @@ c = a + b + 10
     parsed_ast = ast.parse(source_code)
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
-    code_analyzer.visualize_code(parsed_ast)
+
+    g_elem_manager = CodeElementManager()
+    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
     return g_elem_manager.get_all_step()
 
 
@@ -46,7 +48,9 @@ c = a + b + 10
     parsed_ast = ast.parse(code)
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
-    code_analyzer.visualize_code(parsed_ast)
+
+    g_elem_manager = CodeElementManager()
+    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
     return g_elem_manager.get_all_step()
 
 
