@@ -131,8 +131,8 @@ def for_parse(node):
                 if parsed_objs is None:
                     continue
 
-                # for parsed_obj in parsed_objs:
-                #     g_elem_manager.add_step(parsed_obj)
+                for parsed_obj in parsed_objs:
+                    g_elem_manager.add_step(parsed_obj)
 
             elif isinstance(child_node, ast.For):
                 for_parse(child_node)
