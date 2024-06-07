@@ -1,9 +1,8 @@
 import ast
-from typing import Union
 
 from fastapi import FastAPI
 
-from app.analysis import code_analyzer
+from app.analysis.code_analyzer import CodeAnalyzer
 from app.analysis.element_manager import CodeElementManager
 from app.utils import *
 app = FastAPI()
@@ -17,17 +16,13 @@ b = a + 10
 c = a + b + 10
             '''
     parsed_ast = ast.parse(source_code)
+    analyzer = CodeAnalyzer()
     print("AST 구조:")
-    code_analyzer.print_ast(parsed_ast)
+    analyzer.print_ast(parsed_ast)
 
     g_elem_manager = CodeElementManager()
-    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
+    analyzer.visualize_code(parsed_ast, g_elem_manager)
     return g_elem_manager.get_all_step()
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
 
 
 code = '''
@@ -39,7 +34,8 @@ for i in range (2) :
 '''
 
 
-def test():
+def main():
+    analyzer = CodeAnalyzer()
     source_code = '''
 a = 10
 b = a + 10
@@ -47,12 +43,12 @@ c = a + b + 10
         '''
     parsed_ast = ast.parse(code)
     print("AST 구조:")
-    code_analyzer.print_ast(parsed_ast)
+    analyzer.print_ast(parsed_ast)
 
     g_elem_manager = CodeElementManager()
-    code_analyzer.visualize_code(parsed_ast, g_elem_manager)
+    analyzer.visualize_code(parsed_ast, g_elem_manager)
     return g_elem_manager.get_all_step()
 
 
 if __name__ == "__main__":
-    print(nodes_to_json(test()))
+    print(nodes_to_json(main()))
