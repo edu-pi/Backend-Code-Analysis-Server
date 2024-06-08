@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class Variable:
     depth: int
-    target: str
+    targets: list
     expr: str
     type: str = "variable"
 

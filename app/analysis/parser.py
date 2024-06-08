@@ -7,36 +7,44 @@ from app.analysis.models import *
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
 def assign_parse(node, g_elem_manager):
+    depth = g_elem_manager.depth
+    targets = []
+    steps = []
+
+    # value expressions 생성
+    parsed_expressions = __value_expressions(node.value, g_elem_manager)
+
+    # targets 생성
     for target in node.targets:
-        depth = g_elem_manager.depth
+        g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
+        targets.append(target.id)
 
-        # BinOp인 경우
-        if isinstance(node.value, ast.BinOp):
-            parsed_expressions = binOp_parse(node.value, g_elem_manager)
-            for parsed_expression in parsed_expressions:
-                g_elem_manager.add_step(
-                    Variable(depth=depth, target=target.id, expr=parsed_expression)
-                )
-            g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
+    # value steps 생성
+    for parsed_expression in parsed_expressions:
+        steps.append(Variable(depth=depth, targets=targets,  expr=parsed_expression))
 
-        # 상수인 경우
-        elif isinstance(node.value, ast.Constant):
-            value = constant_parse(node.value)
-            g_elem_manager.add_variable_value(name=target.id, value=value)
-            g_elem_manager.add_step(
-                Variable(depth=depth, target=target.id, expr=g_elem_manager.get_variable_value(name=target.id))
-            )
+    return steps
 
-        # 변수인 경우
-        elif isinstance(node.value, ast.Name):
-            g_elem_manager.add_step(
-                Variable(depth=depth, target=target.id, expr=node.id)
-            )
-            value = name_parse(node.value, g_elem_manager)
-            g_elem_manager.add_variable_value(name=target.id, value=value)
-            g_elem_manager.add_step(
-                Variable(depth=depth, target=target.id, expr=value)
-            )
+
+def __value_expressions(node, g_elem_manager):
+    parsed_expressions = []
+
+    if isinstance(node, ast.BinOp):
+        parsed_expressions = binOp_parse(node, g_elem_manager)
+
+    # 상수인 경우
+    elif isinstance(node, ast.Constant):
+        value = constant_parse(node)
+        parsed_expressions.append(value)
+
+    # 변수인 경우
+    elif isinstance(node, ast.Name):
+        parsed_expressions = name_parse(node, g_elem_manager)
+
+    elif isinstance(node, ast.Tuple):
+        parsed_expressions.append(tuple_parse(node, g_elem_manager))
+
+    return parsed_expressions
 
 
 def replace_variable(expression, variable, key):
@@ -66,7 +74,8 @@ def __calculate_binOp_result(node, expr, g_elem_manager):
             raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
         return value
     elif isinstance(node, ast.Name):
-        return name_parse(node, g_elem_manager)
+        name_expr = name_parse(node, g_elem_manager)
+        return name_expr[-1]
     elif isinstance(node, ast.Constant):
         return constant_parse(node)
     else:
@@ -87,10 +96,14 @@ def __create_intermediate_expression(expr, result, g_elem_manager):
 
 
 def name_parse(node, g_elem_manager):
+    parsed_expressions = [node.id]
     try:
-        return g_elem_manager.get_variable_value(name=node.id)
+        value = g_elem_manager.get_variable_value(name=node.id)
+        parsed_expressions.append(value)
     except NameError as e:
         print("#error:", e)
+
+    return parsed_expressions
 
 
 def constant_parse(node):
@@ -188,8 +201,22 @@ def create_condition(target_name, node: ast.Call, g_elem_manager):
 
 def identifier_parse(arg, g_elem_manager):
     if isinstance(arg, ast.Name):  # 변수 이름인 경우
-        return name_parse(arg, g_elem_manager)
+        return name_parse(arg, g_elem_manager)[-1]
     elif isinstance(arg, ast.Constant):  # 상수인 경우
         return constant_parse(arg)
     else:
         raise TypeError(f"Unsupported node type: {type(arg)}")
+
+
+def tuple_parse(node, g_elem_manager):
+    tuple_value = []
+    for elt in node.elts:
+        if isinstance(elt, ast.Name):
+            name_expr = name_parse(elt, g_elem_manager)
+            tuple_value.append(name_expr[-1])
+        elif isinstance(elt, ast.Constant):
+            tuple_value.append(constant_parse(elt))
+        elif isinstance(elt, ast.BinOp):
+            tuple_value.append(binOp_parse(elt, g_elem_manager))
+
+    return tuple_value
