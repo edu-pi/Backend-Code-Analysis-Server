@@ -2,19 +2,28 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Variable:
-    depth: int
-    targets: list
-    expr: str
-    type: str = "variable"
+class VarList:
+    list: list
+    type: str = "varList"
 
 
 '''
-    @ id: 식별값
-    @ depth: 깊이
-    @ name: 변수 이름
-    @ value: 변수 값
+    @ list: Variable 리스트
+    @ type: 타입
+'''
 
+
+@dataclass(frozen=True)
+class Variable:
+    depth: int
+    expr: str
+    name: str
+
+
+'''
+    @ depth: 깊이
+    @ expr: 변수에 들어갈 표현식
+    @ name: 변수 이름
 '''
 
 

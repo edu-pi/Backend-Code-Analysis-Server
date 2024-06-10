@@ -8,20 +8,21 @@ from app.analysis.models import *
 # ast.assign 을 받아 값을 할당하고 step에 추가
 def assign_parse(node, g_elem_manager):
     depth = g_elem_manager.depth
-    targets = []
     steps = []
 
     # value expressions 생성
     parsed_expressions = __value_expressions(node.value, g_elem_manager)
 
-    # targets 생성
+    # elem 저장
     for target in node.targets:
         g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
-        targets.append(target.id)
 
-    # value steps 생성
     for parsed_expression in parsed_expressions:
-        steps.append(Variable(depth=depth, targets=targets,  expr=parsed_expression))
+        var_list = []
+        for target in node.targets:
+            variable = Variable(depth=depth, expr=parsed_expression, name=target.id)
+            var_list.append(variable)
+        steps.append(VarList(var_list))
 
     return steps
 
@@ -42,7 +43,7 @@ def __value_expressions(node, g_elem_manager):
         parsed_expressions = name_parse(node, g_elem_manager)
 
     elif isinstance(node, ast.Tuple):
-        parsed_expressions.append(tuple_parse(node, g_elem_manager))
+        parsed_expressions = tuple_parse(node, g_elem_manager)
 
     return parsed_expressions
 

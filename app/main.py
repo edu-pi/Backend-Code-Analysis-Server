@@ -34,12 +34,14 @@ for i in range (a) :
 def main():
     source_code = '''
 a = 10
-b = a + 10
-c = a + b + 10
+b = a
+c = b + 10
+d = e = c + 100
+
         '''
     code_analyzer = CodeAnalyzer(CodeElementManager())
 
-    parsed_ast = ast.parse(code)
+    parsed_ast = ast.parse(source_code)
     print("AST 구조:")
     code_analyzer.print_ast(parsed_ast)
 

@@ -22,7 +22,7 @@ class CodeAnalyzer:
     def parse_node(self, node):
         if isinstance(node, ast.Assign):
             steps = assign_parse(node, self.elem_manager)
-            self.elem_manager.add_step(steps)
+            self.elem_manager.add_steps(steps)
 
         elif isinstance(node, ast.For):
             for_parse(node, self.elem_manager)
