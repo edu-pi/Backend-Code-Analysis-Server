@@ -156,6 +156,7 @@ def print_parse(node: ast.Call, g_elem_manager):
             parsed_expressions = binOp_parse(cur_node, g_elem_manager)
             # 중간 연산 과정이 포함된 노드 생성
             for parsed_expression in parsed_expressions:
+                # highlight 요소 추가
                 print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(),
                                   expr=parsed_expression)
                 print_objects.append(print_obj)  # 리스트에 추가
