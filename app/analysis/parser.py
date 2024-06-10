@@ -1,6 +1,7 @@
 import ast
 import re
 
+from app.analysis.highlight import for_highlight
 from app.analysis.models import *
 
 
@@ -110,7 +111,7 @@ def for_parse(node, g_elem_manager):
         g_elem_manager.add_variable_value(name=target_name, value=i)
 
         # 변경된 속성 이름 찾기
-        highlight = condition.changed_attr()
+        highlight = for_highlight(condition)
 
         # for step 추가
         g_elem_manager.add_step(
