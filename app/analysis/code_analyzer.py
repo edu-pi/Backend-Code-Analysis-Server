@@ -15,10 +15,10 @@ class CodeAnalyzer:
 
     def visualize_code(self, parsed_ast):
         for node in parsed_ast.body:
-            self.parse_node(node, self.elem_manager)
+            self.parse_node(node)
         return self.elem_manager.get_all_step()
 
-    def parse_node(self, node, target_name=None):
+    def parse_node(self, node):
         if isinstance(node, ast.Assign):
             assign_parse(node, self.elem_manager)
         elif isinstance(node, ast.For):

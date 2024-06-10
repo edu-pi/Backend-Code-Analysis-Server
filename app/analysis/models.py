@@ -58,6 +58,7 @@ class Print:
     id: int
     depth: int
     expr: str
+    highlight: []
     type: str = "print"
 
 
