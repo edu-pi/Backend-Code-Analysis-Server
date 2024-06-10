@@ -1,7 +1,7 @@
 import ast
 import re
 
-from app.analysis.highlight import for_highlight
+from app.analysis.highlight import for_highlight, expr_highlights, create_highlighted_expression
 from app.analysis.models import *
 
 
@@ -109,8 +109,7 @@ def for_parse(node, g_elem_manager):
     for i in range(condition.start, condition.end, condition.step):
         # target 업데이트
         g_elem_manager.add_variable_value(name=target_name, value=i)
-
-        # 변경된 속성 이름 찾기
+        # highlight 속성 생성
         highlight = for_highlight(condition)
 
         # for step 추가
@@ -155,12 +154,16 @@ def print_parse(node: ast.Call, g_elem_manager):
         if isinstance(cur_node, ast.BinOp):
             # 연산 과정 리스트 생성
             parsed_expressions = binOp_parse(cur_node, g_elem_manager)
+            # highlight 요소 생성
+            highlights = expr_highlights(parsed_expressions)
             # 중간 연산 과정이 포함된 노드 생성
-            for parsed_expression in parsed_expressions:
-                # highlight 요소 추가
+            for idx, parsed_expression in enumerate(parsed_expressions):
+                # 확인용 함수
+                highlight_expr = create_highlighted_expression(parsed_expression, highlights[idx])
+
                 print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(),
-                                  expr=parsed_expression)
-                print_objects.append(print_obj)  # 리스트에 추가
+                                  expr=parsed_expression, highlight=highlights[idx])
+                print_objects.append(print_obj)
 
     return print_objects
 

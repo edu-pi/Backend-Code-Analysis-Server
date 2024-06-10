@@ -26,7 +26,7 @@ c = a + b + 10
 
 code = '''
 a=5
-for i in range (3, 10) :
+for i in range (a) :
     print('*'* (i+1))
 '''
 
