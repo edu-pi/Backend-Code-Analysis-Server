@@ -1,7 +1,7 @@
 import ast
 import re
 
-from app.analysis.highlight import for_highlight, expr_highlights, create_highlighted_expression
+from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
 
 
@@ -155,7 +155,7 @@ def print_parse(node: ast.Call, g_elem_manager):
             # 연산 과정 리스트 생성
             parsed_expressions = binOp_parse(cur_node, g_elem_manager)
             # highlight 요소 생성
-            highlights = expr_highlights(parsed_expressions)
+            highlights = expressions_highlight_indices(parsed_expressions)
             # 중간 연산 과정이 포함된 노드 생성
             for idx, parsed_expression in enumerate(parsed_expressions):
                 # 확인용 함수
