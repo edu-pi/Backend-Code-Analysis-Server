@@ -5,12 +5,12 @@ def for_highlight(condition: Condition):
     return condition.changed_attr()
 
 
-def expr_highlights(parsed_exprs):
+def expressions_highlight_indices(parsed_exprs):
     highlights = []
     pre_expr = parsed_exprs[0]
 
     for cur_expr in parsed_exprs[:-1]:
-        highlights.append(expr_highlight(pre_expr, cur_expr))
+        highlights.append(immediate_expression_indices(pre_expr, cur_expr))
         pre_expr = cur_expr
 
     # 마지막 요소는 전체 인덱스 반환
@@ -19,8 +19,8 @@ def expr_highlights(parsed_exprs):
     return highlights
 
 
-# 변경된 요소에 대한 인덱스 추출
-def expr_highlight(pre_expr: list, cur_expr: list):
+# 중간 과정 중 변경된 요소에 대한 인덱스 추출
+def immediate_expression_indices(pre_expr: list, cur_expr: list):
     highlight = []
     pre_idx = 0
     cur_idx = 0
