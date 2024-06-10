@@ -160,7 +160,6 @@ def print_parse(node: ast.Call, g_elem_manager):
             for idx, parsed_expression in enumerate(parsed_expressions):
                 # 확인용 함수
                 highlight_expr = create_highlighted_expression(parsed_expression, highlights[idx])
-
                 print_obj = Print(id=g_elem_manager.get_call_id(node), depth=g_elem_manager.get_depth(),
                                   expr=parsed_expression, highlight=highlights[idx])
                 print_objects.append(print_obj)
