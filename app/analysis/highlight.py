@@ -20,15 +20,20 @@ def expressions_highlight_indices(parsed_exprs):
 
 
 # 중간 과정 중 변경된 요소에 대한 인덱스 추출
-def immediate_expression_indices(pre_expr: list, cur_expr: list):
+def immediate_expression_indices(pre_expr: str, cur_expr: str):
     highlight = []
     pre_idx = 0
     cur_idx = 0
 
     while cur_idx < len(cur_expr) or pre_idx < len(pre_expr):
         # 현재 인덱스가 범위를 넘지 않도록 조정
-        if pre_idx+1 < len(pre_expr) and cur_idx < len(cur_expr) and pre_expr[pre_idx] != cur_expr[cur_idx]:
-            pre_idx = pre_idx+1
+        if cur_idx < len(cur_expr) and pre_expr[pre_idx] != cur_expr[cur_idx]:
+            # 이전 문자열이 끝났을 때 중단
+            if pre_idx+1 >= len(pre_expr):
+                break
+
+            pre_idx += 1
+            # 이전 문자열과 같은 요소를 찾을 때까지 변한 부분 인덱스 추가
             while cur_idx < len(cur_expr) and pre_expr[pre_idx] != cur_expr[cur_idx]:
                 # 바뀐 부분의 인덱스 추가
                 highlight.append(cur_idx)
@@ -38,6 +43,11 @@ def immediate_expression_indices(pre_expr: list, cur_expr: list):
                 pre_idx += 1
             if cur_idx < len(cur_expr):
                 cur_idx += 1
+
+    # 남은 인덱스 추가
+    while cur_idx < len(cur_expr):
+        highlight.append(cur_idx)
+        cur_idx += 1
 
     return highlight
 
