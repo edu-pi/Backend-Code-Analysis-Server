@@ -11,9 +11,8 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     source_code = '''
-a = 10
-b = a + 10
-c = a + b + 10
+d = 10
+a = b, c = d + 10,  24
             '''
     code_analyzer = CodeAnalyzer(CodeElementManager())
 
@@ -33,11 +32,8 @@ for i in range (a) :
 
 def main():
     source_code = '''
-a = 10
-b = a
-c = b + 10
-d = e = c + 100
-
+d = 10
+a = b, c = d + 10,  24
         '''
     code_analyzer = CodeAnalyzer(CodeElementManager())
 

@@ -7,31 +7,40 @@ from app.analysis.models import *
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
 def assign_parse(node, g_elem_manager):
-    depth = g_elem_manager.depth
     steps = []
 
     # value expressions 생성
+    target_names = __find_target_names(node.targets)
     parsed_expressions = __value_expressions(node.value, g_elem_manager)
+    print(target_names)
+    print(parsed_expressions)
+
+    for target_name in target_names:
+        g_elem_manager.add_variable_value(name=target_name, value=parsed_expressions[-1])
 
     # elem 저장
-    for target in node.targets:
-        g_elem_manager.add_variable_value(name=target.id, value=parsed_expressions[-1])
-
-    for parsed_expression in parsed_expressions:
-        var_list = []
-        for target in node.targets:
-            variable = Variable(depth=depth, expr=parsed_expression, name=target.id)
-            var_list.append(variable)
-        steps.append(VarList(var_list))
+    var_list = __create_variables(target_names, parsed_expressions, g_elem_manager.depth)
+    steps += var_list
 
     return steps
+
+
+def __find_target_names(targets):
+    target_names = []
+    for target in targets:
+        if isinstance(target, ast.Name):
+            target_names.append(target.id)
+        elif isinstance(target, ast.Tuple):
+            target_names.append(tuple(elt.id for elt in target.elts))
+
+    return target_names
 
 
 def __value_expressions(node, g_elem_manager):
     parsed_expressions = []
 
     if isinstance(node, ast.BinOp):
-        parsed_expressions = binOp_parse(node, g_elem_manager)
+        parsed_expressions += binOp_parse(node, g_elem_manager)
 
     # 상수인 경우
     elif isinstance(node, ast.Constant):
@@ -40,12 +49,29 @@ def __value_expressions(node, g_elem_manager):
 
     # 변수인 경우
     elif isinstance(node, ast.Name):
-        parsed_expressions = name_parse(node, g_elem_manager)
+        parsed_expressions.append(node.id)
+        parsed_expressions.append(name_parse(node, g_elem_manager))
 
     elif isinstance(node, ast.Tuple):
-        parsed_expressions = tuple_parse(node, g_elem_manager)
+        parsed_expressions += tuple_parse(node, g_elem_manager)
 
     return parsed_expressions
+
+
+def __create_variables(target_names, parsed_expressions, depth):
+    var_lists = []
+
+    for parsed_expression in parsed_expressions:
+        variables = []
+        for target_name in target_names:
+            if isinstance(target_name, tuple):
+                for idx in range(len(target_name)):
+                    variables.append(Variable(depth, parsed_expression[idx], target_name[idx]))
+            else:
+                variables.append(Variable(depth, str(parsed_expression), target_name))
+        var_lists.append(VarList(variables))
+
+    return var_lists
 
 
 def replace_variable(expression, variable, key):
@@ -75,8 +101,7 @@ def __calculate_binOp_result(node, expr, g_elem_manager):
             raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
         return value
     elif isinstance(node, ast.Name):
-        name_expr = name_parse(node, g_elem_manager)
-        return name_expr[-1]
+        return name_parse(node, g_elem_manager)
     elif isinstance(node, ast.Constant):
         return constant_parse(node)
     else:
@@ -97,14 +122,10 @@ def __create_intermediate_expression(expr, result, g_elem_manager):
 
 
 def name_parse(node, g_elem_manager):
-    parsed_expressions = [node.id]
     try:
-        value = g_elem_manager.get_variable_value(name=node.id)
-        parsed_expressions.append(value)
+        return g_elem_manager.get_variable_value(name=node.id)
     except NameError as e:
         print("#error:", e)
-
-    return parsed_expressions
 
 
 def constant_parse(node):
@@ -202,22 +223,36 @@ def create_condition(target_name, node: ast.Call, g_elem_manager):
 
 def identifier_parse(arg, g_elem_manager):
     if isinstance(arg, ast.Name):  # 변수 이름인 경우
-        return name_parse(arg, g_elem_manager)[-1]
+        return name_parse(arg, g_elem_manager)
     elif isinstance(arg, ast.Constant):  # 상수인 경우
         return constant_parse(arg)
+    elif isinstance(arg, ast.BinOp):  # 연산자인 경우
+        return binOp_parse(arg, g_elem_manager)
     else:
         raise TypeError(f"Unsupported node type: {type(arg)}")
 
 
 def tuple_parse(node, g_elem_manager):
+    expressions = []
     tuple_value = []
     for elt in node.elts:
-        if isinstance(elt, ast.Name):
-            name_expr = name_parse(elt, g_elem_manager)
-            tuple_value.append(name_expr[-1])
-        elif isinstance(elt, ast.Constant):
-            tuple_value.append(constant_parse(elt))
-        elif isinstance(elt, ast.BinOp):
-            tuple_value.append(binOp_parse(elt, g_elem_manager))
+        expr = identifier_parse(elt, g_elem_manager)
+        expressions.append(expr)
+
+    max_length = max(len(sublist) if isinstance(sublist, list) else 1 for sublist in expressions)
+
+    # 최대 길이만큼 반복하여 튜플을 생성
+    for i in range(max_length):
+        # 현재 인덱스 i에 대한 튜플을 생성
+        current_tuple = tuple(
+            sublist[i]
+            if isinstance(sublist, list) and i < len(sublist)
+            else sublist[-1]
+            if isinstance(sublist, list)
+            else sublist
+            for sublist in expressions
+        )
+        # 결과 리스트에 현재 튜플 추가
+        tuple_value.append(current_tuple)
 
     return tuple_value

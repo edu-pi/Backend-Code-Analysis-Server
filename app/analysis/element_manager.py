@@ -26,14 +26,19 @@ class CodeElementManager:
         raise NameError(f"변수 '{name}'가 정의되지 않았습니다. ")
 
     def add_variable_value(self, name, value):
+        if isinstance(name, tuple) and isinstance(value, tuple):
+            for i in range(len(name)):
+                self.variables_value[name[i]] = value[i]
+            return
+
         self.variables_value[name] = value
-        return value
+        return
 
     def add_step(self, elem):
         self.nodes.append(elem)
 
     def add_steps(self, elem_list):
-        self.nodes = self.nodes + elem_list
+        self.nodes += elem_list
 
     def get_all_step(self):
         return self.nodes
