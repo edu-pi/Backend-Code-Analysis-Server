@@ -67,7 +67,7 @@ def __create_variables(target_names, parsed_expressions, depth):
                     variables.append(Variable(depth, parsed_expression[idx], target_name[idx]))
             else:
                 variables.append(Variable(depth, str(parsed_expression), target_name))
-        var_lists.append(VarList(variables))
+        var_lists.append(Variables(variables))
 
     return var_lists
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class VarList:
+class Variables:
     variable_list: list
     type: str = "varList"
 
