@@ -64,7 +64,7 @@ def __create_variables(target_names, parsed_expressions, depth):
         for target_name in target_names:
             if isinstance(target_name, tuple):
                 for idx in range(len(target_name)):
-                    variables.append(Variable(depth, parsed_expression[idx], target_name[idx]))
+                    variables.append(Variable(depth, str(parsed_expression[idx]), target_name[idx]))
             else:
                 variables.append(Variable(depth, str(parsed_expression), target_name))
         var_lists.append(Variables(variables))
