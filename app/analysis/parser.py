@@ -12,8 +12,6 @@ def assign_parse(node, g_elem_manager):
     # value expressions 생성
     target_names = __find_target_names(node.targets)
     parsed_expressions = __value_expressions(node.value, g_elem_manager)
-    print(target_names)
-    print(parsed_expressions)
 
     for target_name in target_names:
         g_elem_manager.add_variable_value(name=target_name, value=parsed_expressions[-1])

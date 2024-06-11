@@ -32,8 +32,12 @@ for i in range (a) :
 
 def main():
     source_code = '''
-d = 10
-a = b, c = d + 10,  24
+a = 10
+b = a + 10
+c = a + b + 10
+d = e = c + 10
+f, g = d + 1, e + 1
+h = f + 1
         '''
     code_analyzer = CodeAnalyzer(CodeElementManager())
 

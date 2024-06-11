@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class VarList:
-    list: list
+    variable_list: list
     type: str = "varList"
 
 
