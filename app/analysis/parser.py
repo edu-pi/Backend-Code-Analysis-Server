@@ -215,7 +215,6 @@ def create_condition(target_name, node: ast.Call, elem_manager):
             identifier_list.append(__calculate_binOp_result(arg, elem_manager))
         else:
             raise TypeError(f"Unsupported node type: {type(arg)}")
-    identifier_list = [identifier_parse(arg, elem_manager) for arg in node.args]
 
     if len(identifier_list) == 1:
         end = identifier_list[0]
