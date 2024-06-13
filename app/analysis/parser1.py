@@ -50,8 +50,9 @@ def __value_expressions(node, elem_manager):
 
     # 변수인 경우
     elif isinstance(node, ast.Name):
-        parsed_expressions.append(node.id)
-        parsed_expressions.append(name_parse(node, elem_manager))
+        name = Name(node, elem_manager)
+        expression = name.get_expression()
+        parsed_expressions.append(expression)
 
     elif isinstance(node, ast.Tuple):
         parsed_expressions += tuple_parse(node, elem_manager)
@@ -102,7 +103,8 @@ def __calculate_binOp_result(node, elem_manager):
             raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
         return value
     elif isinstance(node, ast.Name):
-        return name_parse(node, elem_manager)
+        name = Name(node, elem_manager)
+        return name.get_value()
     elif isinstance(node, ast.Constant):
         constant = Constant(node)
         return constant.get_value()
@@ -121,17 +123,6 @@ def __create_intermediate_expression(expr, result, elem_manager):
         expr_results.append(expr)
     expr_results.append(result)
     return expr_results
-
-
-def name_parse(node, elem_manager):
-    try:
-        return elem_manager.get_variable_value(name=node.id)
-    except NameError as e:
-        print("#error:", e)
-
-
-def constant_parse(node):
-    return node.value
 
 
 def for_parse(node, elem_manager):
@@ -232,7 +223,8 @@ def create_condition(target_name, node: ast.Call, elem_manager):
 
 def identifier_parse(node, elem_manager):
     if isinstance(node, ast.Name):  # 변수 이름인 경우
-        return name_parse(node, elem_manager)
+        name = Name(node, elem_manager)
+        return name.get_value()
     elif isinstance(node, ast.Constant):  # 상수인 경우
         constant = Constant(node)
         return constant.get_value()
