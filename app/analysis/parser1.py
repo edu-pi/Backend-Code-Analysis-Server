@@ -77,6 +77,7 @@ def __create_variables(target_names, parsed_expressions, depth):
 
 
 def for_parse(node, elem_manager):
+    steps = []
     # 타겟 처리
     target_name = node.target.id
     for_id = elem_manager.get_call_id(node)
@@ -92,7 +93,7 @@ def for_parse(node, elem_manager):
         highlight = for_highlight(condition)
 
         # for step 추가
-        elem_manager.add_step(
+        steps.append(
             For(id=for_id, depth=elem_manager.get_depth(), condition=condition, highlight=highlight)
         )
         elem_manager.increase_depth()
@@ -104,7 +105,7 @@ def for_parse(node, elem_manager):
                     continue
 
                 for parsed_obj in parsed_objs:
-                    elem_manager.add_step(parsed_obj)
+                    steps.append(parsed_obj)
 
             elif isinstance(child_node, ast.For):
                 for_parse(child_node, elem_manager)
@@ -112,6 +113,8 @@ def for_parse(node, elem_manager):
 
         # condition 객체에서 cur 값만 변경한 새로운 condition 생성
         condition = condition.copy_with_new_cur(i + condition.step)
+
+    return steps
 
 
 def expr_parse(node: ast.Expr, elem_manager):

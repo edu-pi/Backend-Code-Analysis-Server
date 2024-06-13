@@ -5,7 +5,6 @@ class CodeElementManager:
         self.call_ids = {}
         self.variables_value = {}
         self.depth = 1
-        self.nodes = []
 
     def get_call_id(self, node):
         if node in self.call_ids:
@@ -33,15 +32,6 @@ class CodeElementManager:
 
         self.variables_value[name] = value
         return
-
-    def add_step(self, elem):
-        self.nodes.append(elem)
-
-    def add_steps(self, elem_list):
-        self.nodes += elem_list
-
-    def get_all_step(self):
-        return self.nodes
 
     def increase_depth(self):
         self.depth = self.depth + 1
