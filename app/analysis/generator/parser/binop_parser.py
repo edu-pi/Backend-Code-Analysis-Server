@@ -17,7 +17,7 @@ class BinopParser:
     def parse(self):
         value = self.__calculate_value(self.node)
         expressions = self.__create_expressions(ast.unparse(self.node), value)
-        return BinOp(value, expressions)
+        return Binop(value, expressions)
 
     # 연산식을 따라가면서 계산해 결과를 반환
     def __calculate_value(self, node):
@@ -64,6 +64,6 @@ class BinopParser:
 
 
 @dataclass
-class BinOp:
+class Binop:
     value: int
     expressions: list
