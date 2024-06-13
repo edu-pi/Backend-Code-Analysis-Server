@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.constant_parser import ConstantParser
 from app.analysis.generator.parser.name_parser import NameParser
+from app.analysis.util.util import replace_variable
 
 
 class BinopParser:
@@ -52,7 +53,7 @@ class BinopParser:
         # 변수들을 값으로 대체
         for var in var_names:
             value = self.elem_manager.get_variable_value(var)
-            expr = self.__replace_variable(expression=expr, variable=var, key=value)
+            expr = replace_variable(expression=expr, variable=var, key=value)
 
         if len(var_names) != 0:
             expr_results.append(expr)
@@ -60,12 +61,6 @@ class BinopParser:
         # 마지막 계산 결과 저장
         expr_results.append(result)
         return expr_results
-
-    @staticmethod
-    def __replace_variable(expression, variable, key):
-        pattern = rf'\b{variable}\b'
-        replaced_expression = re.sub(pattern, str(key), expression)
-        return replaced_expression
 
 
 @dataclass
