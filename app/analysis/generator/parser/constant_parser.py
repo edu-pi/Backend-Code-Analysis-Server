@@ -1,10 +1,16 @@
 import ast
+from dataclasses import dataclass
 
 
-class Constant:
+class ConstantParser:
 
     def __init__(self, node: ast.Constant):
         self.node = node
 
-    def get_value(self):
-        return self.node.value
+    def parse(self):
+        return Constant(self.node.value)
+
+
+@dataclass
+class Constant:
+    value: int

@@ -3,8 +3,8 @@ import re
 
 from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
-from app.analysis.generator.parser.constant_parser import Constant
-from app.analysis.generator.parser.name_parser import Name
+from app.analysis.generator.parser.constant_parser import ConstantParser
+from app.analysis.generator.parser.name_parser import NameParser
 
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
@@ -44,15 +44,13 @@ def __value_expressions(node, elem_manager):
 
     # 상수인 경우
     elif isinstance(node, ast.Constant):
-        constant = Constant(node)
-        value = constant.get_value()
-        parsed_expressions.append(value)
+        constant = ConstantParser(node).parse()
+        parsed_expressions.append(constant.value)
 
     # 변수인 경우
     elif isinstance(node, ast.Name):
-        name = Name(node, elem_manager)
-        expression = name.get_expressions()
-        parsed_expressions.append(expression)
+        name = NameParser(node, elem_manager).parse()
+        parsed_expressions.append(name.expressions)
 
     elif isinstance(node, ast.Tuple):
         parsed_expressions += tuple_parse(node, elem_manager)
@@ -103,11 +101,11 @@ def __calculate_binOp_result(node, elem_manager):
             raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
         return value
     elif isinstance(node, ast.Name):
-        name = Name(node, elem_manager)
-        return name.get_value()
+        name = NameParser(node, elem_manager).parse()
+        return name.value
     elif isinstance(node, ast.Constant):
-        constant = Constant(node)
-        return constant.get_value()
+        constant = ConstantParser(node).parse()
+        return constant.value
     else:
         raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
@@ -223,11 +221,11 @@ def create_condition(target_name, node: ast.Call, elem_manager):
 
 def identifier_parse(node, elem_manager):
     if isinstance(node, ast.Name):  # 변수 이름인 경우
-        name = Name(node, elem_manager)
-        return name.get_value()
+        name = NameParser(node, elem_manager).parse()
+        return name.value
     elif isinstance(node, ast.Constant):  # 상수인 경우
-        constant = Constant(node)
-        return constant.get_value()
+        constant = ConstantParser(node).parse()
+        return constant.value
     else:
         raise TypeError(f"Unsupported node type: {type(node)}")
 
