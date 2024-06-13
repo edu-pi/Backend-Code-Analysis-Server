@@ -1,13 +1,13 @@
 class StepManager:
 
     def __init__(self):
-        self.viz_nodes = []
+        self.steps = []
 
     def add_step(self, elem):
-        self.viz_nodes.append(elem)
+        self.steps.append(elem)
 
     def add_steps(self, elem_list: list):
-        self.viz_nodes += elem_list
+        self.steps += elem_list
 
-    def get_viz_nodes(self):
-        return self.viz_nodes
+    def get_steps(self):
+        return self.steps
