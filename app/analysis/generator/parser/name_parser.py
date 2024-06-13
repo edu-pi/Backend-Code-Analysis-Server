@@ -17,5 +17,5 @@ class Name:
             print("#error:", e)
 
     # 변수의 변화 과정을 만들어주는 함수
-    def get_expression(self):
+    def get_expressions(self):
         return [self.node.id, self.get_value()]

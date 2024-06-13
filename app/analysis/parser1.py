@@ -51,7 +51,7 @@ def __value_expressions(node, elem_manager):
     # 변수인 경우
     elif isinstance(node, ast.Name):
         name = Name(node, elem_manager)
-        expression = name.get_expression()
+        expression = name.get_expressions()
         parsed_expressions.append(expression)
 
     elif isinstance(node, ast.Tuple):
