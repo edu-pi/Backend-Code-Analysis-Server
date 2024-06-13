@@ -15,9 +15,9 @@ class BinopParser:
         self.elem_manager = elem_manager
 
     def parse(self):
-        value = self.__calculate_value(self.node)
-        expressions = self.__create_expressions(ast.unparse(self.node), value)
-        return Binop(value, expressions)
+        result = self.__calculate_value(self.node)
+        expressions = self.__create_expressions(ast.unparse(self.node), result)
+        return Binop(result, expressions)
 
     # 연산식을 따라가면서 계산해 결과를 반환
     def __calculate_value(self, node):
