@@ -19,7 +19,7 @@ class CodeAnalyzer:
 
         for node in parsed_ast.body:
             self.parse_node(node)
-        return self.step_manager.get_viz_nodes()
+        return self.step_manager.get_steps()
 
     def parse_node(self, node):
         if isinstance(node, ast.Assign):
@@ -27,4 +27,5 @@ class CodeAnalyzer:
             self.step_manager.add_steps(steps)
 
         elif isinstance(node, ast.For):
-            for_parse(node, self.elem_manager)
+            steps = for_parse(node, self.elem_manager)
+            self.step_manager.add_steps(steps)
