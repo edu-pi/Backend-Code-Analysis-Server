@@ -1,6 +1,7 @@
 import ast
 import re
 
+from app.analysis.generator.parser.binop_parser import BinopParser
 from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
 from app.analysis.generator.parser.constant_parser import ConstantParser
@@ -40,7 +41,8 @@ def __value_expressions(node, elem_manager):
     parsed_expressions = []
 
     if isinstance(node, ast.BinOp):
-        parsed_expressions += binOp_parse(node, elem_manager)
+        binop = BinopParser(node, elem_manager).parse()
+        parsed_expressions += binop.expressions
 
     # 상수인 경우
     elif isinstance(node, ast.Constant):
@@ -72,55 +74,6 @@ def __create_variables(target_names, parsed_expressions, depth):
         var_lists.append(Variables(variables))
 
     return var_lists
-
-
-def replace_variable(expression, variable, key):
-    pattern = rf'\b{variable}\b'
-    replaced_expression = re.sub(pattern, str(key), expression)
-    return replaced_expression
-
-
-def binOp_parse(node, elem_manager):
-    value = __calculate_binOp_result(node, elem_manager)
-    return __create_intermediate_expression(ast.unparse(node), value, elem_manager)
-
-
-def __calculate_binOp_result(node, elem_manager):
-    if isinstance(node, ast.BinOp):
-        left = __calculate_binOp_result(node.left, elem_manager)
-        right = __calculate_binOp_result(node.right, elem_manager)
-        if isinstance(node.op, ast.Add):
-            value = left + right
-        elif isinstance(node.op, ast.Sub):
-            value = left - right
-        elif isinstance(node.op, ast.Mult):
-            value = left * right
-        elif isinstance(node.op, ast.Div):
-            value = left / right
-        else:
-            raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
-        return value
-    elif isinstance(node, ast.Name):
-        name = NameParser(node, elem_manager).parse()
-        return name.value
-    elif isinstance(node, ast.Constant):
-        constant = ConstantParser(node).parse()
-        return constant.value
-    else:
-        raise NotImplementedError(f"Unsupported node type: {type(node)}")
-
-
-def __create_intermediate_expression(expr, result, elem_manager):
-    expr_results = [expr]
-    pattern = r'\b[a-zA-Z]{1,2}\b'
-    variables = re.findall(pattern, expr)
-    for var in variables:
-        value = elem_manager.get_variable_value(var)
-        expr = replace_variable(expression=expr, variable=var, key=value)
-    if len(variables) != 0:
-        expr_results.append(expr)
-    expr_results.append(result)
-    return expr_results
 
 
 def for_parse(node, elem_manager):
@@ -178,8 +131,9 @@ def print_parse(node: ast.Call, elem_manager):
 
     for cur_node in node.args:
         if isinstance(cur_node, ast.BinOp):
+            binop = BinopParser(cur_node, elem_manager).parse()
             # 연산 과정 리스트 생성
-            parsed_expressions = binOp_parse(cur_node, elem_manager)
+            parsed_expressions = binop.expressions
             # highlight 요소 생성
             highlights = expressions_highlight_indices(parsed_expressions)
             # 중간 연산 과정이 포함된 노드 생성
@@ -205,7 +159,8 @@ def create_condition(target_name, node: ast.Call, elem_manager):
         if isinstance(arg, ast.Name) or isinstance(arg, ast.Constant):
             identifier_list.append(identifier_parse(arg, elem_manager))
         elif isinstance(arg, ast.BinOp):
-            identifier_list.append(__calculate_binOp_result(arg, elem_manager))
+            binop = BinopParser(arg, elem_manager).parse()
+            identifier_list.append(binop.value)
         else:
             raise TypeError(f"Unsupported node type: {type(arg)}")
 
@@ -237,7 +192,8 @@ def tuple_parse(node, elem_manager):
         if isinstance(elt, ast.Name) or isinstance(elt, ast.Constant):
             expr = identifier_parse(elt, elem_manager)
         elif isinstance(elt, ast.BinOp):
-            expr = binOp_parse(elt, elem_manager)
+            binop = BinopParser(elt, elem_manager).parse()
+            expr = binop.expressions
         else:
             raise TypeError(f"Unsupported node type: {type(elt)}")
         expressions.append(expr)
