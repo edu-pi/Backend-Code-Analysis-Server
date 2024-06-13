@@ -1,7 +1,7 @@
 import ast
 
 from app.analysis.element_manager import CodeElementManager
-from app.analysis.parser import assign_parse, for_parse
+from app.analysis.parser1 import assign_parse, for_parse
 
 
 class CodeAnalyzer:

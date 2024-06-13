@@ -3,6 +3,8 @@ import re
 
 from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
+from app.analysis.generator.parser.constant_parser import ConstantParser
+from app.analysis.generator.parser.name_parser import NameParser
 
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
@@ -42,13 +44,13 @@ def __value_expressions(node, elem_manager):
 
     # 상수인 경우
     elif isinstance(node, ast.Constant):
-        value = constant_parse(node)
-        parsed_expressions.append(value)
+        constant = ConstantParser(node).parse()
+        parsed_expressions.append(constant.value)
 
     # 변수인 경우
     elif isinstance(node, ast.Name):
-        parsed_expressions.append(node.id)
-        parsed_expressions.append(name_parse(node, elem_manager))
+        name = NameParser(node, elem_manager).parse()
+        parsed_expressions.append(name.expressions)
 
     elif isinstance(node, ast.Tuple):
         parsed_expressions += tuple_parse(node, elem_manager)
@@ -99,9 +101,11 @@ def __calculate_binOp_result(node, elem_manager):
             raise NotImplementedError(f"Unsupported operator: {type(node.op)}")
         return value
     elif isinstance(node, ast.Name):
-        return name_parse(node, elem_manager)
+        name = NameParser(node, elem_manager).parse()
+        return name.value
     elif isinstance(node, ast.Constant):
-        return constant_parse(node)
+        constant = ConstantParser(node).parse()
+        return constant.value
     else:
         raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
@@ -117,17 +121,6 @@ def __create_intermediate_expression(expr, result, elem_manager):
         expr_results.append(expr)
     expr_results.append(result)
     return expr_results
-
-
-def name_parse(node, elem_manager):
-    try:
-        return elem_manager.get_variable_value(name=node.id)
-    except NameError as e:
-        print("#error:", e)
-
-
-def constant_parse(node):
-    return node.value
 
 
 def for_parse(node, elem_manager):
@@ -228,9 +221,11 @@ def create_condition(target_name, node: ast.Call, elem_manager):
 
 def identifier_parse(node, elem_manager):
     if isinstance(node, ast.Name):  # 변수 이름인 경우
-        return name_parse(node, elem_manager)
+        name = NameParser(node, elem_manager).parse()
+        return name.value
     elif isinstance(node, ast.Constant):  # 상수인 경우
-        return constant_parse(node)
+        constant = ConstantParser(node).parse()
+        return constant.value
     else:
         raise TypeError(f"Unsupported node type: {type(node)}")
 
