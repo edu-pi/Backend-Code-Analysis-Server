@@ -3,8 +3,8 @@ import re
 
 from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
-from app.analysis.parser.viz_node_generator.expr_node.constant import Constant
-from app.analysis.parser.viz_node_generator.expr_node.name import Name
+from app.analysis.generator.parser.constant_parser import Constant
+from app.analysis.generator.parser.name_parser import Name
 
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
