@@ -9,5 +9,5 @@ class StepManager:
     def add_steps(self, elem_list: list):
         self.viz_nodes += elem_list
 
-    def get_all_step(self):
+    def get_viz_nodes(self):
         return self.viz_nodes
