@@ -3,6 +3,8 @@ import re
 
 from app.analysis.highlight import for_highlight, expressions_highlight_indices, create_highlighted_expression
 from app.analysis.models import *
+from app.analysis.parser.viz_node_generator.expr_node.constant import Constant
+from app.analysis.parser.viz_node_generator.expr_node.name import Name
 
 
 # ast.assign 을 받아 값을 할당하고 step에 추가
@@ -42,7 +44,8 @@ def __value_expressions(node, elem_manager):
 
     # 상수인 경우
     elif isinstance(node, ast.Constant):
-        value = constant_parse(node)
+        constant = Constant(node)
+        value = constant.get_value()
         parsed_expressions.append(value)
 
     # 변수인 경우
@@ -101,7 +104,8 @@ def __calculate_binOp_result(node, elem_manager):
     elif isinstance(node, ast.Name):
         return name_parse(node, elem_manager)
     elif isinstance(node, ast.Constant):
-        return constant_parse(node)
+        constant = Constant(node)
+        return constant.get_value()
     else:
         raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
@@ -230,7 +234,8 @@ def identifier_parse(node, elem_manager):
     if isinstance(node, ast.Name):  # 변수 이름인 경우
         return name_parse(node, elem_manager)
     elif isinstance(node, ast.Constant):  # 상수인 경우
-        return constant_parse(node)
+        constant = Constant(node)
+        return constant.get_value()
     else:
         raise TypeError(f"Unsupported node type: {type(node)}")
 

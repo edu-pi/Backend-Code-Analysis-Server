@@ -3,7 +3,7 @@ import pytest
 
 from app.analysis.element_manager import CodeElementManager
 from app.analysis.models import Variables, Variable
-from app.analysis.parser import assign_parse
+from app.analysis.parser1 import assign_parse
 
 
 def before_test():
