@@ -11,10 +11,6 @@ class CodeAnalyzer:
         self.elem_manager = elem_manager
         self.step_manager = step_manager
 
-    @staticmethod
-    def print_ast(node):
-        print(ast.dump(node, indent=4))
-
     def visualize_code(self, parsed_ast):
 
         for node in parsed_ast.body:
