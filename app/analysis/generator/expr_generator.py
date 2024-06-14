@@ -23,22 +23,22 @@ class ExprGenerator:
         # ast.Call 처리
         elif isinstance(self.value, ast.Call):
             call_parser = CallParser(self.value, self.elem_manager)
-            return self.convert_call_objs_to_vizs(call_parser.parse())
+            return self.convert_call_obj_to_vizs(call_parser.parse())
         elif isinstance(self.value, ast.Lambda):
             return self
         else:
             raise TypeError(f"[ExprGe]:{type(self.value)}는 정의되지 않았습니다.")
 
-    def convert_call_objs_to_vizs(self, call_obj):
+    def convert_call_obj_to_vizs(self, call_obj):
         """
         Call 객체를 List[Viz] 객체로 변환
         """
         if isinstance(call_obj, Print):
-            return self.convert_print_objs_to_print_vizs(call_obj)
+            return self.convert_print_obj_to_print_vizs(call_obj)
         else:
             raise TypeError(f"[ExprGe]:{type(call_obj)}는 정의되지 않았습니다.")
 
-    def convert_print_objs_to_print_vizs(self, print_obj: Print):
+    def convert_print_obj_to_print_vizs(self, print_obj: Print):
         """
         Print 객체를 List[PrintViz] 객체로 반환
         """
