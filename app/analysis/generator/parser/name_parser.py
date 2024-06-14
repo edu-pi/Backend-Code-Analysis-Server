@@ -12,8 +12,16 @@ class NameParser:
         self.elem_manager = elem_manager
 
     def parse(self):
-        value = self.__get_value()
-        expressions = self.__get_expressions(value)
+        if isinstance(self.ctx, ast.Store):
+            value = None
+            expressions = None
+        elif isinstance(self.ctx, ast.Load):
+            value = self.__get_value()
+            expressions = self.__get_expressions(value)
+
+        else:
+            raise NotImplementedError(f"Unsupported node type: {type(self.ctx)}")
+
         return Name(self.id, value, expressions)
 
     # 변수의 값을 가져오는 함수

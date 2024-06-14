@@ -30,8 +30,8 @@ class TupleParser:
 
         return Tuple(
             target_names=tuple(target_names),
-            value=tuple_result["value"],
-            expressions=tuple_result["expressions"]
+            value=tuple_result.get("value", None),
+            expressions=tuple_result.get("expressions", None)
         )
 
     # ctx가 Store일 때 target_names를 만들어주는 함수
@@ -50,27 +50,28 @@ class TupleParser:
 
     # ctx가 Load일 때 tuple을 계산해 value와 expression을 계산하는 함수
     def __calculate_node(self):
-        tuple_node = {}
+        tuple_value = []
+        tuple_expressions = []
         for elt in self.elts:
             if isinstance(elt, ast.Name):
                 name = NameParser(elt, self.elem_manager).parse()
-                tuple_node["value"] = name.value
-                tuple_node["expressions"] = self.__convert_expressions_to_tuple(name.expressions)
+                tuple_value.append(name.value)
+                tuple_expressions.append(name.expressions)
 
             elif isinstance(elt, ast.Constant):
                 constant = ConstantParser(elt).parse()
-                tuple_node["value"] = constant.value
-                tuple_node["expressions"] = self.__convert_expressions_to_tuple(constant.expressions)
+                tuple_value.append(constant.value)
+                tuple_expressions.append(constant.expressions)
 
             elif isinstance(elt, ast.BinOp):
                 binop = BinopParser(elt, self.elem_manager).parse()
-                tuple_node["value"] = binop.value
-                tuple_node["expressions"] = self.__convert_expressions_to_tuple(binop.expressions)
+                tuple_value.append(binop.value)
+                tuple_expressions.append(binop.expressions)
 
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")
 
-        return tuple_node
+        return {"value": tuple(tuple_value), "expressions": self.__convert_expressions_to_tuple(tuple_expressions)}
 
     # 변수들의 표션식 리스트를 받아와서 튜플로 만들어주는 함수
     # [["10"], ["a+13", "5+13", "28"], ["b", "4"]] -> [("10", "a+13", "b"), ("10", "5+13", "4"), ("10", "28", "4")]
