@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Variables:
-    variable_list: list
-    type: str = "varList"
+class AssignViz:
+    variables: list
+    type: str = "assignViz"
 
 
 '''
