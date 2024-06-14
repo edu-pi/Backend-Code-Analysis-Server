@@ -62,10 +62,6 @@ test_data = [
 def test_get_func_name(call_parser, node, expect, success):
     """
     ast.Call 노드가 주어졌을 때 함수 아이디를 제대로 가져오는지 테스트
-        :param node: ast.Call 노드
-        :param expect: 예상되는 함수 아이디
-        :param success: 테스트가 성공해야 하는지 (True), 실패해야 하는지 (False)
-        :return: None
     """
     parser = call_parser(node)
     result = parser._CallParser__get_func_name()
@@ -82,9 +78,6 @@ def test_get_func_name(call_parser, node, expect, success):
 def test_print_parse(create_ast_node, call_parser, code, expect):
     """
     ast.Call 노드의 함수가 print일 때, print_parse() 함수가 제대로 동작하는지 테스트
-        :param create_ast_node: 코드를 받아 ast 노드로 변환하는 함수
-        :param call_parser: CallParser 인스턴스를 생성하는 함수
-        :return: None
     """
     parser = call_parser(create_ast_node(code))
     result = parser._CallParser__print_parse()
