@@ -35,8 +35,6 @@ class CallParser:
             raise TypeError(f"[call_parser] {type(self.func)}정의되지 않았습니다.")
 
     def __print_parse(self):
-        print_objs = []
-
         for arg in self.args:
             if isinstance(arg, ast.BinOp):
                 binop_obj = BinopParser(arg, self.elem_manager).parse()
