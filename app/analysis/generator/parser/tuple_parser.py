@@ -54,11 +54,11 @@ class TupleParser:
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")
 
-        return TupleExpressions(self.__make_expressions_to_tuple(expressions))
+        return TupleExpressions(self.__convert_expressions_to_tuple(expressions))
 
     # 변수들의 표션식 리스트를 받아와서 튜플로 만들어주는 함수
     # [["10"], ["a+13", "5+13", "28"], ["b", "4"]] -> [("10", "a+13", "b"), ("10", "5+13", "4"), ("10", "28", "4")]
-    def __make_expressions_to_tuple(self, expressions):
+    def __convert_expressions_to_tuple(self, expressions):
         max_length = max(len(sublist) for sublist in expressions)
 
         tuple_value = []
