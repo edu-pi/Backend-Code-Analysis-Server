@@ -35,14 +35,14 @@ def create_ast_node():
 
 
 @pytest.mark.parametrize("code, expect", [
-    ("print(1 + 2)", [Print(expressions="1 + 2"), Print(expressions=3)]),
+    ("print(1 + 2)", Print(expressions=["1 + 2", '3']))
 ])
 def test_parse(create_ast_node, call_parser, code, expect):
     """
     ast.Call 타입으로 print 노드일 때 List[Print]를 생성하는지 테스트
     """
     with patch.object(CallParser, '_CallParser__print_parse',
-                      return_value=[Print(expressions="1 + 2"), Print(expressions=3)]), \
+                      return_value=Print(expressions=["1 + 2", '3'])), \
             patch.object(CallParser, "_CallParser__get_func_name", return_value='print'):
         parser = call_parser(create_ast_node(code))
         result = parser.parse()
@@ -76,8 +76,8 @@ def test_get_func_name(call_parser, node, expect, success):
 
 
 @pytest.mark.parametrize("code, expect", [
-    ("print(1 + 2)", [Print(expressions="1 + 2"), Print(expressions=3)]),
-    ("print(a + 2)", [Print(expressions="a + 2"), Print(expressions="1 + 2"), Print(expressions=3)])
+    ("print(1 + 2)", Print(expressions=["1 + 2", 3])),
+    ("print(a + 2)", Print(expressions=["a + 2", "1 + 2", 3]))
 ])
 def test_print_parse(create_ast_node, call_parser, code, expect):
     """

@@ -41,11 +41,7 @@ class CallParser:
             if isinstance(arg, ast.BinOp):
                 binop_obj = BinopParser(arg, self.elem_manager).parse()
 
-                # 중간 연산 과정이 포함된 노드 생성
-                for parsed_expression in binop_obj.expressions:
-                    print_objs.append(Print(expressions=parsed_expression))
-
-        return print_objs
+        return Print(expressions=binop_obj.expressions)
 
 
 @dataclass

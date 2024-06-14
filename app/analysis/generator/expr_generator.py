@@ -23,42 +23,32 @@ class ExprGenerator:
         # ast.Call 처리
         elif isinstance(self.value, ast.Call):
             call_parser = CallParser(self.value, self.elem_manager)
-            return self.transfer_call_objs_to_viz_objs(call_parser.parse())
+            return self.convert_call_objs_to_viz_objs(call_parser.parse())
         elif isinstance(self.value, ast.Lambda):
             return self
         else:
             raise TypeError(f"[ExprGe]:{type(self.value)}는 정의되지 않았습니다.")
 
-    def transfer_call_objs_to_viz_objs(self, calls: list):
+    def convert_call_objs_to_viz_objs(self, call_obj):
         """
         Call 객체를 시각화하는 Viz 객체로 변환
         Args:
             calls: call_parser를 통해 생성된 list[Call] 객체
-
         Returns:
             list[PrintViz]: 시각화된 Viz 객체
         """
-        if isinstance(calls[0], Print):
-            return self.transfer_print_objs_to_viz_objs(calls)
+        if isinstance(call_obj, Print):
+            return self.convert_print_objs_to_viz_objs(call_obj)
         else:
-            raise TypeError(f"[ExprGe]:{type(calls)}는 정의되지 않았습니다.")
+            raise TypeError(f"[ExprGe]:{type(call_obj)}는 정의되지 않았습니다.")
 
-    def transfer_print_objs_to_viz_objs(self, print_objs: list[Print]):
+    def convert_print_objs_to_viz_objs(self, print_obj: Print):
         """
-        Print 객체를 시각화하는 PrintViz 객체로 변환
-        Args:
-            print_objs:  call_parser를 통해 생성된 list[Print] 객체
-
         Returns:
             list[PrintViz]: 시각화된 PrintViz 객체
         """
-        parsed_expressions = []
-        # print_objs에 있는 모든 expressions를 expressions에 추가
-        for print_obj in print_objs:
-            parsed_expressions.append(print_obj.expressions)
-
         # 하이라이트 속성 추출
-        highlights = expressions_highlight_indices(parsed_expressions)
+        highlights = expressions_highlight_indices(print_obj.expressions)
 
         print_vizs = [
             PrintViz(
@@ -67,7 +57,7 @@ class ExprGenerator:
                 expr=expression,
                 highlight=highlight
             )
-            for expression, highlight in zip(parsed_expressions, highlights)
+            for expression, highlight in zip(print_obj.expressions, highlights)
         ]
         return print_vizs
 
