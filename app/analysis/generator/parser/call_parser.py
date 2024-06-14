@@ -1,10 +1,9 @@
 import ast
+from dataclasses import dataclass
 
 from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.binop_parser import BinopParser
 from app.analysis.generator.parser.name_parser import NameParser
-from app.analysis.highlight import expressions_highlight_indices, create_highlighted_expression
-from app.analysis.models import Print
 
 
 # ast.Call(func, args, keywords)
@@ -22,7 +21,7 @@ class CallParser:
         func_name = self.__get_func_name()
 
         if func_name is 'print':
-            self.__print_parse()
+            return self.__print_parse()
 
     def __get_func_name(self):
         if isinstance(self.func, ast.Name):
@@ -36,19 +35,19 @@ class CallParser:
             raise TypeError(f"[call_parser] {type(self.func)}정의되지 않았습니다.")
 
     def __print_parse(self):
-        print_objects = []
+        print_objs = []
 
         for arg in self.args:
             if isinstance(arg, ast.BinOp):
-                binop = BinopParser(arg, self.elem_manager).parse()
-                # highlight 요소 생성
-                highlights = expressions_highlight_indices(binop.expressions)
-                # 중간 연산 과정이 포함된 노드 생성
-                for idx, parsed_expression in enumerate(binop.expressions):
-                    # 확인용 함수
-                    highlight_expr = create_highlighted_expression(parsed_expression, highlights[idx])
-                    print_obj = Print(id=self.elem_manager.get_call_id(self), depth=self.elem_manager.get_depth(),
-                                      expr=parsed_expression, highlight=highlights[idx])
-                    print_objects.append(print_obj)
+                binop_obj = BinopParser(arg, self.elem_manager).parse()
 
-        return print_objects
+                # 중간 연산 과정이 포함된 노드 생성
+                for parsed_expression in binop_obj.expressions:
+                    print_objs.append(Print(expressions=parsed_expression))
+
+        return print_objs
+
+
+@dataclass
+class Print:
+    expressions: list

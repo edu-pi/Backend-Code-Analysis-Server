@@ -31,4 +31,5 @@ class CodeAnalyzer:
             self.step_manager.add_steps(steps)
 
         elif isinstance(node, ast.Expr):
-            ExprGenerator(node, self.elem_manager).generate()
+            steps = ExprGenerator(node, self.elem_manager).generate()
+            self.step_manager.add_steps(steps)
