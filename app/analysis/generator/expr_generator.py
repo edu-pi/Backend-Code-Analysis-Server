@@ -20,7 +20,7 @@ class ExprGenerator:
             return self
         elif isinstance(self.value, ast.BinOp):
             return self
-        # 함수
+        # ast.Call 처리
         elif isinstance(self.value, ast.Call):
             call_parser = CallParser(self.value, self.elem_manager)
             return self.transfer_call_objs_to_viz_objs(call_parser.parse())
