@@ -25,7 +25,7 @@ class NameParser:
 
     # 변수의 변화 과정을 만들어주는 함수
     def __get_expressions(self, value):
-        return [self.id, value]
+        return [self.id, str(value)]
 
 
 @dataclass

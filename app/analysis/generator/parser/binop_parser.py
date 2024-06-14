@@ -81,7 +81,7 @@ class BinopParser:
             expressions.append(expression)
 
         # 마지막 계산 결과 저장
-        expressions.append(result)
+        expressions.append(str(result))
 
         return expressions
 

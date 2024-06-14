@@ -14,47 +14,63 @@ class TupleParser:
         self.elts = node.elts
         self.elem_manager = elem_manager
 
+    # ast.ctx가 Store인 경우엔 target_names 사용
+    # ast.ctx가 Load인 경우엔 expressions 사용
     def parse(self):
         if isinstance(self.ctx, ast.Store):
-            return self.__parse_store()
+            target_names = self.__get_target_names()
+            tuple_result = {}
+
         elif isinstance(self.ctx, ast.Load):
-            return self.__parse_load()
+            target_names = []
+            tuple_result = self.__calculate_node()
+
         else:
             raise NotImplementedError(f"Unsupported node type: {type(self.ctx)}")
 
+        return Tuple(
+            target_names=tuple(target_names),
+            value=tuple_result["value"],
+            expressions=tuple_result["expressions"]
+        )
+
     # ctx가 Store일 때 target_names를 만들어주는 함수
-    def __parse_store(self):
+    def __get_target_names(self):
         target_names = []
 
         for elt in self.elts:
             if isinstance(elt, ast.Name):
-                target_names.append(elt.id)
+                name = NameParser(elt, self.elem_manager).parse()
+                target_names.append(name.id)
 
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")
 
-        return TupleTargetNames(tuple(target_names))
+        return target_names
 
-    # ctx가 Load일 때 표현식을 만들어서 튜플로 만들어 주는 함수
-    def __parse_load(self):
-        expressions = []
+    # ctx가 Load일 때 tuple을 계산해 value와 expression을 계산하는 함수
+    def __calculate_node(self):
+        tuple_node = {}
         for elt in self.elts:
             if isinstance(elt, ast.Name):
                 name = NameParser(elt, self.elem_manager).parse()
-                expressions.append(name.expressions)
+                tuple_node["value"] = name.value
+                tuple_node["expressions"] = self.__convert_expressions_to_tuple(name.expressions)
 
             elif isinstance(elt, ast.Constant):
                 constant = ConstantParser(elt).parse()
-                expressions.append(constant.expressions)
+                tuple_node["value"] = constant.value
+                tuple_node["expressions"] = self.__convert_expressions_to_tuple(constant.expressions)
 
             elif isinstance(elt, ast.BinOp):
                 binop = BinopParser(elt, self.elem_manager).parse()
-                expressions.append(binop.expressions)
+                tuple_node["value"] = binop.value
+                tuple_node["expressions"] = self.__convert_expressions_to_tuple(binop.expressions)
 
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")
 
-        return TupleExpressions(self.__convert_expressions_to_tuple(expressions))
+        return tuple_node
 
     # 변수들의 표션식 리스트를 받아와서 튜플로 만들어주는 함수
     # [["10"], ["a+13", "5+13", "28"], ["b", "4"]] -> [("10", "a+13", "b"), ("10", "5+13", "4"), ("10", "28", "4")]
@@ -73,10 +89,7 @@ class TupleParser:
 
 
 @dataclass
-class TupleExpressions:
-    expressions: list
-
-
-@dataclass
-class TupleTargetNames:
+class Tuple:
     target_names: tuple
+    value: tuple
+    expressions: list

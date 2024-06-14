@@ -14,7 +14,7 @@ class ConstantParser:
         return self.value
 
     def __get_expressions(self):
-        return [self.value]
+        return [str(self.value)]
 
 
 @dataclass

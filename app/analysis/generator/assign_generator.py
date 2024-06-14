@@ -11,61 +11,67 @@ from app.analysis.models import AssignViz, Variable
 class AssignGenerator:
 
     def __init__(self, node: ast.Assign, elem_manager: CodeElementManager):
-        self.node = node
+        self.targets = node.targets
+        self.value = node.value
         self.elem_manager = elem_manager
 
     # ast.Assign을 assign_viz_steps으로 만들어주는 함수
     def generate(self):
         parsed_target_names = self.__parse_target_names()
-        parsed_expressions = self.__parse_value_to_expressions()
 
+        # 결과 계산 후 저장
+        calculated_node = self.__calculate_node()
         for target_name in parsed_target_names:
-            self.elem_manager.add_variable_value(name=target_name, value=parsed_expressions[-1])
+            self.elem_manager.add_variable_value(name=target_name, value=calculated_node["value"])
 
-        # elem 저장
-        assign_viz_steps = self.__create_assign_viz_steps(parsed_target_names, parsed_expressions)
+        # 표현식 변환 후 steps 생성
+        assign_viz_steps = self.__create_assign_viz_steps(parsed_target_names, calculated_node["expressions"])
 
         return assign_viz_steps
 
     # ast.Assign의 속성인 Targets를 돌면서 이름을 가져오는 함수
     def __parse_target_names(self):
         target_names = []
-        for target in self.node.targets:
+        for target in self.targets:
             if isinstance(target, ast.Name):
                 target_names.append(target.id)
+
             elif isinstance(target, ast.Tuple):
                 tuple_target = TupleParser(target, self.elem_manager).parse()
                 target_names.append(tuple_target.target_names)
+
             else:
                 raise TypeError(f"변수 할당에서 targets에는 다음 타입이 들어갈 수 없습니다.: {type(target)}")
 
         return target_names
 
-    # ast.Assign의 속성인 value를 표현식으로 가져오는 함수
-    def __parse_value_to_expressions(self):
-        parsed_expressions = []
-        assign_value = self.node.value
+    # ast.Assign의 속성인 value를 계산해 결과값과 표현식을 반환
+    def __calculate_node(self):
+        calculated_nodes = {}
+        if isinstance(self.value, ast.BinOp):
+            binop = BinopParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = binop.value
+            calculated_nodes["expressions"] = binop.expressions
 
-        if isinstance(assign_value, ast.BinOp):
-            binop = BinopParser(assign_value, self.elem_manager).parse()
-            parsed_expressions += binop.expressions
+        elif isinstance(self.value, ast.Constant):
+            constant = ConstantParser(self.value).parse()
+            calculated_nodes["value"] = constant.value
+            calculated_nodes["expressions"] = constant.expressions
 
-        elif isinstance(assign_value, ast.Constant):
-            constant = ConstantParser(assign_value).parse()
-            parsed_expressions += constant.expressions
+        elif isinstance(self.value, ast.Name):
+            name = NameParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = name.value
+            calculated_nodes["expressions"] = name.expressions
 
-        elif isinstance(assign_value, ast.Name):
-            name = NameParser(assign_value, self.elem_manager).parse()
-            parsed_expressions += name.expressions
-
-        elif isinstance(assign_value, ast.Tuple):
-            tuple_expr = TupleParser(assign_value, self.elem_manager).parse()
-            parsed_expressions += tuple_expr.expressions
+        elif isinstance(self.value, ast.Tuple):
+            tuple_value = TupleParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = tuple_value.value
+            calculated_nodes["expressions"] = tuple_value.expressions
 
         else:
-            raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(assign_value)}")
+            raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(self.value)}")
 
-        return parsed_expressions
+        return calculated_nodes
 
     # parsed_target_names와 parsed_expressions를 가지고 assign_viz_steps를 만드는 함수
     def __create_assign_viz_steps(self, parsed_target_names, parsed_expressions):
