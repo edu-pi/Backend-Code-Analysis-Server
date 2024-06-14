@@ -1,7 +1,8 @@
 import ast
 
 from app.analysis.element_manager import CodeElementManager
-from app.analysis.parser1 import assign_parse, for_parse
+from app.analysis.generator.assign_generator import AssignGenerator
+from app.analysis.parser1 import for_parse
 from app.analysis.step_manager import StepManager
 
 
@@ -11,10 +12,6 @@ class CodeAnalyzer:
         self.elem_manager = elem_manager
         self.step_manager = step_manager
 
-    @staticmethod
-    def print_ast(node):
-        print(ast.dump(node, indent=4))
-
     def visualize_code(self, parsed_ast):
 
         for node in parsed_ast.body:
@@ -23,7 +20,8 @@ class CodeAnalyzer:
 
     def parse_node(self, node):
         if isinstance(node, ast.Assign):
-            steps = assign_parse(node, self.elem_manager)
+            assign_generator = AssignGenerator(node, self.elem_manager)
+            steps = assign_generator.generate()
             self.step_manager.add_steps(steps)
 
         elif isinstance(node, ast.For):
