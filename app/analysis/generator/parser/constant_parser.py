@@ -8,9 +8,16 @@ class ConstantParser:
         self.node = node
 
     def parse(self):
-        return Constant(self.node.value)
+        return Constant(value=self.__get_value(), expressions=self.__get_expressions())
+
+    def __get_value(self):
+        return self.node.value
+
+    def __get_expressions(self):
+        return [self.node.value]
 
 
 @dataclass
 class Constant:
     value: int
+    expressions: list
