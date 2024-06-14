@@ -17,7 +17,6 @@ class CodeAnalyzer:
         print(ast.dump(node, indent=4))
 
     def visualize_code(self, parsed_ast):
-
         for node in parsed_ast.body:
             self.parse_node(node)
         return self.step_manager.get_steps()
