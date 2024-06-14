@@ -63,7 +63,7 @@ class For:
 
 
 @dataclass(frozen=True)
-class Print:
+class PrintViz:
     id: int
     depth: int
     expr: str
