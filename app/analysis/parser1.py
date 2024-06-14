@@ -119,34 +119,3 @@ def identifier_parse(node, elem_manager):
     else:
         raise TypeError(f"Unsupported node type: {type(node)}")
 
-
-def tuple_parse(node, elem_manager):
-    expressions = []
-    tuple_value = []
-    for elt in node.elts:
-        if isinstance(elt, ast.Name) or isinstance(elt, ast.Constant):
-            expr = identifier_parse(elt, elem_manager)
-        elif isinstance(elt, ast.BinOp):
-            binop = BinopParser(elt, elem_manager).parse()
-            expr = binop.expressions
-        else:
-            raise TypeError(f"Unsupported node type: {type(elt)}")
-        expressions.append(expr)
-
-    max_length = max(len(sublist) if isinstance(sublist, list) else 1 for sublist in expressions)
-
-    # 최대 길이만큼 반복하여 튜플을 생성
-    for i in range(max_length):
-        # 현재 인덱스 i에 대한 튜플을 생성
-        current_tuple = tuple(
-            sublist[i]
-            if isinstance(sublist, list) and i < len(sublist)
-            else sublist[-1]
-            if isinstance(sublist, list)
-            else sublist
-            for sublist in expressions
-        )
-        # 결과 리스트에 현재 튜플 추가
-        tuple_value.append(current_tuple)
-
-    return tuple_value
