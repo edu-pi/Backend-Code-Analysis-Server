@@ -25,20 +25,21 @@ class AssignGenerator:
             self.elem_manager.add_variable_value(name=target_name, value=calculated_node["value"])
 
         # 표현식 변환 후 steps 생성
-        assign_viz_steps = self.__create_assign_viz_steps(parsed_target_names, calculated_node["expressions"])
+        assign_vizs = self.__create_assign_viz_steps(parsed_target_names, calculated_node["expressions"])
 
-        return assign_viz_steps
+        return assign_vizs
 
     # ast.Assign의 속성인 Targets를 돌면서 이름을 가져오는 함수
     def __parse_target_names(self):
         target_names = []
         for target in self.targets:
             if isinstance(target, ast.Name):
-                target_names.append(target.id)
+                name_obj = NameParser(target, self.elem_manager).parse()
+                target_names.append(name_obj.id)
 
             elif isinstance(target, ast.Tuple):
-                tuple_target = TupleParser(target, self.elem_manager).parse()
-                target_names.append(tuple_target.target_names)
+                tuple_obj = TupleParser(target, self.elem_manager).parse()
+                target_names.append(tuple_obj.target_names)
 
             else:
                 raise TypeError(f"변수 할당에서 targets에는 다음 타입이 들어갈 수 없습니다.: {type(target)}")
@@ -49,24 +50,24 @@ class AssignGenerator:
     def __calculate_node(self):
         calculated_nodes = {}
         if isinstance(self.value, ast.BinOp):
-            binop = BinopParser(self.value, self.elem_manager).parse()
-            calculated_nodes["value"] = binop.value
-            calculated_nodes["expressions"] = binop.expressions
+            binop_obj = BinopParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = binop_obj.value
+            calculated_nodes["expressions"] = binop_obj.expressions
 
         elif isinstance(self.value, ast.Constant):
-            constant = ConstantParser(self.value).parse()
-            calculated_nodes["value"] = constant.value
-            calculated_nodes["expressions"] = constant.expressions
+            constant_obj = ConstantParser(self.value).parse()
+            calculated_nodes["value"] = constant_obj.value
+            calculated_nodes["expressions"] = constant_obj.expressions
 
         elif isinstance(self.value, ast.Name):
-            name = NameParser(self.value, self.elem_manager).parse()
-            calculated_nodes["value"] = name.value
-            calculated_nodes["expressions"] = name.expressions
+            name_obj = NameParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = name_obj.value
+            calculated_nodes["expressions"] = name_obj.expressions
 
         elif isinstance(self.value, ast.Tuple):
-            tuple_value = TupleParser(self.value, self.elem_manager).parse()
-            calculated_nodes["value"] = tuple_value.value
-            calculated_nodes["expressions"] = tuple_value.expressions
+            tuple_obj = TupleParser(self.value, self.elem_manager).parse()
+            calculated_nodes["value"] = tuple_obj.value
+            calculated_nodes["expressions"] = tuple_obj.expressions
 
         else:
             raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(self.value)}")
@@ -75,21 +76,21 @@ class AssignGenerator:
 
     # parsed_target_names와 parsed_expressions를 가지고 assign_viz_steps를 만드는 함수
     def __create_assign_viz_steps(self, parsed_target_names, parsed_expressions):
-        assign_viz_steps = []
+        assign_vizs = []
         depth = self.elem_manager.depth
 
         for parsed_expression in parsed_expressions:
             # 이번 스텝에 변할 변수 리스트
-            assign_variables = []
+            variable_vizs = []
 
             for target_name in parsed_target_names:
                 if isinstance(parsed_expression, tuple) and isinstance(target_name, tuple):
                     for idx in range(len(target_name)):
-                        assign_variables.append(Variable(depth, str(parsed_expression[idx]), target_name[idx]))
+                        variable_vizs.append(Variable(depth, str(parsed_expression[idx]), target_name[idx]))
                     continue
 
-                assign_variables.append(Variable(depth, str(parsed_expression), target_name))
+                variable_vizs.append(Variable(depth, str(parsed_expression), target_name))
 
-            assign_viz_steps.append(AssignViz(assign_variables))
+            assign_vizs.append(AssignViz(variable_vizs))
 
-        return assign_viz_steps
+        return assign_vizs
