@@ -4,6 +4,7 @@ from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.binop_parser import BinopParser
 from app.analysis.generator.parser.constant_parser import ConstantParser
 from app.analysis.generator.parser.name_parser import NameParser
+from app.analysis.generator.parser.tuple_parser import TupleParser
 from app.analysis.models import AssignViz, Variable
 
 
@@ -32,7 +33,9 @@ class AssignGenerator:
         for target in self.node.targets:
             if isinstance(target, ast.Name):
                 target_names.append(target.id)
-
+            elif isinstance(target, ast.Tuple):
+                tuple_target = TupleParser(target, self.elem_manager).parse()
+                target_names.append(tuple_target.target_names)
             else:
                 raise TypeError(f"변수 할당에서 targets에는 다음 타입이 들어갈 수 없습니다.: {type(target)}")
 
@@ -49,11 +52,15 @@ class AssignGenerator:
 
         elif isinstance(assign_value, ast.Constant):
             constant = ConstantParser(assign_value).parse()
-            parsed_expressions.append(constant.value)
+            parsed_expressions += constant.expressions
 
         elif isinstance(assign_value, ast.Name):
             name = NameParser(assign_value, self.elem_manager).parse()
             parsed_expressions += name.expressions
+
+        elif isinstance(assign_value, ast.Tuple):
+            tuple_expr = TupleParser(assign_value, self.elem_manager).parse()
+            parsed_expressions += tuple_expr.expressions
 
         else:
             raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(assign_value)}")
@@ -70,6 +77,11 @@ class AssignGenerator:
             assign_variables = []
 
             for target_name in parsed_target_names:
+                if isinstance(parsed_expression, tuple) and isinstance(target_name, tuple):
+                    for idx in range(len(target_name)):
+                        assign_variables.append(Variable(depth, str(parsed_expression[idx]), target_name[idx]))
+                    continue
+
                 assign_variables.append(Variable(depth, str(parsed_expression), target_name))
 
             assign_viz_steps.append(AssignViz(assign_variables))
