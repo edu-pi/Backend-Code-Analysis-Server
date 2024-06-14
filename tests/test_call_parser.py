@@ -27,7 +27,7 @@ def call_parser(elem_manager):
         (ast.Call(func=ast.Name(id='range', ctx=ast.Load()), args=[], keywords=[]), 'range'),
     ]
 )
-def test_get_func_name(call_parser, node, expect):
+def test_get_func_name_success(call_parser, node, expect):
     """
     ast.Call 노드가 주어졌을 때 함수 아이디를 제대로 가져오는지 테스트
     :param node: ast.Call 노드
@@ -37,3 +37,22 @@ def test_get_func_name(call_parser, node, expect):
     parser = call_parser(node)
     result = parser._CallParser__get_func_name()
     assert result == expect
+
+
+@pytest.mark.parametrize(
+    "node, expect",
+    [
+        (ast.Call(func=ast.Name(id='print', ctx=ast.Load()), args=[], keywords=[]), ''),
+        (ast.Call(func=ast.Name(id='range', ctx=ast.Load()), args=[], keywords=[]), 'print'),
+    ]
+)
+def test_get_func_name_failure(call_parser, node, expect):
+    """
+    ast.Call 노드가 주어졌을 때 함수 아이디를 제대로 가져오는지 테스트
+    :param node: ast.Call 노드
+    :param expect: 예상되는 함수 아이디
+    :return: None
+    """
+    parser = call_parser(node)
+    result = parser._CallParser__get_func_name()
+    assert result != expect
