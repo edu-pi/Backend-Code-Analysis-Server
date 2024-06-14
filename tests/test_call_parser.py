@@ -9,7 +9,9 @@ from app.analysis.element_manager import CodeElementManager
 @pytest.fixture
 def elem_manager():
     """Fixture to create a CodeElementManager instance."""
-    return MagicMock(spec=CodeElementManager)
+    mock = MagicMock(spec=CodeElementManager)
+    mock.get_variable_value.return_value = 1
+    return mock
 
 
 @pytest.fixture
@@ -44,3 +46,19 @@ def test_get_func_name(call_parser, node, expect, success):
         assert result == expect
     else:
         assert result != expect
+
+
+@pytest.mark.parametrize("code, expect", [
+    ("print(1 + 2)", [Print(expressions="1 + 2"), Print(expressions=3)]),
+    ("print(a + 2)", [Print(expressions="a + 2"), Print(expressions="1 + 2"), Print(expressions=3)])
+])
+def test_print_parse(create_ast_node, call_parser, code, expect):
+    """
+    ast.Call 노드의 함수가 print일 때, print_parse() 함수가 제대로 동작하는지 테스트
+        :param create_ast_node: 코드를 받아 ast 노드로 변환하는 함수
+        :param call_parser: CallParser 인스턴스를 생성하는 함수
+        :return: None
+    """
+    parser = call_parser(create_ast_node(code))
+    result = parser._CallParser__print_parse()
+    assert result == expect
