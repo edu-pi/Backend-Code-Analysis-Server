@@ -1,6 +1,6 @@
 import pytest
 import ast
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from app.analysis.generator.parser.name_parser import NameParser, Name
 from app.analysis.element_manager import CodeElementManager
 
@@ -31,18 +31,23 @@ def create_ast_name_node():
     return _create_ast_name_node
 
 
-@pytest.mark.parametrize("name_id, ctx, expect", [
-    ("a", ast.Store(), Name(id='a', value=None, expressions=None)),
-    ("b", ast.Load(), Name(id='b', value=10, expressions=['b', '10']))
+@pytest.mark.parametrize("name_id, ctx, expect_value, expect_expressions", [
+    ("abc", ast.Store(), None, None),
+    ("b", ast.Load(), 10, ['b', '10'])
 ])
-def test_parse(create_ast_name_node, name_parser, name_id, ctx, expect):
+def test_parse(create_ast_name_node, name_parser, name_id, ctx, expect_value, expect_expressions):
     """
     ast.Name 노드가 주어졌을 때 Name 인스턴스를 생성하는지 테스트
     """
     name_node = create_ast_name_node(name_id, ctx)
-    name = name_parser(name_node).parse()
+    expect = Name(name_id, expect_value, expect_expressions)
 
-    assert name == expect
+    with patch.object(NameParser, '_NameParser__get_value', return_value=expect_value), \
+            patch.object(NameParser, '_NameParser__get_expressions', return_value=expect_expressions):
+        parser = name_parser(name_node)
+        result = parser.parse()
+
+        assert result == expect
 
 
 @pytest.mark.parametrize("name_id, ctx, expect", [
