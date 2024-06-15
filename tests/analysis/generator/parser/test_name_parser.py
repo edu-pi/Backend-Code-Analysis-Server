@@ -51,7 +51,9 @@ def test_parse(create_ast_name_node, name_parser, name_id, ctx, expect_value, ex
 
 
 @pytest.mark.parametrize("name_id, ctx, expect", [
-    ("b", ast.Load(), 10)
+    ("b", ast.Load(), 10),
+    ("abc_abc", ast.Load(), 10),
+    ("abcAbc", ast.Load(), 10)
 ])
 def test__get_value(create_ast_name_node, name_parser, name_id, ctx, expect):
     """
@@ -65,7 +67,9 @@ def test__get_value(create_ast_name_node, name_parser, name_id, ctx, expect):
 
 
 @pytest.mark.parametrize("name_id, value, ctx, expect", [
-    ("b", 10, ast.Load(), ['b', '10'])
+    ("b", 10, ast.Load(), ['b', '10']),
+    ("abc_abc", 10, ast.Load(), ['abc_abc', '10']),
+    ("abcAbc", 10, ast.Load(), ['abcAbc', '10'])
 ])
 def test__get_expressions(create_ast_name_node, name_parser, name_id, value, ctx, expect):
     """
