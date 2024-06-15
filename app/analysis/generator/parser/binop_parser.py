@@ -31,16 +31,16 @@ class BinopParser:
     # 연산식을 따라가면서 계산해 결과를 반환
     def __calculate_node(self, node):
         if isinstance(node, ast.BinOp):
-            binop = BinopParser(node, self.elem_manager).parse()
-            return binop.value
+            binop_obj = BinopParser(node, self.elem_manager).parse()
+            return binop_obj.value
 
         elif isinstance(node, ast.Name):
-            name = NameParser(node, self.elem_manager).parse()
-            return name.value
+            name_obj = NameParser(node, self.elem_manager).parse()
+            return name_obj.value
 
         elif isinstance(node, ast.Constant):
-            constant = ConstantParser(node).parse()
-            return constant.value
+            constant_obj = ConstantParser(node).parse()
+            return constant_obj.value
 
         else:
             raise NotImplementedError(f"Unsupported node type: {type(node)}")

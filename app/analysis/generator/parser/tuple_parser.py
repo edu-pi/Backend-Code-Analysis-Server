@@ -54,19 +54,19 @@ class TupleParser:
         tuple_expressions = []
         for elt in self.elts:
             if isinstance(elt, ast.Name):
-                name = NameParser(elt, self.elem_manager).parse()
-                tuple_value.append(name.value)
-                tuple_expressions.append(name.expressions)
+                name_obj = NameParser(elt, self.elem_manager).parse()
+                tuple_value.append(name_obj.value)
+                tuple_expressions.append(name_obj.expressions)
 
             elif isinstance(elt, ast.Constant):
-                constant = ConstantParser(elt).parse()
-                tuple_value.append(constant.value)
-                tuple_expressions.append(constant.expressions)
+                constant_obj = ConstantParser(elt).parse()
+                tuple_value.append(constant_obj.value)
+                tuple_expressions.append(constant_obj.expressions)
 
             elif isinstance(elt, ast.BinOp):
-                binop = BinopParser(elt, self.elem_manager).parse()
-                tuple_value.append(binop.value)
-                tuple_expressions.append(binop.expressions)
+                binop_obj = BinopParser(elt, self.elem_manager).parse()
+                tuple_value.append(binop_obj.value)
+                tuple_expressions.append(binop_obj.expressions)
 
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")

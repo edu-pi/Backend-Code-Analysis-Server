@@ -15,6 +15,7 @@ class NameParser:
         if isinstance(self.ctx, ast.Store):
             value = None
             expressions = None
+
         elif isinstance(self.ctx, ast.Load):
             value = self.__get_value()
             expressions = self.__get_expressions(value)
