@@ -1,5 +1,6 @@
 import ast
 from dataclasses import dataclass
+from typing import Optional, List
 
 from app.analysis.element_manager import CodeElementManager
 
@@ -12,18 +13,13 @@ class NameParser:
         self.__elem_manager = elem_manager
 
     def parse(self):
-        if isinstance(self.__ctx, ast.Store):
-            value = None
-            expressions = None
-
-        elif isinstance(self.__ctx, ast.Load):
+        if isinstance(self.__ctx, ast.Load):
             value = self.__get_value()
             expressions = self.__get_expressions(value)
+            return Name(self.__name_id, value, expressions)
 
-        else:
-            raise NotImplementedError(f"Unsupported node type: {type(self.__ctx)}")
-
-        return Name(self.__name_id, value, expressions)
+        elif isinstance(self.__ctx, ast.Store):
+            return Name(self.__name_id)
 
     # 변수의 값을 가져오는 함수
     def __get_value(self):
@@ -40,5 +36,5 @@ class NameParser:
 @dataclass
 class Name:
     id: str
-    value: int
-    expressions: list
+    value: Optional[int] = None
+    expressions: Optional[List[str]] = None
