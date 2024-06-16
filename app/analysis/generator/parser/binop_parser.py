@@ -11,16 +11,16 @@ from app.analysis.util.util import replace_word
 class BinopParser:
 
     def __init__(self, node: ast.BinOp, elem_manager: CodeElementManager):
-        self.left = node.left
-        self.right = node.right
-        self.op = node.op
-        self.initial_expression = ast.unparse(node)
-        self.elem_manager = elem_manager
+        self.__left = node.left
+        self.__right = node.right
+        self.__op = node.op
+        self.__initial_expression = ast.unparse(node)
+        self.__elem_manager = elem_manager
 
     def parse(self):
         # 왼쪽, 오른쪽 노드를 계산
-        left = self.__calculate_node(self.left)
-        right = self.__calculate_node(self.right)
+        left = self.__calculate_node(self.__left)
+        right = self.__calculate_node(self.__right)
 
         # 계산 결과를 연산자에 따라 계산
         result = self.__calculate_value(left, right)
@@ -31,23 +31,23 @@ class BinopParser:
     # 연산식을 따라가면서 계산해 결과를 반환
     def __calculate_node(self, node):
         if isinstance(node, ast.BinOp):
-            binop = BinopParser(node, self.elem_manager).parse()
-            return binop.value
+            binop_obj = BinopParser(node, self.__elem_manager).parse()
+            return binop_obj.value
 
         elif isinstance(node, ast.Name):
-            name = NameParser(node, self.elem_manager).parse()
-            return name.value
+            name_obj = NameParser(node, self.__elem_manager).parse()
+            return name_obj.value
 
         elif isinstance(node, ast.Constant):
-            constant = ConstantParser(node).parse()
-            return constant.value
+            constant_obj = ConstantParser(node).parse()
+            return constant_obj.value
 
         else:
             raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
     # 왼쪽 오른쪽 값으로 연산식 계산
     def __calculate_value(self, left, right):
-        op = self.op
+        op = self.__op
         if isinstance(op, ast.Add):
             return left + right
 
@@ -65,7 +65,7 @@ class BinopParser:
 
     def __create_expressions(self, result):
         # 초기 계산식 저장
-        expression = self.initial_expression
+        expression = self.__initial_expression
         expressions = [expression]
         pattern = r'\b[a-zA-Z_]\w*\b'
 
@@ -74,7 +74,7 @@ class BinopParser:
 
         # 변수들을 값으로 대체
         for original_name in target_names:
-            replace_value = self.elem_manager.get_variable_value(original_name)
+            replace_value = self.__elem_manager.get_variable_value(original_name)
             expression = replace_word(expression=expression, original_word=original_name, new_word=replace_value)
 
         if len(target_names) != 0:

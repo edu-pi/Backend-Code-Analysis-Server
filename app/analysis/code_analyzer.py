@@ -1,8 +1,9 @@
 import ast
 
 from app.analysis.element_manager import CodeElementManager
-from app.analysis.generator.expr_generator import AssignGenerator, ExprGenerator
-from app.analysis.parser1 import assign_parse, for_parse
+from app.analysis.generator.assign_generator import AssignGenerator
+from app.analysis.generator.expr_generator import ExprGenerator
+from app.analysis.parser1 import for_parse
 from app.analysis.step_manager import StepManager
 
 

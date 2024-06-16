@@ -5,16 +5,16 @@ from dataclasses import dataclass
 class ConstantParser:
 
     def __init__(self, node: ast.Constant):
-        self.value = node.value
+        self.__value = node.value
 
     def parse(self):
         return Constant(value=self.__get_value(), expressions=self.__get_expressions())
 
     def __get_value(self):
-        return self.value
+        return self.__value
 
     def __get_expressions(self):
-        return [str(self.value)]
+        return [str(self.__value)]
 
 
 @dataclass
