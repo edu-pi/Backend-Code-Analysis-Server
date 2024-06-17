@@ -6,6 +6,7 @@ from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.binop_parser import BinopParser
 from app.analysis.generator.parser.constant_parser import ConstantParser
 from app.analysis.generator.parser.name_parser import NameParser
+from app.analysis.util import util
 
 
 class TupleParser:
@@ -52,43 +53,31 @@ class TupleParser:
     # ctx가 Load일 때 tuple을 계산해 value와 expression을 계산하는 함수
     def __calculate_node(self):
         tuple_value = []
-        tuple_expressions = []
+        expressions = []
         for elt in self.__elts:
             if isinstance(elt, ast.Name):
                 name_obj = NameParser.parse(elt, self.__elem_manager)
                 tuple_value.append(name_obj.value)
-                tuple_expressions.append(name_obj.expressions)
+                expressions.append(name_obj.expressions)
 
             elif isinstance(elt, ast.Constant):
                 constant_obj = ConstantParser.parse(elt)
                 tuple_value.append(constant_obj.value)
-                tuple_expressions.append(constant_obj.expressions)
+                expressions.append(constant_obj.expressions)
 
             elif isinstance(elt, ast.BinOp):
                 binop_obj = BinopParser.parse(elt, self.__elem_manager)
                 tuple_value.append(binop_obj.value)
-                tuple_expressions.append(binop_obj.expressions)
+                expressions.append(binop_obj.expressions)
 
             else:
                 raise NotImplementedError(f"Unsupported node type: {type(elt)}")
 
+        transposed_expressions = util.transpose_with_last_fill(expressions)
+        tuple_expressions = list(map(tuple, transposed_expressions))
+
         return {"value": tuple(tuple_value),
-                "expressions": self.__convert_expressions_to_tuple(tuple_expressions)}
-
-    # 변수들의 표션식 리스트를 받아와서 튜플로 만들어주는 함수
-    # [["10"], ["a+13", "5+13", "28"], ["b", "4"]] -> [("10", "a+13", "b"), ("10", "5+13", "4"), ("10", "28", "4")]
-    def __convert_expressions_to_tuple(self, expressions):
-        max_length = max(len(sublist) for sublist in expressions)
-
-        tuple_value = []
-        for i in range(max_length):
-            current_tuple = tuple(
-                sublist[i] if isinstance(sublist, list) and i < len(sublist) else sublist[-1]
-                for sublist in expressions
-            )
-            tuple_value.append(current_tuple)
-
-        return tuple_value
+                "expressions": tuple_expressions}
 
 
 @dataclass
