@@ -4,7 +4,7 @@ class CodeElementManager:
         self.call_id = 0
         self.call_ids = {}
         self.variables_value = {}
-        self.depth = 1
+        self.depth = 0
 
     def get_call_id(self, node):
         if node in self.call_ids:
