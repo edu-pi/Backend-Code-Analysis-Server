@@ -11,11 +11,11 @@ from app.analysis.generator.parser.name_parser import NameParser
 def for_parse(node, elem_manager):
     steps = []
     # 타겟 처리
-    target_name = node.target.id
+    target_name = node.__target.id
     for_id = elem_manager.get_call_id(node)
 
     # Condition 객체 생성
-    condition = create_condition(target_name, node.iter, elem_manager)
+    condition = create_condition(target_name, node.__iter, elem_manager)
 
     # for문 수행
     for i in range(condition.start, condition.end, condition.step):
@@ -30,7 +30,7 @@ def for_parse(node, elem_manager):
         )
         elem_manager.increase_depth()
 
-        for child_node in node.body:
+        for child_node in node.__body:
             if isinstance(child_node, ast.Expr):
                 parsed_objs = expr_parse(child_node, elem_manager)
                 if parsed_objs is None:
