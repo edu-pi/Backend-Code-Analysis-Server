@@ -1,4 +1,3 @@
-# 시각화에 필요한 Expr를 만듦
 import ast
 
 from app.analysis.element_manager import CodeElementManager
@@ -10,38 +9,39 @@ from app.analysis.models import PrintViz
 class ExprGenerator:
     # ast.Expr : 함수 호출과 같은 식이 반환 값으로 사용되지 않거나, 저장되지 않는 상태에서 그 자체문으로 나타나는 경우의 타입
     def __init__(self, node: ast.Expr, elem_manager: CodeElementManager):
-        self.value = node.value
-        self.elem_manager = elem_manager
+        self.__value = node.value
+        self.__elem_manager = elem_manager
 
     @staticmethod
     def generate(node: ast.Expr, elem_manager: CodeElementManager):
         expr_generator = ExprGenerator(node, elem_manager)
+        return expr_generator.__get_parse_value()
 
-        if isinstance(node.value, ast.Name):
-            return node
-        elif isinstance(node.value, ast.Constant):
-            return node
-        elif isinstance(node.value, ast.BinOp):
+    def __get_parse_value(self):
+        if isinstance(self.__value, ast.Name):
             return
-        # ast.Call 처리
-        elif isinstance(node.value, ast.Call):
-            call_obj = CallParser(node.value, elem_manager).parse()
-            return expr_generator.convert_call_obj_to_vizs(call_obj)
-        elif isinstance(node.value, ast.Lambda):
-            return node
+        elif isinstance(self.__value, ast.Constant):
+            return
+        elif isinstance(self.__value, ast.BinOp):
+            return
+        elif isinstance(self.__value, ast.Call):
+            call_obj = CallParser.parse(self.__value, self.__elem_manager)
+            return self.__convert_call_obj_to_vizs(call_obj)
+        elif isinstance(self.__value, ast.Lambda):
+            return
         else:
-            raise TypeError(f"[ExprGe]:{type(node.value)}는 정의되지 않았습니다.")
+            raise TypeError(f"[ExprGe]:{type(self.__value)}는 정의되지 않았습니다.")
 
-    def convert_call_obj_to_vizs(self, call_obj):
+    def __convert_call_obj_to_vizs(self, call_obj):
         """
         Call 객체를 List[Viz] 객체로 변환
         """
         if isinstance(call_obj, Print):
-            return self.convert_print_obj_to_print_vizs(call_obj)
+            return self.__convert_print_obj_to_print_vizs(call_obj)
         else:
             raise TypeError(f"[ExprGe]:{type(call_obj)}는 정의되지 않았습니다.")
 
-    def convert_print_obj_to_print_vizs(self, print_obj: Print):
+    def __convert_print_obj_to_print_vizs(self, print_obj: Print):
         """
         Print 객체를 List[PrintViz] 객체로 반환
         """
@@ -50,12 +50,12 @@ class ExprGenerator:
 
         print_vizs = [
             PrintViz(
-                id=self.elem_manager.get_call_id(self),
-                depth=self.elem_manager.get_depth(),
-                expr=expression,
-                highlight=highlight
+                id=self.__elem_manager.get_call_id(self),
+                depth=self.__elem_manager.get_depth(),
+                expr=print_obj.expressions[idx],
+                highlight=highlights[idx],
+                console=print_obj.console if idx == len(print_obj.expressions) - 1 else None
             )
-            for expression, highlight in zip(print_obj.expressions, highlights)
+            for idx in range(len(print_obj.expressions))
         ]
         return print_vizs
-
