@@ -4,20 +4,23 @@ from dataclasses import dataclass
 
 class ConstantParser:
 
+    def __init__(self, node):
+        self.__value = node.value
+
     @staticmethod
     def parse(node):
+        constant_parser = ConstantParser(node)
+
         return Constant(
-            value=ConstantParser.__get_value(node),
-            expressions=ConstantParser.__get_expressions(node)
+            value=constant_parser.__get_value(),
+            expressions=constant_parser.__get_expressions()
         )
 
-    @staticmethod
-    def __get_value(node):
-        return node.value
+    def __get_value(self):
+        return self.__value
 
-    @staticmethod
-    def __get_expressions(node):
-        return [str(node.value)]
+    def __get_expressions(self):
+        return [str(self.__value)]
 
 
 @dataclass

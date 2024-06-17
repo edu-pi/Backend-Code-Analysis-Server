@@ -10,36 +10,38 @@ from app.analysis.models import AssignViz, Variable
 
 class AssignGenerator:
 
+    def __init__(self, node: ast.Assign, elem_manager: CodeElementManager):
+        self.__targets = node.targets
+        self.__value = node.value
+        self.__elem_manager = elem_manager
+
     # ast.Assign을 assign_viz_steps으로 만들어주는 함수
     @staticmethod
     def generate(node: ast.Assign, elem_manager: CodeElementManager):
-        parsed_target_names = AssignGenerator.__parse_target_names(node, elem_manager)
+        assign_generator = AssignGenerator(node, elem_manager)
+
+        parsed_target_names = assign_generator.__parse_target_names()
 
         # 결과 계산 후 저장
-        calculated_node = AssignGenerator.__calculate_node(node, elem_manager)
+        calculated_node = assign_generator.__calculate_node()
         for target_name in parsed_target_names:
             elem_manager.add_variable_value(name=target_name, value=calculated_node["value"])
 
         # 표현식 변환 후 steps 생성
-        assign_vizs = AssignGenerator.__create_assign_viz_steps(
-            parsed_target_names,
-            calculated_node["expressions"],
-            elem_manager
-        )
+        assign_vizs = assign_generator.__create_assign_viz_steps(parsed_target_names, calculated_node["expressions"])
 
         return assign_vizs
 
     # ast.Assign의 속성인 Targets를 돌면서 이름을 가져오는 함수
-    @staticmethod
-    def __parse_target_names(node: ast.Assign, elem_manager: CodeElementManager):
+    def __parse_target_names(self):
         target_names = []
-        for target in node.targets:
+        for target in self.__targets:
             if isinstance(target, ast.Name):
-                name_obj = NameParser.parse(target, elem_manager)
+                name_obj = NameParser.parse(target, self.__elem_manager)
                 target_names.append(name_obj.id)
 
             elif isinstance(target, ast.Tuple):
-                tuple_obj = TupleParser.parse(target, elem_manager)
+                tuple_obj = TupleParser.parse(target, self.__elem_manager)
                 target_names.append(tuple_obj.target_names)
 
             else:
@@ -48,39 +50,37 @@ class AssignGenerator:
         return target_names
 
     # ast.Assign의 속성인 value를 계산해 결과값과 표현식을 반환
-    @staticmethod
-    def __calculate_node(node: ast.Assign, elem_manager: CodeElementManager):
+    def __calculate_node(self):
         calculated_nodes = {}
-        if isinstance(node.value, ast.BinOp):
-            binop_obj = BinopParser.parse(node.value, elem_manager)
+        if isinstance(self.__value, ast.BinOp):
+            binop_obj = BinopParser.parse(self.__value, self.__elem_manager)
             calculated_nodes["value"] = binop_obj.value
             calculated_nodes["expressions"] = binop_obj.expressions
 
-        elif isinstance(node.value, ast.Constant):
-            constant_obj = ConstantParser.parse(node.value)
+        elif isinstance(self.__value, ast.Constant):
+            constant_obj = ConstantParser.parse(self.__value)
             calculated_nodes["value"] = constant_obj.value
             calculated_nodes["expressions"] = constant_obj.expressions
 
-        elif isinstance(node.value, ast.Name):
-            name_obj = NameParser.parse(node.value, elem_manager)
+        elif isinstance(self.__value, ast.Name):
+            name_obj = NameParser.parse(self.__value, self.__elem_manager)
             calculated_nodes["value"] = name_obj.value
             calculated_nodes["expressions"] = name_obj.expressions
 
-        elif isinstance(node.value, ast.Tuple):
-            tuple_obj = TupleParser.parse(node.value, elem_manager)
+        elif isinstance(self.__value, ast.Tuple):
+            tuple_obj = TupleParser.parse(self.__value, self.__elem_manager)
             calculated_nodes["value"] = tuple_obj.value
             calculated_nodes["expressions"] = tuple_obj.expressions
 
         else:
-            raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(node.value)}")
+            raise TypeError(f"변수 할당에서 value에는 다음 타입이 들어갈 수 없습니다.: {type(self.__value)}")
 
         return calculated_nodes
 
     # parsed_target_names와 parsed_expressions를 가지고 assign_viz_steps를 만드는 함수
-    @staticmethod
-    def __create_assign_viz_steps(parsed_target_names, parsed_expressions, elem_manager: CodeElementManager):
+    def __create_assign_viz_steps(self, parsed_target_names, parsed_expressions):
         assign_vizs = []
-        depth = elem_manager.depth
+        depth = self.__elem_manager.depth
 
         for parsed_expression in parsed_expressions:
             # 이번 스텝에 변할 변수 리스트
