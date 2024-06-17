@@ -1,7 +1,7 @@
-from app.analysis.models import Condition
+from app.analysis.models import ConditionViz
 
 
-def for_highlight(condition: Condition):
+def for_highlight(condition: ConditionViz):
     return condition.changed_attr()
 
 

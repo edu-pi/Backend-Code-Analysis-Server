@@ -60,8 +60,11 @@ class BinopParser:
         elif isinstance(self.__op, ast.Mult):
             return left * right
 
-        elif isinstance(self.__op, ast.Div):
-            return left / right
+        elif isinstance(self.__op, ast.Div):  # '/'
+            return left / right  # 실수로 계산
+
+        elif isinstance(self.__op, ast.FloorDiv):  # '//'
+            return left // right  # 정수로 계산
 
         else:
             raise NotImplementedError(f"Unsupported operator: {type(self.__op)}")
