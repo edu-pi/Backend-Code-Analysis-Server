@@ -86,11 +86,13 @@ class ForGenerator:
 
         for body in bodies:
             if isinstance(body, ast.Expr):
-                parsed_objs = ExprGenerator.generate(body, elem_manager)
-                if parsed_objs is None:
+                parsed_viz = ExprGenerator.generate(body, elem_manager)
+                if parsed_viz is None:
                     return vizs
-
-                vizs += parsed_objs
+                elif parsed_viz != list:
+                    raise TypeError(f"[ForGenerator]: {type(parsed_viz)}가 리스트 형식이 아닙니다.")
+                else:
+                    vizs += parsed_viz
 
             elif isinstance(body, ast.For):
                 vizs.append(ForGenerator.generate(body, elem_manager))
