@@ -68,6 +68,7 @@ class PrintViz:
     depth: int
     expr: str
     highlight: []
+    console: str
     type: str = "print"
 
 
