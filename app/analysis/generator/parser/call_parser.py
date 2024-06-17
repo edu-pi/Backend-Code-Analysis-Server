@@ -25,7 +25,7 @@ class CallParser:
 
     def __get_func_name(self):
         if isinstance(self.func, ast.Name):
-            name_obj = NameParser(node=self.func, elem_manager=self.elem_manager).parse()
+            name_obj = NameParser.parse(node=self.func, elem_manager=self.elem_manager)
             return name_obj.id
 
         elif isinstance(self.func, ast.Attribute):
@@ -37,7 +37,7 @@ class CallParser:
     def __print_parse(self):
         for arg in self.args:
             if isinstance(arg, ast.BinOp):
-                binop_obj = BinopParser(arg, self.elem_manager).parse()
+                binop_obj = BinopParser.parse(arg, self.elem_manager)
 
         return Print(expressions=binop_obj.expressions)
 
