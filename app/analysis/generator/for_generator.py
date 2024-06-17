@@ -1,7 +1,6 @@
 import ast
 
 from app.analysis.element_manager import CodeElementManager
-from app.analysis.generator.expr_generator import ExprGenerator
 from app.analysis.generator.highlight.for_highlight import get_highlight_attr
 from app.analysis.models import ConditionViz, ForViz
 from app.analysis.generator.parser.call_parser import CallParser
@@ -39,7 +38,12 @@ class ForGenerator:
                        condition=condition,
                        highlight=get_highlight_attr(condition))
             )
-            vizs += self.__create_body_vizs()
+
+            # 순환 참조 문제로 locally import
+            from app.analysis.generator.body_generator import BodyGenerator
+
+            vizs += BodyGenerator.generate(node.body, elem_manager)
+
             # condition 객체에서 cur 값만 변경한 새로운 condition 생성
             condition = condition.copy_with_new_cur(i + condition.step)
 
@@ -62,28 +66,6 @@ class ForGenerator:
             start, end, step = map(int, identifier_list)
 
         return ConditionViz(target=target_name, start=start, end=end, step=step, cur=start)
-
-    def __create_body_vizs(self):
-        "for문의 body를 파싱해서 viz 객체를 생성하는 함수"
-        vizs = []
-        self.__elem_manager.increase_depth()
-
-        for body in self.__body:
-            if isinstance(body, ast.Expr):
-                parsed_viz = ExprGenerator.generate(body, self.__elem_manager)
-                if parsed_viz is None:
-                    return vizs
-                elif not isinstance(parsed_viz, list):
-                    raise TypeError(f"[ForGenerator]: {type(parsed_viz)}가 리스트 형식이 아닙니다.")
-                else:
-                    vizs += parsed_viz
-
-            elif isinstance(body, ast.For):
-                vizs += ForGenerator.generate(body, self.__elem_manager)
-
-            else:
-                raise TypeError(f"[ForGenerator]: {type(body)}은 지원하지 않습니다.")
-        return vizs
 
     def __get_identifiers(self):
 
