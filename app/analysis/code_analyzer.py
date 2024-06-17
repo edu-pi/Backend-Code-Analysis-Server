@@ -20,8 +20,7 @@ class CodeAnalyzer:
 
     def parse_node(self, node):
         if isinstance(node, ast.Assign):
-            assign_generator = AssignGenerator(node, self.elem_manager)
-            assign_vizs = assign_generator.generate()
+            assign_vizs = AssignGenerator.generate(node, self.elem_manager)
             self.step_manager.add_steps(assign_vizs)
 
         elif isinstance(node, ast.For):

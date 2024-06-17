@@ -6,32 +6,28 @@ from app.analysis.element_manager import CodeElementManager
 
 
 class NameParser:
+    
+    @staticmethod
+    def parse(node: ast.Name, elem_manager: CodeElementManager):
+        if isinstance(node.ctx, ast.Load):
+            value = NameParser.__get_value(elem_manager, node.id)
+            expressions = NameParser.__get_expressions(node.id, value)
+            return Name(node.id, value, expressions)
 
-    def __init__(self, node: ast.Name, elem_manager: CodeElementManager):
-        self.__ctx = node.ctx
-        self.__name_id = node.id
-        self.__elem_manager = elem_manager
-
-    def parse(self):
-        if isinstance(self.__ctx, ast.Load):
-            value = self.__get_value()
-            expressions = self.__get_expressions(value)
-            return Name(self.__name_id, value, expressions)
-
-        elif isinstance(self.__ctx, ast.Store):
-            return Name(self.__name_id)
-
+        elif isinstance(node.ctx, ast.Store):
+            return Name(node.id)
     # 변수의 값을 가져오는 함수
-    def __get_value(self):
+    @staticmethod
+    def __get_value(elem_manager: CodeElementManager, name_id: str):
         try:
-            return self.__elem_manager.get_variable_value(name=self.__name_id)
+            return elem_manager.get_variable_value(name=name_id)
         except NameError as e:
             print("#error:", e)
 
     # 변수의 변화 과정을 만들어주는 함수
-    def __get_expressions(self, value):
-        return [self.__name_id, str(value)]
-
+    @staticmethod
+    def __get_expressions(name_id: str, value: int):
+        return [name_id, str(value)]
 
 @dataclass
 class Name:
