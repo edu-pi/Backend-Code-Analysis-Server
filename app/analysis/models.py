@@ -46,7 +46,7 @@ class Condition:
 
 
 @dataclass(frozen=True)
-class For:
+class ForViz:
     id: int
     depth: int
     condition: Condition
