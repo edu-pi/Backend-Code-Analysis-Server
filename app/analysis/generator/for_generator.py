@@ -56,11 +56,11 @@ class ForGenerator:
         identifier_list = self.__get_identifiers()
 
         if len(identifier_list) == 1:
-            end = identifier_list[0]
+            end = int(identifier_list[0])
         elif len(identifier_list) == 2:
-            start, end = identifier_list
+            start, end = map(int, identifier_list)
         elif len(identifier_list) == 3:
-            start, end, step = identifier_list
+            start, end, step = map(int, identifier_list)
 
         return ConditionViz(target=target_name, start=start, end=end, step=step, cur=start)
 
