@@ -3,7 +3,7 @@ import ast
 from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.assign_generator import AssignGenerator
 from app.analysis.generator.expr_generator import ExprGenerator
-from app.analysis.parser1 import for_parse
+from app.analysis.generator.for_generator import ForGenerator
 from app.analysis.step_manager import StepManager
 
 
@@ -24,9 +24,9 @@ class CodeAnalyzer:
             self.step_manager.add_steps(assign_vizs)
 
         elif isinstance(node, ast.For):
-            steps = for_parse(node, self.elem_manager)
+            steps = ForGenerator.generate(node, self.elem_manager)
             self.step_manager.add_steps(steps)
 
         elif isinstance(node, ast.Expr):
-            steps = ExprGenerator(node, self.elem_manager).generate()
+            steps = ExprGenerator.generate(node, self.elem_manager)
             self.step_manager.add_steps(steps)

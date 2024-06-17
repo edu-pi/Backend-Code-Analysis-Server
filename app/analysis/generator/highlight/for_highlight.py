@@ -1,4 +1,4 @@
-from msilib.schema import Condition
+from app.analysis.models import Condition
 
 
 def get_highlight_attr(condition: Condition):

@@ -22,10 +22,10 @@ class ExprGenerator:
         elif isinstance(node.value, ast.Constant):
             return node
         elif isinstance(node.value, ast.BinOp):
-            return node
+            return
         # ast.Call 처리
         elif isinstance(node.value, ast.Call):
-            call_obj = CallParser().parse(node.value, node.elem_manager)
+            call_obj = CallParser(node.value, elem_manager).parse()
             return expr_generator.convert_call_obj_to_vizs(call_obj)
         elif isinstance(node.value, ast.Lambda):
             return node
