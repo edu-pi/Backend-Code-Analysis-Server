@@ -52,15 +52,7 @@ class ForGenerator:
         step = 1
 
         # args의 개수에 따라 start, end, step에 값을 할당
-        identifier_list = []
-        for arg in node.args:
-            if isinstance(arg, ast.Name) or isinstance(arg, ast.Constant):
-                identifier_list.append(self.__identifier_parse(arg, elem_manager))
-            elif isinstance(arg, ast.BinOp):
-                binop_obj = BinopParser().parse(arg, elem_manager)
-                identifier_list.append(binop_obj.value)
-            else:
-                raise TypeError(f"Unsupported node type: {type(arg)}")
+        identifier_list = self.__get_identifiers(elem_manager, node.args)
 
         if len(identifier_list) == 1:
             end = identifier_list[0]
@@ -70,6 +62,22 @@ class ForGenerator:
             start, end, step = identifier_list
 
         return Condition(target=target_name, start=start, end=end, step=step, cur=start)
+
+    def __get_identifiers(self, elem_manager, arg_nodes):
+        identifier_list = []
+        for arg_node in arg_nodes:
+            if isinstance(arg_node, ast.Name):
+                identifier = NameParser().parse(arg_node, elem_manager)
+            elif isinstance(arg_node, ast.Constant):  # 상수인 경우
+                identifier = ConstantParser().parse(arg_node)
+            elif isinstance(arg_node, ast.BinOp):
+                identifier = BinopParser().parse(arg_node, elem_manager)
+            else:
+                raise TypeError(f"Unsupported node type: {type(arg_node)}")
+
+            identifier_list.append(identifier.value)
+
+        return identifier_list
 
     def __create_body_vizs(self, bodies, elem_manager):
         vizs = []
