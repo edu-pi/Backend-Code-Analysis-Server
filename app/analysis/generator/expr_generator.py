@@ -13,21 +13,24 @@ class ExprGenerator:
         self.value = node.value
         self.elem_manager = elem_manager
 
-    def generate(self):
-        if isinstance(self.value, ast.Name):
-            return self
-        elif isinstance(self.value, ast.Constant):
-            return self
-        elif isinstance(self.value, ast.BinOp):
-            return self
+    @staticmethod
+    def generate(node: ast.Expr, elem_manager: CodeElementManager):
+        expr_generator = ExprGenerator(node, elem_manager)
+
+        if isinstance(node.value, ast.Name):
+            return node
+        elif isinstance(node.value, ast.Constant):
+            return node
+        elif isinstance(node.value, ast.BinOp):
+            return node
         # ast.Call 처리
-        elif isinstance(self.value, ast.Call):
-            call_parser = CallParser(self.value, self.elem_manager)
-            return self.convert_call_obj_to_vizs(call_parser.parse())
-        elif isinstance(self.value, ast.Lambda):
-            return self
+        elif isinstance(node.value, ast.Call):
+            call_obj = CallParser().parse(node.value, node.elem_manager)
+            return expr_generator.convert_call_obj_to_vizs(call_obj)
+        elif isinstance(node.value, ast.Lambda):
+            return node
         else:
-            raise TypeError(f"[ExprGe]:{type(self.value)}는 정의되지 않았습니다.")
+            raise TypeError(f"[ExprGe]:{type(node.value)}는 정의되지 않았습니다.")
 
     def convert_call_obj_to_vizs(self, call_obj):
         """
