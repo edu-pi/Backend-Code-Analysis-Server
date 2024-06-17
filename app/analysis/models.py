@@ -28,7 +28,7 @@ class Variable:
 
 
 @dataclass
-class Condition:
+class ConditionViz:
     target: str
     cur: int
     start: int
@@ -36,7 +36,7 @@ class Condition:
     step: int
 
     def copy_with_new_cur(self, new_cur):
-        return Condition(self.target, new_cur, self.start, self.end, self.step)
+        return ConditionViz(self.target, new_cur, self.start, self.end, self.step)
 
     def changed_attr(self):
         if self.start == self.cur:
@@ -49,7 +49,7 @@ class Condition:
 class ForViz:
     id: int
     depth: int
-    condition: Condition
+    condition: ConditionViz
     highlight: []
     type: str = "for"
 

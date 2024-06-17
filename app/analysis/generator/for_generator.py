@@ -6,7 +6,7 @@ from app.analysis.generator.highlight.for_highlight import get_highlight_attr
 from app.analysis.generator.parser.binop_parser import BinopParser
 from app.analysis.generator.parser.constant_parser import ConstantParser
 from app.analysis.generator.parser.name_parser import NameParser
-from app.analysis.models import Condition, ForViz
+from app.analysis.models import ConditionViz, ForViz
 
 
 class ForGenerator:
@@ -62,7 +62,7 @@ class ForGenerator:
         elif len(identifier_list) == 3:
             start, end, step = identifier_list
 
-        return Condition(target=target_name, start=start, end=end, step=step, cur=start)
+        return ConditionViz(target=target_name, start=start, end=end, step=step, cur=start)
 
     def __create_body_vizs(self):
         "for문의 body를 파싱해서 viz 객체를 생성하는 함수"
