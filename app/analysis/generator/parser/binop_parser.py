@@ -10,27 +10,36 @@ from app.analysis.util.util import replace_word
 
 class BinopParser:
 
+    def __init__(self, node: ast.BinOp, elem_manager: CodeElementManager):
+        self.__elem_manager = elem_manager
+        self.__left = node.left
+        self.__op = node.op
+        self.__right = node.right
+        self.__initial_expression = ast.unparse(node)
+
     @staticmethod
     def parse(node: ast.BinOp, elem_manager: CodeElementManager):
+
+        binop_parser = BinopParser(node, elem_manager)
+
         # 왼쪽, 오른쪽 노드를 계산
-        left = BinopParser.__calculate_node(node.left, elem_manager)
-        right = BinopParser.__calculate_node(node.right, elem_manager)
+        left = binop_parser.__calculate_node(node.left)
+        right = binop_parser.__calculate_node(node.right)
 
         # 계산 결과를 연산자에 따라 계산
-        result = BinopParser.__calculate_value(left, right, node.op)
-        expressions = BinopParser.__create_expressions(node, result, elem_manager)
+        result = binop_parser.__calculate_value(left, right)
+        expressions = binop_parser.__create_expressions(result)
 
         return Binop(result, expressions)
 
     # 연산식을 따라가면서 계산해 결과를 반환
-    @staticmethod
-    def __calculate_node(node: ast, elem_manager: CodeElementManager):
+    def __calculate_node(self, node: ast):
         if isinstance(node, ast.BinOp):
-            binop = BinopParser.parse(node, elem_manager)
+            binop = BinopParser.parse(node, self.__elem_manager)
             return binop.value
 
         elif isinstance(node, ast.Name):
-            name = NameParser.parse(node, elem_manager)
+            name = NameParser.parse(node, self.__elem_manager)
             return name.value
 
         elif isinstance(node, ast.Constant):
@@ -41,27 +50,25 @@ class BinopParser:
             raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
     # 왼쪽 오른쪽 값으로 연산식 계산
-    @staticmethod
-    def __calculate_value(left: int, right: int, op: ast):
-        if isinstance(op, ast.Add):
+    def __calculate_value(self, left: int, right: int):
+        if isinstance(self.__op, ast.Add):
             return left + right
 
-        elif isinstance(op, ast.Sub):
+        elif isinstance(self.__op, ast.Sub):
             return left - right
 
-        elif isinstance(op, ast.Mult):
+        elif isinstance(self.__op, ast.Mult):
             return left * right
 
-        elif isinstance(op, ast.Div):
+        elif isinstance(self.__op, ast.Div):
             return left / right
 
         else:
-            raise NotImplementedError(f"Unsupported operator: {type(op)}")
+            raise NotImplementedError(f"Unsupported operator: {type(self.__op)}")
 
-    @staticmethod
-    def __create_expressions(node: ast.BinOp, result: int, elem_manager: CodeElementManager):
+    def __create_expressions(self, result: int):
         # 초기 계산식 저장
-        expression = ast.unparse(node)
+        expression = self.__initial_expression
         expressions = [expression]
         pattern = r'\b[a-zA-Z_]\w*\b'
 
@@ -70,7 +77,7 @@ class BinopParser:
 
         # 변수들을 값으로 대체
         for original_name in target_names:
-            replace_value = elem_manager.get_variable_value(original_name)
+            replace_value = self.__elem_manager.get_variable_value(original_name)
             expression = replace_word(expression=expression, original_word=original_name, new_word=replace_value)
 
         if len(target_names) != 0:
