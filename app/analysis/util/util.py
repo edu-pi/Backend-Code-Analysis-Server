@@ -12,12 +12,12 @@ def replace_word(expression, original_word, new_word):
 def transpose_with_last_fill(expressions):
     max_length = max(len(sublist) for sublist in expressions)
 
-    tuple_value = []
+    transposed_values = []
     for i in range(max_length):
-        current_tuple = list(
+        current_list = list(
             sublist[i] if isinstance(sublist, list) and i < len(sublist) else sublist[-1]
             for sublist in expressions
         )
-        tuple_value.append(current_tuple)
+        transposed_values.append(current_list)
 
-    return tuple_value
+    return transposed_values
