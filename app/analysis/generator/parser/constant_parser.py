@@ -1,5 +1,6 @@
 import ast
 from dataclasses import dataclass
+from typing import Union
 
 
 class ConstantParser:
@@ -25,5 +26,5 @@ class ConstantParser:
 
 @dataclass
 class Constant:
-    value: int
+    value: Union[int, str]
     expressions: list
