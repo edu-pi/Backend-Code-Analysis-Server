@@ -40,7 +40,10 @@ def test__get_value(elem_manager, name_id, ctx, expect):
     ast.Name 노드가 주어졌을 때 value를 가져오는지 테스트
     """
 
-    result = NameParser._NameParser__get_value(elem_manager, name_id)
+    name_node = ast.Name(id=name_id, ctx=ctx)
+    name_parser = NameParser(name_node, elem_manager)
+
+    result = name_parser._NameParser__get_value()
 
     assert result == expect
 
@@ -50,10 +53,14 @@ def test__get_value(elem_manager, name_id, ctx, expect):
     ("abc_abc", 10, ast.Load(), ['abc_abc', '10']),
     ("abcAbc", 10, ast.Load(), ['abcAbc', '10'])
 ])
-def test__get_expressions(name_id, value, ctx, expect):
+def test__get_expressions(elem_manager, name_id, value, ctx, expect):
     """
     ast.Name 노드가 주어졌을 때 value를 가져오는지 테스트
     """
-    result = NameParser._NameParser__get_expressions(name_id, value)
+
+    name_node = ast.Name(id=name_id, ctx=ctx)
+    name_parser = NameParser(name_node, elem_manager)
+
+    result = name_parser._NameParser__get_expressions(value)
 
     assert result == expect
