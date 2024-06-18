@@ -100,7 +100,7 @@ def test__calculate_value(create_binop_parser, create_binop, left_value, right_v
     binop = create_binop(left=ast.Constant(value=left_value), op=op, right=ast.Constant(value=right_value))
     binop_parser = create_binop_parser(binop)
 
-    result = binop_parser._BinopParser__calculate_value(left=left_value, right=right_value, op=op)
+    result = binop_parser._BinopParser__calculate_value(left_value=left_value, right_value=right_value, op=op)
 
     assert result == expect
 
@@ -116,6 +116,7 @@ def test__create_expressions(create_binop_parser, create_binop, left_value, righ
     binop = create_binop(left=ast.Constant(value=left_value), op=op, right=ast.Constant(value=right_value))
     binop_parser = create_binop_parser(binop)
 
-    result = binop_parser._BinopParser__create_expressions(result=result_value, initial_expression=ast.unparse(binop))
+    result = binop_parser._BinopParser__create_expressions(result_value=result_value,
+                                                           initial_expression=ast.unparse(binop))
 
     assert result == expect

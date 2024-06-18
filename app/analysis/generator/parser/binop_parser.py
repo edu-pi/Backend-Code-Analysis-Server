@@ -13,7 +13,9 @@ class BinopParser:
 
     def __init__(self, node: ast.BinOp, elem_manager: CodeElementManager):
         self.__elem_manager = elem_manager
-        self.__node = node
+        self.__left = node.left
+        self.__right = node.right
+        self.__op = node.op
 
     @staticmethod
     def parse(node: ast.BinOp, elem_manager: CodeElementManager):
@@ -45,26 +47,26 @@ class BinopParser:
             raise NotImplementedError(f"Unsupported node type: {type(node)}")
 
     # 왼쪽 오른쪽 값으로 연산식 계산
-    def __calculate_value(self, left: int, right: int, op: ast):
+    def __calculate_value(self, left_value: int, right_value: int, op: ast):
         if isinstance(op, ast.Add):
-            return left + right
+            return left_value + right_value
 
         elif isinstance(op, ast.Sub):
-            return left - right
+            return left_value - right_value
 
         elif isinstance(op, ast.Mult):
-            return left * right
+            return left_value * right_value
 
         elif isinstance(op, ast.Div):  # '/'
-            return left / right  # 실수로 계산
+            return left_value / right_value  # 실수로 계산
 
         elif isinstance(op, ast.FloorDiv):  # '//'
-            return left // right  # 정수로 계산
+            return left_value // right_value  # 정수로 계산
 
         else:
             raise NotImplementedError(f"Unsupported operator: {type(op)}")
 
-    def __create_expressions(self, result: int, initial_expression: str):
+    def __create_expressions(self, result_value: int, initial_expression: str):
         # 초기 계산식 저장
         expressions = [initial_expression]
         pattern = r'\b[a-zA-Z_]\w*\b'
@@ -83,7 +85,7 @@ class BinopParser:
             expressions.append(next_expression)
 
         # 마지막 계산 결과 저장
-        expressions.append(str(result))
+        expressions.append(str(result_value))
 
         return expressions
 
