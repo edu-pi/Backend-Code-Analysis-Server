@@ -6,6 +6,7 @@ import pytest
 from app.analysis.generator.for_generator import ForGenerator
 from app.analysis.generator.parser.call_parser import NameParser
 from app.analysis.element_manager import CodeElementManager
+from app.analysis.models import ConditionViz
 from tests.analysis.generator.parser.test_data.for_generator_data import data__get_identifier
 
 @pytest.fixture
@@ -31,6 +32,19 @@ def for_generator(elem_manager):
         return ForGenerator(node, elem_manager)
 
     return _create_generator
+
+
+@pytest.mark.parametrize("code, side_effect, expect", [
+    ('''for i in range(3): \n    pass''', [[3]], ConditionViz(target='i', cur=0, start=0, end=3, step=1)),
+    ('''for i in range(1,5,2): \n    pass''', [[1, 5, 2]], ConditionViz(target='i', cur=1, start=1, end=5, step=2)),
+    ('''for i in range(1,a): \n    pass''', [[1, 5]], ConditionViz(target='i', cur=1, start=1, end=5, step=1))
+])
+def test___create_condition_viz(create_ast_node, for_generator, code, side_effect, expect):
+    """ast.For 노드가 주어졌을 때 __create_condition_viz 메서드가 정상적으로 동작하는지 테스트"""
+    generator = for_generator(create_ast_node(code))
+    with patch.object(ForGenerator, '_ForGenerator__get_identifiers', side_effect=side_effect):
+        actual = generator._ForGenerator__create_condition_viz('i')
+        assert actual == expect
 
 
 @pytest.mark.parametrize("node, expect", [
