@@ -9,6 +9,7 @@ from app.analysis.models import PrintViz
 class ExprGenerator:
     # ast.Expr : 함수 호출과 같은 식이 반환 값으로 사용되지 않거나, 저장되지 않는 상태에서 그 자체문으로 나타나는 경우의 타입
     def __init__(self, node: ast.Expr, elem_manager: CodeElementManager):
+        self.__call_id = elem_manager.get_call_id(node)
         self.__value = node.value
         self.__elem_manager = elem_manager
 
@@ -50,7 +51,7 @@ class ExprGenerator:
 
         print_vizs = [
             PrintViz(
-                id=self.__elem_manager.get_call_id(self),
+                id=self.__call_id,
                 depth=self.__elem_manager.get_depth(),
                 expr=print_obj.expressions[idx],
                 highlight=highlights[idx],
