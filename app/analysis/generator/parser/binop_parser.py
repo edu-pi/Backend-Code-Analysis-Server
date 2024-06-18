@@ -1,6 +1,7 @@
 import ast
 import re
 from dataclasses import dataclass
+from typing import Union
 
 from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.constant_parser import ConstantParser
@@ -94,5 +95,5 @@ class BinopParser:
 
 @dataclass
 class Binop:
-    value: int
+    value: Union[int, float]
     expressions: list
