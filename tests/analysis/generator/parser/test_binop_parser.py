@@ -29,7 +29,7 @@ def create_binop_parser(elem_manager):
     return mock_binop_parser
 
 
-def create_param():
+def create_param_from_ast():
     return [
         (  # a + 4
             ast.Name(id="a", ctx=ast.Load()),
@@ -65,7 +65,7 @@ def create_param():
     ]
 
 
-@pytest.mark.parametrize("left, right, op, expect_value, expect_expressions", create_param())
+@pytest.mark.parametrize("left, right, op, expect_value, expect_expressions", create_param_from_ast())
 def test_parse(create_binop, elem_manager, left, right, op, expect_value, expect_expressions):
     binop = create_binop(left=left, op=op, right=right)
 
@@ -78,7 +78,7 @@ def test_parse(create_binop, elem_manager, left, right, op, expect_value, expect
         assert result.expressions == expect_expressions
 
 
-@pytest.mark.parametrize("left, right, op, expect_value, expect_expressions", create_param())
+@pytest.mark.parametrize("left, right, op, expect_value, expect_expressions", create_param_from_ast())
 def test__calculate_node(create_binop, create_binop_parser, left, right, op, expect_value, expect_expressions):
     binop = create_binop(left=left, op=op, right=right)
     binop_parser = create_binop_parser(binop)
@@ -89,34 +89,34 @@ def test__calculate_node(create_binop, create_binop_parser, left, right, op, exp
         assert result == expect_value
 
 
-@pytest.mark.parametrize("left_value, right_value, op, expect", [
-    (1, 2, ast.Add(), 3),
-    (3, 2, ast.Sub(), 1),
-    (2, 4, ast.Mult(), 8),
-    (4, 2, ast.Div(), 2.0),
-    (4, 2, ast.FloorDiv(), 2)
-])
-def test__calculate_value(create_binop_parser, create_binop, left_value, right_value, op, expect):
+def create_param_from_value():
+    return [
+        (1, 2, ast.Add(), 3, ["1 + 2", "3"]),
+        (2, 1, ast.Sub(), 1, ["2 - 1", "1"]),
+        (2, 2, ast.Mult(), 4, ["2 * 2", "4"]),
+        (4, 2, ast.Div(), 2.0, ["4 / 2", "2.0"]),
+        (4, 2, ast.FloorDiv(), 2, ["4 // 2", "2"])
+    ]
+
+
+@pytest.mark.parametrize("left_value, right_value, op, result_value, result_expression", create_param_from_value())
+def test__calculate_value(create_binop_parser, create_binop, left_value, right_value, op,
+                          result_value, result_expression):
     binop = create_binop(left=ast.Constant(value=left_value), op=op, right=ast.Constant(value=right_value))
     binop_parser = create_binop_parser(binop)
 
     result = binop_parser._BinopParser__calculate_value(left_value=left_value, right_value=right_value, op=op)
 
-    assert result == expect
+    assert result == result_value
 
 
-@pytest.mark.parametrize("left_value, right_value, op, result_value, expect", [
-    (1, 2, ast.Add(), 3, ["1 + 2", "3"]),
-    (2, 1, ast.Sub(), 1, ["2 - 1", "1"]),
-    (2, 2, ast.Mult(), 4, ["2 * 2", "4"]),
-    (4, 2, ast.Div(), 2.0, ["4 / 2", "2.0"]),
-    (4, 2, ast.FloorDiv(), 2, ["4 // 2", "2"])
-])
-def test__create_expressions(create_binop_parser, create_binop, left_value, right_value, op, result_value, expect):
+@pytest.mark.parametrize("left_value, right_value, op, result_value, result_expression", create_param_from_value())
+def test__create_expressions(create_binop_parser, create_binop, left_value, right_value, op,
+                             result_value, result_expression):
     binop = create_binop(left=ast.Constant(value=left_value), op=op, right=ast.Constant(value=right_value))
     binop_parser = create_binop_parser(binop)
 
     result = binop_parser._BinopParser__create_expressions(result_value=result_value,
                                                            initial_expression=ast.unparse(binop))
 
-    assert result == expect
+    assert result == result_expression
