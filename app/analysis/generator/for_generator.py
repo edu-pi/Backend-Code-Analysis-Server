@@ -68,7 +68,6 @@ class ForGenerator:
         return ConditionViz(target=target_name, start=start, end=end, step=step, cur=start)
 
     def __get_identifiers(self):
-
         if isinstance(self.__iter, ast.Call):
             range_obj = CallParser.parse(self.__iter, self.__elem_manager)
             return range_obj.identifier_list
