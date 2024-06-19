@@ -80,7 +80,7 @@ class AssignGenerator:
     # parsed_target_names와 parsed_expressions를 가지고 assign_viz_steps를 만드는 함수
     def __create_assign_viz_steps(self, parsed_target_names, parsed_expressions):
         assign_vizs = []
-        depth = self.__elem_manager.depth
+        depth = self.__elem_manager.get_depth()
 
         for parsed_expression in parsed_expressions:
             # 이번 스텝에 변할 변수 리스트
