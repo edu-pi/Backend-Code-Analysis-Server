@@ -1,15 +1,7 @@
 import pytest
 import ast
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from app.analysis.generator.parser.name_parser import NameParser, Name
-from app.analysis.element_manager import CodeElementManager
-
-
-@pytest.fixture
-def elem_manager():
-    mock = MagicMock(spec=CodeElementManager)
-    mock.get_variable_value.return_value = 10
-    return mock
 
 
 @pytest.mark.parametrize("name_id, ctx, expect_value, expect_expressions", [
