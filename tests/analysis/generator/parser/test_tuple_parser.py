@@ -1,17 +1,9 @@
 import ast
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
-from app.analysis.element_manager import CodeElementManager
 from app.analysis.generator.parser.tuple_parser import TupleParser, Tuple
-
-
-@pytest.fixture
-def elem_manager():
-    mock = MagicMock(spec=CodeElementManager)
-    mock.get_variable_value.return_value = 10
-    return mock
 
 
 @pytest.fixture
