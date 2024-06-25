@@ -8,6 +8,7 @@ from app.analysis.generator.parser.call_parser import CallParser
 
 class ForGenerator:
     def __init__(self, node: ast.For, elem_manager: CodeElementManager):
+        self.__call_id = elem_manager.get_call_id(node)
         self.__target = node.target
         self.__iter = node.iter
         self.__body = node.body
@@ -19,22 +20,21 @@ class ForGenerator:
 
         return for_generator.__create_for_viz(node, elem_manager)
 
-    def __create_for_viz(self, node: ast.For, elem_manager):
+    def __create_for_viz(self):
         # Condition 객체 생성
-        call_id = elem_manager.get_call_id(node)
-        target_name = node.target.id
+        target_name = self.__target.id
         condition = self.__create_condition_viz(target_name)
 
         # for문 수행
         vizs = []
         for i in range(condition.start, condition.end, condition.step):
             # target 업데이트
-            elem_manager.add_variable_value(name=target_name, value=i)
+            self.__elem_manager.add_variable_value(name=target_name, value=i)
 
             # for step 추가
             vizs.append(
-                ForViz(id=call_id,
-                       depth=elem_manager.get_depth(),
+                ForViz(id=self.__call_id,
+                       depth=self.__elem_manager.get_depth(),
                        condition=condition,
                        highlight=get_highlight_attr(condition))
             )
@@ -42,7 +42,7 @@ class ForGenerator:
             # 순환 참조 문제로 locally import
             from app.analysis.generator.body_generator import BodyGenerator
 
-            vizs += BodyGenerator.generate(node.body, elem_manager)
+            vizs += BodyGenerator.generate(self.__body, self.__elem_manager)
 
             # condition 객체에서 cur 값만 변경한 새로운 condition 생성
             condition = condition.copy_with_new_cur(i + condition.step)
@@ -68,7 +68,6 @@ class ForGenerator:
         return ConditionViz(target=target_name, start=start, end=end, step=step, cur=start)
 
     def __get_identifiers(self):
-
         if isinstance(self.__iter, ast.Call):
             range_obj = CallParser.parse(self.__iter, self.__elem_manager)
             return range_obj.identifier_list

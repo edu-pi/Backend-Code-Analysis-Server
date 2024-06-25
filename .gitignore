@@ -165,3 +165,4 @@ cython_debug/
 .idea
 
 app/main.py
+app/nodes.json
