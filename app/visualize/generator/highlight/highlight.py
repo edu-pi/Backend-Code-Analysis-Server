@@ -1,4 +1,4 @@
-from app.analysis.models import ConditionViz
+from app.visualize.generator.model.models import ConditionViz
 
 
 def for_highlight(condition: ConditionViz):
@@ -29,7 +29,7 @@ def immediate_expression_indices(pre_expr: str, cur_expr: str):
         # 현재 인덱스가 범위를 넘지 않도록 조정
         if cur_idx < len(cur_expr) and pre_expr[pre_idx] != cur_expr[cur_idx]:
             # 이전 문자열이 끝났을 때 중단
-            if pre_idx+1 >= len(pre_expr):
+            if pre_idx + 1 >= len(pre_expr):
                 break
 
             pre_idx += 1

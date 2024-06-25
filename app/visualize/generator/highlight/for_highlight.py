@@ -1,4 +1,4 @@
-from app.analysis.models import ConditionViz
+from app.visualize.generator.model.models import ConditionViz
 
 
 def get_highlight_attr(condition: ConditionViz):
