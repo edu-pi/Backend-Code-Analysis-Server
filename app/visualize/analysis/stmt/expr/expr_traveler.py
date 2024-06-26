@@ -1,10 +1,10 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_parser.binop_parser import BinopAnalyzer
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_parser.call_parser import CallParser
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_parser.constant_parser import ConstantParser
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_parser.name_parser import NameParser
+from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
+from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
+from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
 
 
 class ExprTraveler:
@@ -15,7 +15,7 @@ class ExprTraveler:
             left = ExprTraveler.binop_travel(node.left, elem_manager)
             right = ExprTraveler.binop_travel(node.right, elem_manager)
             op = node.op
-            return BinopAnalyzer.parse(left, right, op, elem_manager)
+            return BinopExpr.parse(left, right, op, elem_manager)
 
         elif isinstance(node, ast.Name):
             return ExprTraveler.name_travel(node, elem_manager)
@@ -25,11 +25,11 @@ class ExprTraveler:
 
     @staticmethod
     def name_travel(node: ast.Name, elem_manager: CodeElementManager):
-        return NameParser.parse(node.ctx, node.id, elem_manager)
+        return NameExpr.parse(node.ctx, node.id, elem_manager)
 
     @staticmethod
     def constant_travel(node: ast.Constant):
-        return ConstantParser.parse(node)
+        return ConstantExpr.parse(node)
 
     @staticmethod
     def call_travel(node: ast.Call, elem_manager: CodeElementManager):
@@ -37,7 +37,7 @@ class ExprTraveler:
         args = ExprTraveler._get_args(node.args, elem_manager)
         keyword_dict = ExprTraveler._keywords_to_dict(node.keywords, elem_manager)
 
-        return CallParser.parse(func_name, args, keyword_dict)
+        return CallExpr.parse(func_name, args, keyword_dict)
 
     @staticmethod
     def _get_func_name(node: ast, elem_manager: CodeElementManager):

@@ -1,18 +1,18 @@
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_util import util
+from app.visualize.analysis.stmt.expr.expr_util import util
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 
-class CallParser:
+class CallExpr:
 
     @staticmethod
     def parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
 
         if func_name == "print":
-            expressions = CallParser._print_parse(args, keyword_arg_dict)
+            expressions = CallExpr._print_parse(args, keyword_arg_dict)
             return ExprObj(type="print", value=expressions[-1], expressions=expressions)
 
         elif func_name == "range":
-            expressions = CallParser._range_parse(args)
+            expressions = CallExpr._range_parse(args)
             return ExprObj(type="range", value=expressions[-1], expressions=expressions)
 
         else:
@@ -22,7 +22,7 @@ class CallParser:
     @staticmethod
     def _print_parse(args: list[ExprObj], keyword_arg_dict: dict):
         default_keyword = {"sep": " ", "end": "\n"}
-        CallParser._apply_keywords(default_keyword, keyword_arg_dict)
+        CallExpr._apply_keywords(default_keyword, keyword_arg_dict)
 
         arg_expressions = [arg.expressions for arg in args]
         transposed_expressions = util.transpose_with_last_fill(arg_expressions)
@@ -60,7 +60,7 @@ class CallParser:
         transposed_expressions = util.transpose_with_last_fill(expressions_list)
 
         # 배열을 딕셔너리로 만들기
-        range_expressions = [CallParser._create_range_dict(expressions) for expressions in transposed_expressions]
+        range_expressions = [CallExpr._create_range_dict(expressions) for expressions in transposed_expressions]
 
         return range_expressions
 
@@ -77,4 +77,3 @@ class CallParser:
 
         else:
             raise TypeError(f"[CallParser]: {expressions} 인자의 개수가 잘못되었습니다.")
-

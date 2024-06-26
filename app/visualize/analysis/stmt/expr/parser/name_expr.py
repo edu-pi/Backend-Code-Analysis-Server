@@ -1,10 +1,10 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 
-class NameParser:
+class NameExpr:
 
     @staticmethod
     def parse(ctx: ast, identifier_name, elem_manager: CodeElementManager):
@@ -12,8 +12,8 @@ class NameParser:
             return ExprObj(type="name", value=identifier_name, expressions=[identifier_name])
 
         elif isinstance(ctx, ast.Load):
-            value = NameParser._get_identifier_value(identifier_name, elem_manager)
-            expressions = NameParser._create_expressions(identifier_name, value)
+            value = NameExpr._get_identifier_value(identifier_name, elem_manager)
+            expressions = NameExpr._create_expressions(identifier_name, value)
             return ExprObj(type="name", value=value, expressions=expressions)
 
         elif isinstance(ctx, ast.Del):

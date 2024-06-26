@@ -1,9 +1,9 @@
 import ast
 
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_util import util
+from app.visualize.analysis.stmt.expr.expr_util import util
 
 
-class TupleParser:
+class TupleExpr:
 
     # ast.ctx가 Store인 경우엔 target_names 사용
     # ast.ctx가 Load인 경우엔 expressions 사용
@@ -11,10 +11,10 @@ class TupleParser:
     def parse(ctx: ast, elts: list):
 
         if isinstance(ctx, ast.Store):
-            return TupleParser._get_target_names(elts)
+            return TupleExpr._get_target_names(elts)
 
         elif isinstance(ctx, ast.Load):
-            return TupleParser._create_expressions(elts)
+            return TupleExpr._create_expressions(elts)
 
         elif isinstance(ctx, ast.Del):
             raise NotImplementedError(f"[call_travel] {type(ctx)}정의되지 않았습니다.")

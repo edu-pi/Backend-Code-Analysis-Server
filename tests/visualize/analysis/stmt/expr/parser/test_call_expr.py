@@ -1,7 +1,7 @@
 import pytest
 
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_parser.call_parser import CallParser
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
 
 
 @pytest.mark.parametrize("func_name, args, keyword_arg_dict, expected", [])
@@ -40,7 +40,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
     ],
 )
 def test_print_parse(args, keyword_arg_dict, expected):
-    result = CallParser._print_parse(args, keyword_arg_dict)
+    result = CallExpr._print_parse(args, keyword_arg_dict)
 
     assert result == expected
 
@@ -55,7 +55,7 @@ def test_print_parse(args, keyword_arg_dict, expected):
     ],
 )
 def test_apply_keywords(default_keyword, keyword_arg_dict, expected):
-    result = CallParser._apply_keywords(default_keyword, keyword_arg_dict)
+    result = CallExpr._apply_keywords(default_keyword, keyword_arg_dict)
 
     assert result == expected
 
@@ -89,7 +89,7 @@ def test_apply_keywords(default_keyword, keyword_arg_dict, expected):
     ],
 )
 def test_range_parse(expressions, expected):
-    result = CallParser._range_parse(expressions)
+    result = CallExpr._range_parse(expressions)
     assert result == expected
 
 
@@ -103,6 +103,6 @@ def test_range_parse(expressions, expected):
     ],
 )
 def test_create_range_dict(args, expected):
-    result = CallParser._create_range_dict(args)
+    result = CallExpr._create_range_dict(args)
 
     assert result == expected

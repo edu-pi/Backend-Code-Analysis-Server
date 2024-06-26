@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.analysis.element_manager import CodeElementManager
+from app.visualize.analysis.element_manager import CodeElementManager
 
 
 @pytest.fixture

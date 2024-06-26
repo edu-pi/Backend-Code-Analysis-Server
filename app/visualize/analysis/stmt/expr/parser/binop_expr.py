@@ -2,16 +2,16 @@ import ast
 from dataclasses import dataclass
 from typing import Any
 
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_util import util
+from app.visualize.analysis.stmt.expr.expr_util import util
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 
-class BinopParser:
+class BinopExpr:
 
     @staticmethod
     def parse(left_obj: ExprObj, right_obj: ExprObj, op: ast):
-        value = BinopParser._calculate_value(left_obj.value, right_obj.value, op)
-        expressions = BinopParser._create_expressions(left_obj.expressions, right_obj.expressions, op, value)
+        value = BinopExpr._calculate_value(left_obj.value, right_obj.value, op)
+        expressions = BinopExpr._create_expressions(left_obj.expressions, right_obj.expressions, op, value)
 
         return ExprObj(type="binop", value=value, expressions=expressions)
 
@@ -46,7 +46,7 @@ class BinopParser:
         total_expressions = util.transpose_with_last_fill([left_expressions, right_expressions])
 
         for i in range(len(total_expressions)):
-            total_expressions[i] = BinopParser._concat_expression(total_expressions[i][0], total_expressions[i][1], op)
+            total_expressions[i] = BinopExpr._concat_expression(total_expressions[i][0], total_expressions[i][1], op)
 
         total_expressions.append(str(value))
 

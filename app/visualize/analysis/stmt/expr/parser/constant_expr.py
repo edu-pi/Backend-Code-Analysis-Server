@@ -1,14 +1,13 @@
 import ast
-from dataclasses import dataclass
 
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 
-class ConstantParser:
+class ConstantExpr:
     @staticmethod
     def parse(node: ast.Constant):
-        value = ConstantParser._get_literal(node)
-        expressions = ConstantParser._create_expressions(value)
+        value = ConstantExpr._get_literal(node)
+        expressions = ConstantExpr._create_expressions(value)
         return ExprObj(type="constant", value=value, expressions=expressions)
 
     @staticmethod

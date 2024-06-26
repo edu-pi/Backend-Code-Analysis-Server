@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
-from app.visualize.analysis.stmt_traveler import StmtTraveler
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
 
 @pytest.fixture

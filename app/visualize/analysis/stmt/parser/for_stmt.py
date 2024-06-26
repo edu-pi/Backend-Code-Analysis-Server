@@ -1,14 +1,14 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_traveler import ExprTraveler
+from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
 
 
-class ForParser:
+class ForStmt:
     @staticmethod
     def parse(target: ast, iter: ast, elem_manager: CodeElementManager):
-        target_name = ForParser._get_target_name(target, elem_manager)
-        condition_dict = ForParser._get_condition_obj(iter, elem_manager)
+        target_name = ForStmt._get_target_name(target, elem_manager)
+        condition_dict = ForStmt._get_condition_obj(iter, elem_manager)
 
         return {"target": target_name, "condition_dict": condition_dict}
 

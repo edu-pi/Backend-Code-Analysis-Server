@@ -1,10 +1,9 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_traveler import ExprTraveler
 
 
-class AssignParser:
+class AssignStmt:
 
     @staticmethod
     def parse(targets: list[ast], value: ast, elem_manager: CodeElementManager):

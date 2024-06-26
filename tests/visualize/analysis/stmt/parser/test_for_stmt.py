@@ -2,10 +2,9 @@ import ast
 from unittest.mock import MagicMock, patch
 import pytest
 
-from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt_parser.for_parser import ForParser
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
-from app.visualize.analysis.stmt_parser.expr_analysis.expr_traveler import ExprTraveler
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
+from app.visualize.analysis.stmt.parser.expr_stmt import ExprTraveler
 
 
 @pytest.fixture
@@ -18,13 +17,7 @@ def create_ast():
     return _create_ast_node
 
 
-@pytest.fixture
-def elem_manager():
-    mock = MagicMock(spec=CodeElementManager)
-    return mock
-
-
-## TODO 함수마다 parser를 추가하는 방향 고민
+# TODO 함수마다 parser를 추가하는 방향 고민
 @pytest.mark.parametrize(
     "code, expect",
     [
@@ -51,5 +44,5 @@ def test_get_condition_value_list(create_ast, elem_manager, code, expect):
             expressions=[{"end": "3", "start": "0", "step": "1"}],
         ),
     ):
-        actual = ForParser._get_condition_obj(iter_node, elem_manager)
+        actual = ForStmt._get_condition_obj(iter_node, elem_manager)
         assert actual == expect
