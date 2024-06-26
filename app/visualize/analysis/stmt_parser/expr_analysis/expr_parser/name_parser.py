@@ -1,6 +1,8 @@
 import ast
+from dataclasses import dataclass
 
 from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
 
 
 class NameParser:
@@ -8,12 +10,12 @@ class NameParser:
     @staticmethod
     def parse(ctx: ast, identifier_name, elem_manager: CodeElementManager):
         if isinstance(ctx, ast.Store):
-            return {"value": identifier_name, "expressions": [identifier_name]}
+            return ExprObj(value=identifier_name, expressions=[identifier_name])
 
         elif isinstance(ctx, ast.Load):
             value = NameParser._get_identifier_value(identifier_name, elem_manager)
             expressions = NameParser._create_expressions(identifier_name, value)
-            return {"value": value, "expressions": expressions}
+            return ExprObj(value=value, expressions=expressions)
 
         elif isinstance(ctx, ast.Del):
             raise NotImplementedError(f"Unsupported node type: {type(ctx)}")

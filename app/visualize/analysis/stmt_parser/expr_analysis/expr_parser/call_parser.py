@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+from typing import Optional
+
+from app.visualize.analysis.stmt_parser.expr_analysis.expr_models.expr_obj import ExprObj
 from app.visualize.analysis.stmt_parser.expr_analysis.expr_util import util
 
 
@@ -7,14 +11,13 @@ class CallParser:
     def parse(func_name: str, args: list, keyword_arg_dict: dict):
 
         if func_name == "print":
-            expressions = CallParser._print_parse(args, keyword_arg_dict)
+            return CallParser._print_parse(args, keyword_arg_dict)
+
         elif func_name == "range":
-            expressions = CallParser._range_parse(args)
+            return CallParser._range_parse(args)
+
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")
-
-        value = expressions[-1]
-        return {"value": value, "expressions": expressions}
 
     # ["'*' * (i + 1)\n", "'*' * (3 + 1)\n", "'****'\n"]
     @staticmethod
@@ -30,7 +33,7 @@ class CallParser:
             str_expression = default_keyword["sep"].join(expressions)
             print_expressions.append(str_expression + default_keyword["end"])
 
-        return print_expressions
+        return ExprObj(value=print_expressions[-1], expressions=print_expressions)
 
     # print 함수의 키워드 파싱 : end, sep만 지원 Todo. file, flush
     @staticmethod
@@ -49,7 +52,7 @@ class CallParser:
         #  ->  [{start: a, end: 10, step: 2},{start: 3, end: 10, step: 2}]를 반환
 
         # args에 있는 expressions을 꺼내와서 배열에 넣기
-        expressions_list = [arg['expressions'] for arg in args]
+        expressions_list = [arg["expressions"] for arg in args]
 
         # util의 transpose_with_last_fill을 이용하여 값 배열 생성
         transposed_expressions = util.transpose_with_last_fill(expressions_list)
@@ -57,16 +60,24 @@ class CallParser:
         # 배열을 딕셔너리로 만들기
         range_params_list = [CallParser._create_range_dict(expressions) for expressions in transposed_expressions]
 
-        return range_params_list
+        return Range(value=range_params_list[-1], expressions=range_params_list)
 
     @staticmethod
     def _create_range_dict(expressions):
-        range_params = {}
         if len(expressions) == 1:
-            range_params['end'] = expressions[0]
-        if len(expressions) >= 2:
-            range_params['start'] = expressions[0]
-            range_params['end'] = expressions[1]
-        if len(expressions) >= 3:
-            range_params['step'] = expressions[2]
-        return range_params
+            return {"end": expressions[0]}
+
+        elif len(expressions) == 2:
+            return {"start": expressions[0], "end": expressions[1]}
+
+        elif len(expressions) == 3:
+            return {"start": expressions[0], "end": expressions[1], "step": expressions[2]}
+
+        else:
+            raise TypeError(f"[CallParser]: {expressions} 인자의 개수가 잘못되었습니다.")
+
+
+@dataclass
+class Range:
+    value: dict
+    expressions: list
