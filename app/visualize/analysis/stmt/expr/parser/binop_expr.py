@@ -66,9 +66,3 @@ class BinopExpr:
             return f"{left_expression} // {right_expression}"
         else:
             raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
-
-
-@dataclass
-class Binop:
-    value: Any
-    expressions: list[str]
