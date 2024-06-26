@@ -1,6 +1,4 @@
 import ast
-from dataclasses import dataclass
-from typing import Any
 
 from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
@@ -56,13 +54,18 @@ class BinopExpr:
     def _concat_expression(left_expression, right_expression, op: ast):
         if isinstance(op, ast.Add):
             return f"{left_expression} + {right_expression}"
+
         elif isinstance(op, ast.Sub):
             return f"{left_expression} - {right_expression}"
+
         elif isinstance(op, ast.Mult):
             return f"{left_expression} * {right_expression}"
+
         elif isinstance(op, ast.Div):
             return f"{left_expression} / {right_expression}"
+
         elif isinstance(op, ast.FloorDiv):
             return f"{left_expression} // {right_expression}"
+
         else:
             raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
