@@ -56,6 +56,7 @@ class CallParser:
         expressions_list = [arg.expressions for arg in args]
 
         # util의 transpose_with_last_fill을 이용하여 값 배열 생성
+        # ['a', '10', '2'], ['3', '10', '2']
         transposed_expressions = util.transpose_with_last_fill(expressions_list)
 
         # 배열을 딕셔너리로 만들기
@@ -76,3 +77,4 @@ class CallParser:
 
         else:
             raise TypeError(f"[CallParser]: {expressions} 인자의 개수가 잘못되었습니다.")
+
