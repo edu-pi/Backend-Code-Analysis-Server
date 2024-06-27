@@ -11,11 +11,11 @@ class StmtTraveler:
     @staticmethod
     def for_travel(node: ast.For, elem_manager: CodeElementManager):
         # parse condition
-        condition_obj = ForStmt.parse(node.target, node.iter, elem_manager)
+        for_stmt_obj = ForStmt.parse(node.target, node.iter, elem_manager)
         # parse body
-        body_odjs = StmtTraveler._for_body_travel(node, elem_manager, condition_obj)
+        body_odjs = StmtTraveler._for_body_travel(node, elem_manager, for_stmt_obj.condition)
 
-        return {"condition": condition_obj, "body": body_odjs}
+        return for_stmt_obj
 
     @staticmethod
     def _for_body_travel(node: ast, elem_manager, condition_obj):
