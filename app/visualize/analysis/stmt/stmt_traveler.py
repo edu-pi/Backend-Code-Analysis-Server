@@ -41,7 +41,7 @@ class StmtTraveler:
 
     @staticmethod
     def expr_travel(node: ast.Expr, elem_manager: CodeElementManager):
-        return ExprStmt.parse(node.value, elem_manager)
+        return ExprStmt.parse(node, elem_manager)
 
     @staticmethod
     def _internal_travel(node: ast, elem_manager: CodeElementManager):
