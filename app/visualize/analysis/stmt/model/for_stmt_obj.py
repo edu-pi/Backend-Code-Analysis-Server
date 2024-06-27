@@ -5,6 +5,6 @@ from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 @dataclass
 class ForStmtObj:
-    target: ExprObj
+    init_value: ExprObj
     condition: ExprObj
     type: str = "for"

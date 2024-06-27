@@ -7,11 +7,12 @@ from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 
 class ForStmt:
     @staticmethod
-    def parse(target: ast, iter: ast, elem_manager: CodeElementManager):
-        target_obj = ForStmt._get_target_name(target, elem_manager)
+    def parse(target: ast.Name, iter: ast.Call, elem_manager: CodeElementManager):
+        # init Value
+        init_value_obj = ForStmt._get_target_name(target, elem_manager)
         condition_obj = ForStmt._get_condition_obj(iter, elem_manager)
 
-        return ForStmtObj(target=target_obj, condition=condition_obj)
+        return ForStmtObj(init_value=init_value_obj, condition=condition_obj)
 
     @staticmethod
     def _get_target_name(target, elem_manager: CodeElementManager):

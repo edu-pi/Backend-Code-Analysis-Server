@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 
@@ -13,24 +13,25 @@ class StmtTraveler:
         # parse condition
         for_stmt_obj = ForStmt.parse(node.target, node.iter, elem_manager)
         # parse body
-        body_odjs = StmtTraveler._for_body_travel(node, elem_manager, for_stmt_obj.condition)
-
-        return for_stmt_obj
-
-    @staticmethod
-    def _for_body_travel(node: ast, elem_manager, condition_obj):
         body_odjs = []
+        init_value = for_stmt_obj.init_value
+        condition = for_stmt_obj.condition
 
-        if isinstance(condition_obj, ExprObj):
-            for i in range(condition_obj["start"], condition_obj["end"], condition_obj["step"]):
+        if condition.type == "range":
+            # 파싱한 제어문대로 body를 파싱하는 Loop 시작
+            for i in range(condition.value["start"], condition.value["end"], condition.value["step"]):
+                # init value 값 변경
+                elem_manager.set_element(init_value.value, i)
                 for body in node.body:
-                    StmtTraveler._internal_travel(node.body, elem_manager)
+                    # parse body
                     body_odjs.append(StmtTraveler._internal_travel(body, elem_manager))
 
-        elif isinstance(condition_obj, "list"):
-            raise NotImplementedError(f"[StmtTraveler] {type(condition_obj)}는 지원하지 않는 타입입니다.")
+        elif condition.type == "list":
+            raise NotImplementedError(f"[StmtTraveler] {type(condition.type)}는 지원하지 않는 타입입니다.")
         else:
-            raise TypeError(f"[StmtTraveler] {type(condition_obj)}는 잘못된 타입입니다.")
+            raise TypeError(f"[StmtTraveler] {type(condition.type)}는 잘못된 타입입니다.")
+
+        return for_stmt_obj
 
     @staticmethod
     def expr_travel(node: ast.Expr, elem_manager: CodeElementManager):
