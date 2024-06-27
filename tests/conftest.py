@@ -8,5 +8,5 @@ from app.visualize.analysis.element_manager import CodeElementManager
 @pytest.fixture
 def elem_manager():
     mock = MagicMock(spec=CodeElementManager)
-    mock.set_element.return_value = 10
+    mock.get_element.return_value = 10
     return mock
