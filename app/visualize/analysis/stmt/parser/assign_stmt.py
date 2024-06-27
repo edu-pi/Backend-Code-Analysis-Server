@@ -14,7 +14,7 @@ class AssignStmt:
 
         AssignStmt._assign_value_to_target(target_names, expr_obj.value, elem_manager)
 
-        return
+        return AssignStmt._create_assign_obj(target_names, expr_obj.value)
 
     @staticmethod
     def _get_target_names(node: ast, elem_manager: CodeElementManager):
