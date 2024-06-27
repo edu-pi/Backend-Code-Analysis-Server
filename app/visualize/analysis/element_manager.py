@@ -18,7 +18,7 @@ class CodeElementManager:
         self.call_id += 1
         return self.call_id
 
-    def get_variable_value(self, name):
+    def get_element(self, name):
         if name in self.variables_value:
             return self.variables_value[name]
 

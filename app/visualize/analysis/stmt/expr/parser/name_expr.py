@@ -26,7 +26,7 @@ class NameExpr:
     @staticmethod
     def _get_identifier_value(identifier_name, elem_manager: CodeElementManager):
         try:
-            return elem_manager.get_variable_value(name=identifier_name)
+            return elem_manager.get_element(name=identifier_name)
         except NameError as e:
             print("#error:", e)
 
