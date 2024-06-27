@@ -2,7 +2,7 @@ import re
 
 
 def replace_word(expression, original_word, new_word):
-    pattern = rf'\b{original_word}\b'
+    pattern = rf"\b{original_word}\b"
     replaced_expression = re.sub(pattern, str(new_word), expression)
     return replaced_expression
 
@@ -15,8 +15,7 @@ def transpose_with_last_fill(expressions):
     transposed_values = []
     for i in range(max_length):
         current_list = list(
-            sublist[i] if isinstance(sublist, list) and i < len(sublist) else sublist[-1]
-            for sublist in expressions
+            sublist[i] if isinstance(sublist, list) and i < len(sublist) else sublist[-1] for sublist in expressions
         )
         transposed_values.append(current_list)
 

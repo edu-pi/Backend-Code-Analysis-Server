@@ -1,14 +1,39 @@
 import ast
 
-from app.analysis.generator.body_generator import BodyGenerator
 from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
 
 # TODO 이름 수정
-class CodeAnalyzer:
+class CodeVisualizer:
 
-    def __init__(self, elem_manager: CodeElementManager):
-        self.elem_manager = elem_manager
+    def __init__(self, source_code):
+        self._parsed_node = ast.parse(source_code)
+        self._elem_manager = CodeElementManager()
 
-    def visualize_code(self, parsed_ast: ast.Module):
-        return BodyGenerator.generate(parsed_ast.body, self.elem_manager)
+    def visualize_code(self):
+        analysis_objs = self._analysis_parsed_node()
+        # TODO: 시각화 노드 리스트 생성
+        return analysis_objs
+
+    def _analysis_parsed_node(self):
+        self._elem_manager.increase_depth()
+        steps = []
+
+        for node in self._parsed_node.body:
+            if isinstance(node, ast.Assign):
+                pass
+
+            elif isinstance(node, ast.For):
+                for_vizs = StmtTraveler.for_travel(node, self._elem_manager)
+                steps.extend(for_vizs)
+
+            elif isinstance(node, ast.Expr):
+                pass
+
+            else:
+                raise TypeError(f"지원하지 않는 노드 타입입니다.: {type(node)}")
+
+        self._elem_manager.decrease_depth()
+
+        return steps

@@ -7,10 +7,10 @@ class AssignViz:
     type: str = "assignViz"
 
 
-'''
+"""
     @ list: Variable 리스트
-    @ type: 타입
-'''
+    @ type: 타입````
+"""
 
 
 @dataclass(frozen=True)
@@ -20,11 +20,11 @@ class Variable:
     name: str
 
 
-'''
+"""
     @ depth: 깊이
     @ expr: 변수에 들어갈 표현식
     @ name: 변수 이름
-'''
+"""
 
 
 @dataclass
@@ -42,7 +42,7 @@ class ConditionViz:
         if self.start == self.cur:
             return list(self.__dict__.keys())
 
-        return ['cur']
+        return ["cur"]
 
 
 @dataclass(frozen=True)
@@ -54,12 +54,12 @@ class ForViz:
     type: str = "for"
 
 
-'''
+"""
     @ id: 식별값
     @ depth: 깊이
     @ condition: 조건절
     @ type : 타입
-'''
+"""
 
 
 @dataclass(frozen=True)
@@ -72,10 +72,10 @@ class PrintViz:
     type: str = "print"
 
 
-'''
+"""
     @ id: 식별값
     @ depth: 깊이
     @ name: 변수 이름
     @ value: 변수 값
 
-'''
+"""
