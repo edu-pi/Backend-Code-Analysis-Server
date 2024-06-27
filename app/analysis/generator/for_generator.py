@@ -29,14 +29,16 @@ class ForGenerator:
         vizs = []
         for i in range(condition.start, condition.end, condition.step):
             # target 업데이트
-            self.__elem_manager.add_variable_value(name=target_name, value=i)
+            self.__elem_manager.set_element(name=target_name, value=i)
 
             # for step 추가
             vizs.append(
-                ForViz(id=self.__call_id,
-                       depth=self.__elem_manager.get_depth(),
-                       condition=condition,
-                       highlight=get_highlight_attr(condition))
+                ForViz(
+                    id=self.__call_id,
+                    depth=self.__elem_manager.get_depth(),
+                    condition=condition,
+                    highlight=get_highlight_attr(condition),
+                )
             )
 
             # 순환 참조 문제로 locally import

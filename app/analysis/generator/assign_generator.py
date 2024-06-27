@@ -25,7 +25,7 @@ class AssignGenerator:
         # 결과 계산 후 저장
         calculated_node = assign_generator.__calculate_node()
         for target_name in parsed_target_names:
-            elem_manager.add_variable_value(name=target_name, value=calculated_node["value"])
+            elem_manager.set_element(name=target_name, value=calculated_node["value"])
 
         # 표현식 변환 후 steps 생성
         assign_vizs = assign_generator.__create_assign_viz_steps(parsed_target_names, calculated_node["expressions"])
