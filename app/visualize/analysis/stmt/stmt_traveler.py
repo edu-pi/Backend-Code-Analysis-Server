@@ -1,12 +1,18 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 
 
 class StmtTraveler:
+
+    @staticmethod
+    def assign_travel(node: ast.Assign, elem_manager: CodeElementManager):
+        return AssignStmt.parse(node.targets, node.value, elem_manager)
 
     @staticmethod
     def for_travel(node: ast.For, elem_manager: CodeElementManager):
