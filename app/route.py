@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.code_analyzer import CodeVisualizer
+from app.visualize.code_visualizer import CodeVisualizer
 
 app = FastAPI()
 

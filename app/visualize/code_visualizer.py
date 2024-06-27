@@ -22,14 +22,17 @@ class CodeVisualizer:
 
         for node in self._parsed_node.body:
             if isinstance(node, ast.Assign):
-                pass
+                assign_obj = StmtTraveler.assign_travel(node, self._elem_manager)
+                # TODO:Assing_obj를 리스트가 아닌객체로 변경하고, extend -> append로 변경
+                steps.extend(assign_obj)
 
             elif isinstance(node, ast.For):
                 for_vizs = StmtTraveler.for_travel(node, self._elem_manager)
-                steps.extend(for_vizs)
+                steps.append(for_vizs)
 
             elif isinstance(node, ast.Expr):
-                pass
+                expr_obj = StmtTraveler.expr_travel(node, self._elem_manager)
+                steps.append(expr_obj)
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {type(node)}")

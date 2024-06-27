@@ -15,7 +15,7 @@ class ExprTraveler:
             left = ExprTraveler.binop_travel(node.left, elem_manager)
             right = ExprTraveler.binop_travel(node.right, elem_manager)
             op = node.op
-            return BinopExpr.parse(left, right, op, elem_manager)
+            return BinopExpr.parse(left, right, op)
 
         elif isinstance(node, ast.Name):
             return ExprTraveler.name_travel(node, elem_manager)
@@ -42,7 +42,7 @@ class ExprTraveler:
     @staticmethod
     def _get_func_name(node: ast, elem_manager: CodeElementManager):
         if isinstance(node, ast.Name):
-            return ExprTraveler.name_travel(node, elem_manager)
+            return node.id
 
         elif isinstance(node, ast.Attribute):
             raise NotImplementedError(f"[call_travel] {type(node)}정의되지 않았습니다.")
