@@ -17,10 +17,10 @@ def create_ast():
 
 
 @pytest.mark.parametrize(
-    "code, expect",
+    "node, expect",
     [
         (
-            """a""",
+            ast.Name("a", ast.Load()),
             ExprObj(
                 type="name",
                 value=10,
@@ -28,7 +28,7 @@ def create_ast():
             ),
         ),
         (
-            """20""",
+            ast.Constant(20),
             ExprObj(
                 type="constant",
                 value=20,
@@ -36,7 +36,7 @@ def create_ast():
             ),
         ),
         (
-            """10 + 20""",
+            ast.BinOp(ast.Constant(10), ast.Add(), ast.Constant(20)),
             ExprObj(
                 type="binop",
                 value=30,
@@ -44,7 +44,11 @@ def create_ast():
             ),
         ),
         (
-            """print(a+2)""",
+            ast.Call(
+                func=ast.Name("print", ast.Load()),
+                args=[ast.BinOp(ast.Name("a", ast.Load()), ast.Add(), ast.Constant(2))],
+                keywords=[],
+            ),
             ExprObj(
                 type="print",
                 value="12\n",
@@ -52,7 +56,11 @@ def create_ast():
             ),
         ),
         (
-            """print(a)""",
+            ast.Call(
+                func=ast.Name("print", ast.Load()),
+                args=[ast.Name("a", ast.Load())],
+                keywords=[],
+            ),
             ExprObj(
                 type="print",
                 value="10\n",
@@ -61,9 +69,8 @@ def create_ast():
         ),
     ],
 )
-def test__get_expr_obj(create_ast, elem_manager, code, expect):
+def test__get_expr_obj(elem_manager, node, expect):
     # expr 노드를 받아서 변수 이름을 반환하는지 통합테스트
-    expr_node = create_ast(code)
 
-    actual = ExprStmt._get_expr_obj(expr_node.value, elem_manager)
+    actual = ExprStmt._get_expr_obj(node, elem_manager)
     assert actual == expect
