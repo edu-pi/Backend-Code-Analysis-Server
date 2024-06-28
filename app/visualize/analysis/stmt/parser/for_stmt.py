@@ -6,18 +6,19 @@ from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 
 
 class ForStmt:
-    @staticmethod
-    def parse(target: ast.Name, iter: ast.Call, elem_manager: CodeElementManager):
-        # init Value
-        init_value_obj = ForStmt._get_target_name(target, elem_manager)
-        condition_obj = ForStmt._get_condition_obj(iter, elem_manager)
 
-        return ForStmtObj(init_value=init_value_obj, condition=condition_obj)
+    @staticmethod
+    def parse(node: ast.For, elem_manager: CodeElementManager):
+        target_name = ForStmt._get_target_name(node.target, elem_manager)
+        iter_obj = ForStmt._get_condition_obj(node.iter, elem_manager)
+
+        return ForStmtObj(target_name=target_name, iter_obj=iter_obj)
 
     @staticmethod
     def _get_target_name(target, elem_manager: CodeElementManager):
         if isinstance(target, ast.Name):
-            return ExprTraveler.name_travel(target, elem_manager)
+            name_obj = ExprTraveler.name_travel(target, elem_manager)
+            return name_obj.value
 
         else:
             raise TypeError(f"[ForParser]:  {type(target)}는 잘못된 타입입니다.")
@@ -25,11 +26,11 @@ class ForStmt:
     @staticmethod
     def _get_condition_obj(iter: ast, elem_manager: CodeElementManager):
         if isinstance(iter, ast.Call):
-            # {value: {start: 3, end: 10, step: 2}, expressions: [{start: a, end: 10, step: 2}...{start: 3, end: 10, step: 2}]
             range_obj = ExprTraveler.call_travel(iter, elem_manager)
             return range_obj
+
         elif isinstance(iter, ast.List):
-            return
+            raise NotImplementedError(f"[ForParser]: {type(iter)}는 지원하지 않는 타입입니다.")
 
         else:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
