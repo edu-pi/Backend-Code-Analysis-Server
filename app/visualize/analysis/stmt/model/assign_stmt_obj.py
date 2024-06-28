@@ -2,13 +2,8 @@ from dataclasses import dataclass
 
 
 @dataclass
-class AssignObj:
+class AssignStmtObj:
     targets: list[str]
     value: str
+    expressions: list[str]
     type: str = "assign"
-
-
-@dataclass
-class AssignStmtObj:
-    assign_steps: list[AssignObj]
-    type: str = "assign_list"

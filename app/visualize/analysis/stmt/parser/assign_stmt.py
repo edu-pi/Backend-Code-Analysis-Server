@@ -2,7 +2,7 @@ import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignObj, AssignStmtObj
+from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
 
 
 class AssignStmt:
@@ -14,7 +14,7 @@ class AssignStmt:
 
         AssignStmt._set_value_to_target(target_names, expr_obj.value, elem_manager)
 
-        return AssignStmt._create_assign_obj(target_names, expr_obj.expressions)
+        return AssignStmtObj(targets=target_names, expressions=expr_obj.expressions, value=expr_obj.value)
 
     @staticmethod
     def _get_target_name(node: ast, elem_manager: CodeElementManager):
@@ -44,11 +44,3 @@ class AssignStmt:
     def _set_value_to_target(target_names: list[str], value, elem_manager: CodeElementManager):
         for target_name in target_names:
             elem_manager.set_element(target_name, value)
-
-    @staticmethod
-    def _create_assign_obj(target_names: list[str], value_expressions: list[str]):
-        assign_objs = []
-        for value_expression in value_expressions:
-            assign_objs.append(AssignObj(targets=target_names, value=value_expression))
-
-        return AssignStmtObj(assign_steps=assign_objs)
