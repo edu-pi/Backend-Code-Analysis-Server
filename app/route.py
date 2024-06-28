@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from app.analysis.code_analyzer import CodeAnalyzer
-from app.analysis.element_manager import CodeElementManager
+from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.code_visualizer import CodeVisualizer
 
 app = FastAPI()
 
@@ -34,9 +34,6 @@ def read_root():
 @app.post("/v1/python")
 def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
-    code_analyzer = CodeAnalyzer(CodeElementManager())
+    code_analyzer = CodeVisualizer(request_code)
 
-    # 소스 코드를 추상 구문 트리로 변환
-    parsed_ast = ast.parse(request_code.source_code)
-
-    return code_analyzer.visualize_code(parsed_ast)
+    return code_analyzer.visualize_code()
