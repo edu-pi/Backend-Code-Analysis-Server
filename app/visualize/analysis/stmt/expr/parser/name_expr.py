@@ -28,9 +28,9 @@ class NameExpr:
         try:
             return elem_manager.get_element(name=identifier_name)
         except NameError as e:
-            print("#error:", e)
+            raise NameError(f"[NameExpr]: {identifier_name}은 정의되지 않은 변수입니다.") from e
 
-    # 변수의 변화 과정을 만들어주는 함수
+    # 변수의 변화 과정을 만들어 주는 함수
     @staticmethod
     def _create_expressions(identifier_name, value):
         return [identifier_name, str(value)]
