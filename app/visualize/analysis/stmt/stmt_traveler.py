@@ -11,7 +11,7 @@ class StmtTraveler:
 
     @staticmethod
     def assign_travel(node: ast.Assign, elem_manager: CodeElementManager):
-        return AssignStmt.parse(node.targets, node.value, elem_manager)
+        return AssignStmt.parse(node, elem_manager)
 
     @staticmethod
     def for_travel(node: ast.For, elem_manager: CodeElementManager):
