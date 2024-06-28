@@ -77,24 +77,24 @@ class ExprTraveler:
         keyword_dict = {}
 
         for keyword in keywords:
-            if isinstance(keyword.iterator, ast.BinOp):
-                binop_obj = ExprTraveler.binop_travel(keyword.iterator, elem_manager)
+            if isinstance(keyword.value, ast.BinOp):
+                binop_obj = ExprTraveler.binop_travel(keyword.value, elem_manager)
                 value = binop_obj.iterator
 
-            elif isinstance(keyword.iterator, ast.Name):
-                name_obj = ExprTraveler.name_travel(keyword.iterator, elem_manager)
+            elif isinstance(keyword.value, ast.Name):
+                name_obj = ExprTraveler.name_travel(keyword.value, elem_manager)
                 value = name_obj.iterator
 
-            elif isinstance(keyword.iterator, ast.Constant):
-                constant_obj = ExprTraveler.constant_travel(keyword.iterator)
-                value = constant_obj.iterator
+            elif isinstance(keyword.value, ast.Constant):
+                constant_obj = ExprTraveler.constant_travel(keyword.value)
+                value = constant_obj.value
 
-            elif isinstance(keyword.iterator, ast.Call):
-                call_obj = ExprTraveler.call_travel(keyword.iterator, elem_manager)
-                value = call_obj.iterator
+            elif isinstance(keyword.value, ast.Call):
+                call_obj = ExprTraveler.call_travel(keyword.value, elem_manager)
+                value = call_obj.value
 
             else:
-                raise TypeError(f"[binop_travel] {type(keyword.iterator)}는 잘못된 타입입니다.")
+                raise TypeError(f"[binop_travel] {type(keyword.value)}는 잘못된 타입입니다.")
 
             keyword_dict[keyword.arg] = value
 
