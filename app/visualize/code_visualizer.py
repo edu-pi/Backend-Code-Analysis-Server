@@ -24,7 +24,7 @@ class CodeVisualizer:
             if isinstance(node, ast.Assign):
                 assign_obj = StmtTraveler.assign_travel(node, self._elem_manager)
                 # TODO:Assing_obj를 리스트가 아닌객체로 변경하고, extend -> append로 변경
-                steps.extend(assign_obj)
+                steps.append(assign_obj)
 
             elif isinstance(node, ast.For):
                 for_vizs = StmtTraveler.for_travel(node, self._elem_manager)
