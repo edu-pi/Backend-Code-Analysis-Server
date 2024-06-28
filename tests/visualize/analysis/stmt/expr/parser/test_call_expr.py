@@ -6,6 +6,7 @@ from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
 
 
 @pytest.mark.parametrize("func_name, args, keyword_arg_dict, expected", [])
+@pytest.mark.skip
 def test_parse(func_name, args, keyword_arg_dict, expected):
     pass
 
