@@ -5,14 +5,14 @@ from app.visualize.analysis.stmt.expr.model.range_expr_obj import RangeExprObj
 
 
 @dataclass
-class BodyStepObj:
+class BodyObj:
     cur_value: Any
-    body_objs: list[Any]
+    body_steps: list[Any]
 
 
 @dataclass
 class ForStmtObj:
     target_name: str
-    iter_obj: Any
-    body_steps: list[BodyStepObj] = None
+    iter_obj: RangeExprObj
+    body_objs: list[BodyObj] = None
     type: str = "for"

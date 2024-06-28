@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.model.for_stmt_obj import BodyStepObj
+from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
@@ -28,7 +28,7 @@ class StmtTraveler:
             for body in node.body:
                 body_objs.append(StmtTraveler._internal_travel(body, elem_manager))
 
-            body_steps.append(BodyStepObj(cur_value=i, body_objs=body_objs))
+            body_steps.append(BodyObj(cur_value=i, body_steps=body_objs))
 
         for_stmt_obj.body_steps = body_steps
 
