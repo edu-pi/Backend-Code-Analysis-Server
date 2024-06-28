@@ -1,5 +1,7 @@
 from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.print_expr_obj import PrintExprObj
+from app.visualize.analysis.stmt.expr.model.range_expr_obj import RangeExpression, RangeExprObj
 
 
 class CallExpr:
@@ -8,12 +10,12 @@ class CallExpr:
     def parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
 
         if func_name == "print":
-            expressions = CallExpr._print_parse(args, keyword_arg_dict)
-            return ExprObj(type="print", value=expressions[-1], expressions=expressions)
+            print_expressions = CallExpr._print_parse(args, keyword_arg_dict)
+            return PrintExprObj(value=print_expressions[-1], expressions=print_expressions)
 
         elif func_name == "range":
-            expressions = CallExpr._range_parse(args)
-            return ExprObj(type="range", value=expressions[-1], expressions=expressions)
+            range_iter, range_expressions = CallExpr._range_parse(args)
+            return RangeExprObj(iterator=list(range_iter), expressions=range_expressions)
 
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")
@@ -52,28 +54,50 @@ class CallExpr:
         # ]
         #  ->  [{start: a, end: 10, step: 2},{start: 3, end: 10, step: 2}]를 반환
 
-        # args에 있는 expressions을 꺼내와서 배열에 넣기
-        expressions_list = [arg.expressions for arg in args]
+        # range_iter를 만들어주는 함수
+        range_iter = CallExpr._create_range_iter([arg.value for arg in args])
 
         # util의 transpose_with_last_fill을 이용하여 값 배열 생성
         # ['a', '10', '2'], ['3', '10', '2']
-        transposed_expressions = util.transpose_with_last_fill(expressions_list)
+        transposed_expressions = util.transpose_with_last_fill([arg.expressions for arg in args])
 
-        # 배열을 딕셔너리로 만들기
-        range_expressions = [CallExpr._create_range_dict(expressions) for expressions in transposed_expressions]
+        # 배열을 range_obj로 만들기
+        range_expressions = [CallExpr._create_range_expression(range_list) for range_list in transposed_expressions]
 
-        return range_expressions
+        return range_iter, range_expressions
 
     @staticmethod
-    def _create_range_dict(expressions: list):
-        if len(expressions) == 1:
-            return {"start": "0", "end": expressions[0]}
+    def _create_range_expression(range_list: list):
+        if len(range_list) == 1:
+            return RangeExpression(start="0", end=range_list[0], step="1")
 
-        elif len(expressions) == 2:
-            return {"start": expressions[0], "end": expressions[1]}
+        elif len(range_list) == 2:
+            return RangeExpression(start=range_list[0], end=range_list[1], step="1")
 
-        elif len(expressions) == 3:
-            return {"start": expressions[0], "end": expressions[1], "step": expressions[2]}
+        elif len(range_list) == 3:
+            return RangeExpression(start=range_list[0], end=range_list[1], step=range_list[2])
 
         else:
-            raise TypeError(f"[CallParser]: {expressions} 인자의 개수가 잘못되었습니다.")
+            raise TypeError(f"[CallParser]: {range_list} 인자의 개수가 잘못되었습니다.")
+
+    @staticmethod
+    def _create_range_iter(arg_value_list: list):
+        start = 0
+        step = 1
+
+        if len(arg_value_list) == 1:
+            end = arg_value_list[0]
+
+        elif len(arg_value_list) == 2:
+            start = arg_value_list[0]
+            end = arg_value_list[1]
+
+        elif len(arg_value_list) == 3:
+            start = arg_value_list[0]
+            end = arg_value_list[1]
+            step = arg_value_list[2]
+
+        else:
+            raise TypeError(f"[CallParser]: {arg_value_list} 인자의 개수가 잘못되었습니다.")
+
+        return range(int(start), int(end), int(step))
