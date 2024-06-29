@@ -21,7 +21,6 @@ class CodeVisualizer:
         return ConverterTraveler.travel(analyzed_stmt_list)
 
     def _analysis_parsed_node(self):
-        self._elem_manager.increase_depth()
         steps = []
 
         for node in self._parsed_node.body:
@@ -40,7 +39,5 @@ class CodeVisualizer:
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {type(node)}")
-
-        self._elem_manager.decrease_depth()
 
         return steps
