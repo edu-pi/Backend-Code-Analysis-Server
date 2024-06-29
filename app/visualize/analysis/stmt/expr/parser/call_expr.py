@@ -15,7 +15,7 @@ class CallExpr:
 
         elif func_name == "range":
             range_iter, range_expressions = CallExpr._range_parse(args)
-            return RangeExprObj(iterator=list(range_iter), expressions=range_expressions)
+            return RangeExprObj(iterator=tuple(range_iter), expressions=tuple(range_expressions))
 
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")

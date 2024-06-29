@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class RangeExpression:
     start: str
     end: str
     step: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class RangeExprObj:
-    expressions: list[RangeExpression]
-    iterator: list
+    expressions: tuple[RangeExpression]
+    iterator: tuple
     type: str = "range"
