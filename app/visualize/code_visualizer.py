@@ -3,6 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 from app.visualize.generator.converter_traveler import ConverterTraveler
+from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 # TODO 이름 수정
@@ -12,11 +13,12 @@ class CodeVisualizer:
         self._parsed_node = ast.parse(source_code)
         self._elem_manager = CodeElementManager()
 
-    def visualize_code(self):
-        analysis_objs = self._analysis_parsed_node()
-        # TODO: 시각화 노드 리스트 생성
+        self._vizualization_manager = VisualizationManager()
 
-        return ConverterTraveler.travel(analysis_objs)
+    def visualize_code(self):
+        analyzed_stmt_list = self._analysis_parsed_node()
+        # TODO: 시각화 노드 리스트 생성
+        return ConverterTraveler.travel(analyzed_stmt_list)
 
     def _analysis_parsed_node(self):
         self._elem_manager.increase_depth()
