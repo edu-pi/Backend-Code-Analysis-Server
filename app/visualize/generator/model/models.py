@@ -18,6 +18,7 @@ class Variable:
     depth: int
     expr: str
     name: str
+    highlights: list
 
 
 """
