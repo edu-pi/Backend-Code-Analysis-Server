@@ -41,13 +41,8 @@ class ConditionViz:
         return ConditionViz(self.target, new_cur, self.start, self.end, self.step)
 
     def changed_attr(self):
-        if isinstance(self.cur, int):
-            if self.cur == int(self.start):
-                return list(self.__dict__.keys())
-
-        elif isinstance(self.cur, str):
-            if self.cur == str(self.start):
-                return list(self.__dict__.keys())
+        if str(self.cur) == self.start:
+            return list(self.__dict__.keys())
 
         return ["cur"]
 
@@ -59,7 +54,6 @@ class ForViz:
     condition: ConditionViz
     highlights: []
     type: str = "for"
-
 
     def update(self, new_condition, highlights):
         return ForViz(self.id, self.depth, new_condition, highlights)
