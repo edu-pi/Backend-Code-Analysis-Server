@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 
 
@@ -28,7 +29,7 @@ class Variable:
 """
 
 
-@dataclass
+@dataclass(frozen=True)
 class ConditionViz:
     target: str
     cur: int
@@ -36,11 +37,11 @@ class ConditionViz:
     end: int
     step: int
 
-    def copy_with_new_cur(self, new_cur):
+    def copy_with_cur(self, new_cur):
         return ConditionViz(self.target, new_cur, self.start, self.end, self.step)
 
     def changed_attr(self):
-        if self.start == self.cur:
+        if str(self.cur) == self.start:
             return list(self.__dict__.keys())
 
         return ["cur"]
@@ -51,8 +52,11 @@ class ForViz:
     id: int
     depth: int
     condition: ConditionViz
-    highlight: []
+    highlights: []
     type: str = "for"
+
+    def update(self, new_condition, highlights):
+        return ForViz(self.id, self.depth, new_condition, highlights)
 
 
 """
