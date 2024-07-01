@@ -12,7 +12,7 @@ class ConverterTraveler:
         viz_objs = []
         for analysis_obj in analysis_objs:
             if analysis_obj.type == "assign":
-                viz_objs.extend(AssignConverter.convert(analysis_obj))
+                viz_objs.extend(AssignConverter.convert(analysis_obj, viz_manager))
 
             elif analysis_obj.type == "for":
                 for_viz_list = ConverterTraveler._for_convert(analysis_obj, viz_manager)
