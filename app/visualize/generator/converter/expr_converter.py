@@ -14,6 +14,9 @@ class ExprConverter:
             depth = viz_manager.get_depth()
             return ExprConverter._print_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
+        else:
+            raise TypeError(f"[ExprConverter]:{type(expr_stmt_obj.expr_obj)}는 지원하지 않습니다.")
+
     @staticmethod
     def _print_convert(expr_obj: PrintObj, call_id, depth):
 
