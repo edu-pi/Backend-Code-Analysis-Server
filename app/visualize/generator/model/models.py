@@ -60,8 +60,6 @@ class ForViz:
     highlights: []
     type: str = "for"
 
-    def copy(self):
-        return deepcopy(self)
 
     def update(self, new_condition, highlights):
         return ForViz(self.id, self.depth, new_condition, highlights)

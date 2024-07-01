@@ -8,11 +8,11 @@ class VisualizationManager:
         if node in self.call_ids:
             return self.call_ids[node]
 
-        new_id = self.get_next_call_id()
+        new_id = self._get_next_call_id()
         self.call_ids[node] = new_id
         return new_id
 
-    def get_next_call_id(self):
+    def _get_next_call_id(self):
         self.call_id += 1
         return self.call_id
 
@@ -26,3 +26,4 @@ class VisualizationManager:
     def decrease_depth(self):
         self.depth = self.depth - 1
         return self.depth
+
