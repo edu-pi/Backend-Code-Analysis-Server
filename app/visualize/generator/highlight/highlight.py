@@ -1,10 +1,3 @@
-from app.visualize.generator.model.models import ConditionViz
-
-
-def for_highlight(condition: ConditionViz):
-    return condition.changed_attr()
-
-
 def expressions_highlight_indices(parsed_exprs):
     highlights = []
     pre_expr = parsed_exprs[0]

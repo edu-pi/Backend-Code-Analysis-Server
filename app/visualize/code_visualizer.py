@@ -12,13 +12,12 @@ class CodeVisualizer:
     def __init__(self, source_code):
         self._parsed_node = ast.parse(source_code)
         self._elem_manager = CodeElementManager()
-
-        self._vizualization_manager = VisualizationManager()
+        self._visualization_manager = VisualizationManager()
 
     def visualize_code(self):
         analyzed_stmt_list = self._analysis_parsed_node()
         # TODO: 시각화 노드 리스트 생성
-        return ConverterTraveler.travel(analyzed_stmt_list)
+        return ConverterTraveler.travel(analyzed_stmt_list, self._visualization_manager)
 
     def _analysis_parsed_node(self):
         steps = []
