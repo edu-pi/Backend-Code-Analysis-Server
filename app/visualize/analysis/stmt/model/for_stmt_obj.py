@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from app.visualize.analysis.stmt.expr.model.range_expr_obj import RangeExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import RangeObj
 
 
 @dataclass
@@ -13,6 +13,6 @@ class BodyObj:
 @dataclass
 class ForStmtObj:
     target_name: str
-    iter_obj: RangeExprObj
+    iter_obj: RangeObj
     body_objs: list[BodyObj] = None
     type: str = "for"

@@ -2,8 +2,7 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
-from app.visualize.analysis.stmt.expr.model.print_expr_obj import PrintExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, PrintObj
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 
 
@@ -40,8 +39,7 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
                     args=[ast.BinOp(ast.Name("a", ast.Load()), ast.Add(), ast.Constant(2))],
                     keywords=[],
                 ),
-                PrintExprObj(
-                    type="print",
+                PrintObj(
                     value="12\n",
                     expressions=["a + 2\n", "10 + 2\n", "12\n"],
                 ),
@@ -52,7 +50,7 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
                     args=[ast.Name("a", ast.Load())],
                     keywords=[],
                 ),
-                PrintExprObj(
+                PrintObj(
                     type="print",
                     value="10\n",
                     expressions=["a\n", "10\n"],

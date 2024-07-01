@@ -14,8 +14,8 @@ def transpose_with_last_fill(expressions):
 
     transposed_values = []
     for i in range(max_length):
-        current_list = list(
-            sublist[i] if isinstance(sublist, list) and i < len(sublist) else sublist[-1] for sublist in expressions
+        current_list = tuple(
+            sublist[i] if isinstance(sublist, tuple) and i < len(sublist) else sublist[-1] for sublist in expressions
         )
         transposed_values.append(current_list)
 

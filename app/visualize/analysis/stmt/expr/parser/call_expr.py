@@ -1,7 +1,6 @@
 from app.visualize.analysis.stmt.expr.expr_util import util
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
-from app.visualize.analysis.stmt.expr.model.print_expr_obj import PrintExprObj
-from app.visualize.analysis.stmt.expr.model.range_expr_obj import RangeExpression, RangeExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, RangeObj, PrintObj
+from app.visualize.analysis.stmt.expr.model.range_expression import RangeExpression
 
 
 class CallExpr:
@@ -11,18 +10,19 @@ class CallExpr:
 
         if func_name == "print":
             print_expressions = CallExpr._print_parse(args, keyword_arg_dict)
-            return PrintExprObj(value=print_expressions[-1], expressions=print_expressions)
+            return PrintObj(value=print_expressions[-1], expressions=print_expressions)
 
         elif func_name == "range":
             range_iter, range_expressions = CallExpr._range_parse(args)
-            return RangeExprObj(iterator=tuple(range_iter), expressions=tuple(range_expressions))
+
+            return RangeObj(value=range_iter, expressions=range_expressions)
 
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")
 
     # ExprObj(type="print", value="abc 3\n", expressions=["abc a + 1\n", "abc 2 + 1\n", "abc 3\n"])
     @staticmethod
-    def _print_parse(args: list[ExprObj], keyword_arg_dict: dict):
+    def _print_parse(args: list[ExprObj], keyword_arg_dict: dict) -> tuple:
         default_keyword = {"sep": " ", "end": "\n"}
         CallExpr._apply_keywords(default_keyword, keyword_arg_dict)
 
@@ -35,7 +35,7 @@ class CallExpr:
             str_expression = default_keyword["sep"].join(expressions)
             print_expressions.append(str_expression + default_keyword["end"])
 
-        return print_expressions
+        return tuple(print_expressions)
 
     # print 함수의 키워드 파싱 : end, sep만 지원 Todo. file, flush
     @staticmethod
@@ -45,7 +45,7 @@ class CallExpr:
         return default_keyword
 
     @staticmethod
-    def _range_parse(args: list[ExprObj]):
+    def _range_parse(args: list[ExprObj]) -> tuple:
         # ex ) range(a, 10, 2)
         # [
         #   ExprObj(type:name, value:3, expressions:[a, 3]},
@@ -64,7 +64,7 @@ class CallExpr:
         # 배열을 range_obj로 만들기
         range_expressions = [CallExpr._create_range_expression(range_list) for range_list in transposed_expressions]
 
-        return range_iter, range_expressions
+        return tuple(range_iter), tuple(range_expressions)
 
     @staticmethod
     def _create_range_expression(range_list: list):
