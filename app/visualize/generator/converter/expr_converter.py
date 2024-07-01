@@ -1,21 +1,21 @@
-from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.highlight.highlight import expressions_highlight_indices
 from app.visualize.generator.model.models import PrintViz
+from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 class ExprConverter:
 
     @staticmethod
-    def convert(expr_stmt_obj: ExprStmtObj, elem_manager: CodeElementManager):
-        if expr_stmt_obj.expr_obj.type == "print":
-            call_id = elem_manager.get_call_id(expr_stmt_obj)
-            depth = elem_manager.get_depth
-            return ExprConverter.print_convert(expr_stmt_obj.expr_obj, call_id, depth)
+    def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
+        if isinstance(expr_stmt_obj.expr_obj, PrintObj):
+            call_id = viz_manager.get_call_id(expr_stmt_obj)
+            depth = viz_manager.get_depth()
+            return ExprConverter._print_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
     @staticmethod
-    def print_convert(expr_obj: ExprObj, call_id, depth):
+    def _print_convert(expr_obj: PrintObj, call_id, depth):
 
         highlights = expressions_highlight_indices(expr_obj.expressions)
 
