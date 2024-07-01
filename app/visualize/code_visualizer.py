@@ -2,6 +2,7 @@ import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
+from app.visualize.generator.converter_traveler import ConverterTraveler
 
 
 # TODO 이름 수정
@@ -14,7 +15,8 @@ class CodeVisualizer:
     def visualize_code(self):
         analysis_objs = self._analysis_parsed_node()
         # TODO: 시각화 노드 리스트 생성
-        return analysis_objs
+
+        return ConverterTraveler.travel(analysis_objs)
 
     def _analysis_parsed_node(self):
         self._elem_manager.increase_depth()
