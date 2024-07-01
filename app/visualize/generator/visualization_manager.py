@@ -2,7 +2,7 @@ class VisualizationManager:
     def __init__(self):
         self.call_id = 0
         self.call_ids = {}
-        self.depth = 0
+        self.depth = 1
 
     def get_call_id(self, node):
         if node in self.call_ids:
@@ -26,4 +26,3 @@ class VisualizationManager:
     def decrease_depth(self):
         self.depth = self.depth - 1
         return self.depth
-
