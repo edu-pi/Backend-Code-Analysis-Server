@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Any
+
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 
 
-@dataclass
+@dataclass(frozen=True)
 class ExprStmtObj:
-    type: str
-    value: Any
-    expressions: list[str]
+    expr_obj: ExprObj
+    type: str = "expr"

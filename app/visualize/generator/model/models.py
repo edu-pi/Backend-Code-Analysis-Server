@@ -1,5 +1,5 @@
-from copy import deepcopy
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -73,7 +73,7 @@ class PrintViz:
     depth: int
     expr: str
     highlight: []
-    console: str
+    console: Optional[str]
     type: str = "print"
 
 

@@ -1,5 +1,6 @@
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
+from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.convertor.for_header_convertor import ForHeaderConvertor
 from app.visualize.generator.visualization_manager import VisualizationManager
 
@@ -7,7 +8,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 class ConverterTraveler:
 
     @staticmethod
-    def travel(analysis_objs, viz_manager):
+    def travel(analysis_objs, viz_manager: VisualizationManager):
         viz_objs = []
         for analysis_obj in analysis_objs:
             if analysis_obj.type == "assign":
@@ -16,6 +17,9 @@ class ConverterTraveler:
             elif analysis_obj.type == "for":
                 for_viz_list = ConverterTraveler._for_convert(analysis_obj, viz_manager)
                 viz_objs.extend(for_viz_list)
+
+            elif analysis_obj.type == "expr":
+                viz_objs.extend(ExprConverter.convert(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")

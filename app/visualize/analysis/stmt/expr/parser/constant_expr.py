@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, ConstantObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ConstantObj
 
 
 class ConstantExpr:
@@ -16,4 +16,6 @@ class ConstantExpr:
 
     @staticmethod
     def _create_expressions(value) -> tuple:
-        return tuple([str(value)])
+        if isinstance(value, str):
+            return (f"'{value}'",)
+        return (str(value),)

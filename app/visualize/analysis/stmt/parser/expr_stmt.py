@@ -10,7 +10,7 @@ class ExprStmt:
     @staticmethod
     def parse(node: ast.Expr, elem_manager: CodeElementManager):
         expr_obj = ExprStmt._get_expr_obj(node.value, elem_manager)
-        return ExprStmtObj(type=expr_obj.type, value=expr_obj.value, expressions=expr_obj.expressions)
+        return ExprStmtObj(expr_obj=expr_obj)
 
     @staticmethod
     def _get_expr_obj(node_value: ast, elem_manager: CodeElementManager):
