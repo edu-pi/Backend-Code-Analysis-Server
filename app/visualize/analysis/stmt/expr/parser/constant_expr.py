@@ -17,5 +17,5 @@ class ConstantExpr:
     @staticmethod
     def _create_expressions(value) -> tuple:
         if isinstance(value, str):
-            return tuple(f"'{value}'")
-        return tuple(str(value))
+            return (f"'{value}'",)
+        return (str(value),)

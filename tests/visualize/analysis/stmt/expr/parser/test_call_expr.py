@@ -1,7 +1,7 @@
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
-from app.visualize.analysis.stmt.expr.model.range_expr_obj import RangeExpression, RangeExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, ConstantObj, NameObj, BinopObj
+from app.visualize.analysis.stmt.expr.model.range_expression import RangeExpression
 from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
 
 
@@ -14,30 +14,33 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
 @pytest.mark.parametrize(
     "args, keyword_arg_dict, expected",
     [
-        ([ExprObj(type="constant", value="abc", expressions=["abc"])], {}, ["abc\n"]),
+        ([ConstantObj(value="abc", expressions=("abc",))], {}, ("abc\n",)),
         (
-                [
-                    ExprObj(type="constant", value="abc", expressions=["abc"]),
-                    ExprObj(type="constant", value=1, expressions=["1"]),
-                ],
-                {},
-                ["abc 1\n"],
+            [
+                ConstantObj(value="abc", expressions=("abc",)),
+                ConstantObj(value=1, expressions=("1",)),
+            ],
+            {},
+            ("abc 1\n",),
         ),
         (
-                [
-                    ExprObj(type="constant", value="abc", expressions=["abc"]),
-                    ExprObj(type="name", value=3, expressions=["a", "3"]),
-                ],
-                {},
-                ["abc a\n", "abc 3\n"],
+            [
+                ConstantObj(value="abc", expressions=("abc",)),
+                NameObj(value=3, expressions=("a", "3")),
+            ],
+            {},
+            (
+                "abc a\n",
+                "abc 3\n",
+            ),
         ),
         (
-                [
-                    ExprObj(type="constant", value="abc", expressions=["abc"]),
-                    ExprObj(type="binop", value=3, expressions=["a + 1", "2 + 1", "3"]),
-                ],
-                {},
-                ["abc a + 1\n", "abc 2 + 1\n", "abc 3\n"],
+            [
+                ConstantObj(value="abc", expressions=("abc",)),
+                BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
+            ],
+            {},
+            ("abc a + 1\n", "abc 2 + 1\n", "abc 3\n"),
         ),
     ],
 )
@@ -66,42 +69,30 @@ def test_apply_keywords(default_keyword, keyword_arg_dict, expected):
     "expressions, expected_iter, expected_expressions",
     [
         (
-                [
-                    ExprObj(type="name", value=10, expressions=["a", "10"]),
-                ],
-                range(10),
-                [
-                    RangeExpression(start="0", end="a", step="1"),
-                    RangeExpression(start="0", end="10", step="1")
-                ]
-
+            [
+                NameObj(value=10, expressions=("a", "10")),
+            ],
+            tuple(range(10)),
+            (RangeExpression(start="0", end="a", step="1"), RangeExpression(start="0", end="10", step="1")),
         ),
         (
-                [
-                    ExprObj(type="name", value=3, expressions=["a", "3"]),
-                    ExprObj(type="constant", value=10, expressions=["10"]),
-                ],
-                range(3, 10),
-                [
-                    RangeExpression(start="a", end="10", step="1"),
-                    RangeExpression(start="3", end="10", step="1")
-                ]
-
+            [
+                NameObj(value=3, expressions=("a", "3")),
+                ConstantObj(value=10, expressions=("10",)),
+            ],
+            tuple(range(3, 10)),
+            (RangeExpression(start="a", end="10", step="1"), RangeExpression(start="3", end="10", step="1")),
         ),
         (
-                [
-                    ExprObj(type="name", value=3, expressions=["a", "3"]),
-                    ExprObj(type="constant", value=10, expressions=["10"]),
-                    ExprObj(type="constant", value=2, expressions=["2"]),
-                ],
-                range(3, 10, 2),
-                [
-                    RangeExpression(start="a", end="10", step="2"),
-                    RangeExpression(start="3", end="10", step="2")
-                ]
-
-        )
-    ]
+            [
+                NameObj(value=3, expressions=("a", "3")),
+                ConstantObj(value=10, expressions=("10",)),
+                ConstantObj(value=2, expressions=("2",)),
+            ],
+            tuple(range(3, 10, 2)),
+            (RangeExpression(start="a", end="10", step="2"), RangeExpression(start="3", end="10", step="2")),
+        ),
+    ],
 )
 def test_range_parse(expressions, expected_iter, expected_expressions):
     result_iter, result_expressions = CallExpr._range_parse(expressions)

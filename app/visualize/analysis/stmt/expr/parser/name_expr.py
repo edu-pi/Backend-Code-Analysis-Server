@@ -9,7 +9,7 @@ class NameExpr:
     @staticmethod
     def parse(ctx: ast, identifier_name, elem_manager: CodeElementManager):
         if isinstance(ctx, ast.Store):
-            return NameObj(value=identifier_name, expressions=tuple(identifier_name))
+            return NameObj(value=identifier_name, expressions=(identifier_name,))
 
         elif isinstance(ctx, ast.Load):
             value = NameExpr._get_identifier_value(identifier_name, elem_manager)
