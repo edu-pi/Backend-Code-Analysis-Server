@@ -19,18 +19,18 @@ class StmtTraveler:
         for_stmt_obj = ForStmt.parse(node, elem_manager)
 
         # parse body
-        body_steps = []
+        body_objs = []
         for i in for_stmt_obj.iter_obj.iterator:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
-            body_objs = []
+            body_steps = []
 
             for body in node.body:
-                body_objs.append(StmtTraveler._internal_travel(body, elem_manager))
+                body_steps.append(StmtTraveler._internal_travel(body, elem_manager))
 
-            body_steps.append(BodyObj(cur_value=i, body_steps=body_objs))
+            body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
 
-        for_stmt_obj.body_steps = body_steps
+        for_stmt_obj.body_objs = body_objs
 
         return for_stmt_obj
 
