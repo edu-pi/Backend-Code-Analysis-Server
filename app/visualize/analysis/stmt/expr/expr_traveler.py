@@ -79,11 +79,11 @@ class ExprTraveler:
         for keyword in keywords:
             if isinstance(keyword.value, ast.BinOp):
                 binop_obj = ExprTraveler.binop_travel(keyword.value, elem_manager)
-                value = binop_obj.iterator
+                value = binop_obj.value
 
             elif isinstance(keyword.value, ast.Name):
                 name_obj = ExprTraveler.name_travel(keyword.value, elem_manager)
-                value = name_obj.iterator
+                value = name_obj.value
 
             elif isinstance(keyword.value, ast.Constant):
                 constant_obj = ExprTraveler.constant_travel(keyword.value)

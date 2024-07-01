@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.analysis.stmt.expr.expr_util import util
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, BinopObj
 
 
 class BinopExpr:
@@ -11,7 +11,7 @@ class BinopExpr:
         value = BinopExpr._calculate_value(left_obj.value, right_obj.value, op)
         expressions = BinopExpr._create_expressions(left_obj.expressions, right_obj.expressions, op, value)
 
-        return ExprObj(type="binop", value=value, expressions=expressions)
+        return BinopObj(value=value, expressions=expressions)
 
     # 왼쪽 오른쪽 값으로 연산식 계산
     @staticmethod
@@ -40,7 +40,7 @@ class BinopExpr:
     # a + b + c
     # a + sum([1, 2])
     @staticmethod
-    def _create_expressions(left_expressions, right_expressions, op, value):
+    def _create_expressions(left_expressions, right_expressions, op, value) -> tuple:
         total_expressions = util.transpose_with_last_fill([left_expressions, right_expressions])
 
         for i in range(len(total_expressions)):
@@ -48,7 +48,7 @@ class BinopExpr:
 
         total_expressions.append(str(value))
 
-        return total_expressions
+        return tuple(total_expressions)
 
     @staticmethod
     def _concat_expression(left_expression, right_expression, op: ast):

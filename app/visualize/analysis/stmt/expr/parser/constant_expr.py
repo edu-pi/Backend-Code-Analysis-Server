@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, ConstantObj
 
 
 class ConstantExpr:
@@ -8,12 +8,12 @@ class ConstantExpr:
     def parse(node: ast.Constant):
         value = ConstantExpr._get_literal(node)
         expressions = ConstantExpr._create_expressions(value)
-        return ExprObj(type="constant", value=value, expressions=expressions)
+        return ConstantObj(value=value, expressions=expressions)
 
     @staticmethod
     def _get_literal(node: ast.Constant):
         return node.value
 
     @staticmethod
-    def _create_expressions(value):
-        return [str(value)]
+    def _create_expressions(value) -> tuple:
+        return tuple([str(value)])

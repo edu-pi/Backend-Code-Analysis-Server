@@ -20,7 +20,8 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
-        for i in for_stmt_obj.iter_obj.iterator:
+
+        for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
             body_steps = []
