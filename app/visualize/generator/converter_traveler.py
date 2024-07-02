@@ -35,6 +35,6 @@ class ConverterTraveler:
             # header step 추가
             steps.append(ForHeaderConvertor.get_updated_header(header_viz, body_obj.cur_value))
             # body step 추가
-            # steps.extend(ConverterTraveler.travel(body_obj.body_steps, viz_manager))
+            steps.extend(ConverterTraveler.travel(body_obj.body_steps, viz_manager))
 
         return steps
