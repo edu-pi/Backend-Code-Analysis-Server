@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 
 
 @dataclass(frozen=True)
@@ -72,7 +72,7 @@ class PrintViz:
     id: int
     depth: int
     expr: str
-    highlight: []
+    highlights: []
     console: Optional[str]
     type: str = "print"
 
@@ -84,3 +84,12 @@ class PrintViz:
     @ value: 변수 값
 
 """
+
+
+@dataclass(frozen=True)
+class ExprViz:
+    type: str
+    value: Any
+    depth: int
+    expressions: tuple
+    highlights: []
