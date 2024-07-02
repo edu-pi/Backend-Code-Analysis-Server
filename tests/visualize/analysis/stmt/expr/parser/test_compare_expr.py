@@ -2,7 +2,35 @@ import ast
 
 import pytest
 
+from app.visualize.analysis.stmt.expr.model.expr_obj import CompareObj, ConstantObj, NameObj
 from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
+
+
+@pytest.mark.parametrize(
+    "left_obj, comparators, ops, expected",
+    [  # `1==2`
+        (
+            ConstantObj(value=1, expressions=("1",)),
+            (ConstantObj(value=2, expressions=("2",)),),
+            (ast.Eq(),),
+            CompareObj(value=False, expressions=("1 == 2", "False")),
+        ),
+        # `1 < a < 30`
+        (
+            ConstantObj(value=1, expressions=("1",)),
+            (
+                NameObj(value=10, expressions=("a", "10")),
+                ConstantObj(value=30, expressions=("30",)),
+            ),
+            (ast.Lt(), ast.Lt()),
+            CompareObj(value=True, expressions=("1 < a < 30", "True")),
+        ),
+    ],
+)
+def test_parse(left_obj, comparators, ops, expected):
+    result = CompareExpr.parse(left_obj, comparators, ops)
+    assert result.value == expected.value
+    assert result.expressions == expected.expressions
 
 
 @pytest.mark.parametrize(
