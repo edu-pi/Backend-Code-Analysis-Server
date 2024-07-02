@@ -1,7 +1,7 @@
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
-from app.visualize.generator.convertor.for_header_convertor import ForHeaderConvertor
+from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -31,10 +31,12 @@ class ConverterTraveler:
         steps = []
         # header
         header_viz = ForHeaderConvertor.convert(for_stmt, viz_manager)
+        viz_manager.increase_depth()
         for body_obj in for_stmt.body_objs:
             # header step 추가
             steps.append(ForHeaderConvertor.get_updated_header(header_viz, body_obj.cur_value))
             # body step 추가
             steps.extend(ConverterTraveler.travel(body_obj.body_steps, viz_manager))
+        viz_manager.decrease_depth()
 
         return steps

@@ -12,6 +12,7 @@ class BodyObj:
 
 @dataclass
 class ForStmtObj:
+    id: int
     target_name: str
     iter_obj: RangeObj
     body_objs: list[BodyObj] = None

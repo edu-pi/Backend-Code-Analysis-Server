@@ -9,8 +9,8 @@ class CallExpr:
     def parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
 
         if func_name == "print":
-            print_expressions = CallExpr._print_parse(args, keyword_arg_dict)
-            return PrintObj(value=print_expressions[-1], expressions=print_expressions)
+            end_keyword, print_expressions = CallExpr._print_parse(args, keyword_arg_dict)
+            return PrintObj(value=print_expressions[-1] + end_keyword, expressions=print_expressions)
 
         elif func_name == "range":
             range_iter, range_expressions = CallExpr._range_parse(args)
@@ -33,9 +33,9 @@ class CallExpr:
 
         for expressions in transposed_expressions:
             str_expression = default_keyword["sep"].join(expressions)
-            print_expressions.append(str_expression + default_keyword["end"])
+            print_expressions.append(str_expression)
 
-        return tuple(print_expressions)
+        return default_keyword["end"], tuple(print_expressions)
 
     # print 함수의 키워드 파싱 : end, sep만 지원 Todo. file, flush
     @staticmethod

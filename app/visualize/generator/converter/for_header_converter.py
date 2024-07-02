@@ -11,10 +11,11 @@ class ForHeaderConvertor:
     @staticmethod
     def convert(for_stmt: ForStmtObj, viz_manager: VisualizationManager):
         # condition
+        call_id = for_stmt.id
         target_name = for_stmt.target_name
         iter_obj = for_stmt.iter_obj
 
-        return ForHeaderConvertor._header_convert(target_name, iter_obj, viz_manager)
+        return ForHeaderConvertor._header_convert(call_id, target_name, iter_obj, viz_manager)
 
     @staticmethod
     def get_updated_header(header_viz: ForViz, new_cur):
@@ -23,8 +24,7 @@ class ForHeaderConvertor:
         return header_viz.update(new_condition, ForHighlighter.get_highlight_attr(new_condition))
 
     @staticmethod
-    def _header_convert(target_name: str, iter_obj: RangeObj, viz_manager: VisualizationManager):
-        call_id = viz_manager.get_call_id(iter_obj)
+    def _header_convert(call_id: int, target_name: str, iter_obj: RangeObj, viz_manager: VisualizationManager):
         depth = viz_manager.get_depth()
         condition = ForHeaderConvertor._get_condition(target_name, iter_obj)
         highlight = ForHighlighter.get_highlight_attr(condition)

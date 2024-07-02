@@ -14,14 +14,14 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
 @pytest.mark.parametrize(
     "args, keyword_arg_dict, expected",
     [
-        ([ConstantObj(value="abc", expressions=("abc",))], {}, ("abc\n",)),
+        ([ConstantObj(value="abc", expressions=("abc",))], {}, ("\n", ("abc",))),
         (
             [
                 ConstantObj(value="abc", expressions=("abc",)),
                 ConstantObj(value=1, expressions=("1",)),
             ],
             {},
-            ("abc 1\n",),
+            ("\n", ("abc 1",)),
         ),
         (
             [
@@ -30,8 +30,11 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
             ],
             {},
             (
-                "abc a\n",
-                "abc 3\n",
+                "\n",
+                (
+                    "abc a",
+                    "abc 3",
+                ),
             ),
         ),
         (
@@ -40,7 +43,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
                 BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
             ],
             {},
-            ("abc a + 1\n", "abc 2 + 1\n", "abc 3\n"),
+            ("\n", ("abc a + 1", "abc 2 + 1", "abc 3")),
         ),
     ],
 )
