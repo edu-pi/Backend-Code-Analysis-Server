@@ -3,6 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
+from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
 from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
 
@@ -41,7 +42,20 @@ class ExprTraveler:
 
     @staticmethod
     def compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
-        pass
+        if isinstance(node, ast.Compare):
+            left = ExprTraveler.compare_travel(node.left, elem_manager)
+            comparators = [ExprTraveler.compare_travel(comparor, elem_manager) for comparor in node.comparators]
+
+            return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
+
+        elif isinstance(node, ast.BinOp):
+            return ExprTraveler.binop_travel(node, elem_manager)
+
+        elif isinstance(node, ast.Name):
+            return ExprTraveler.name_travel(node, elem_manager)
+
+        elif isinstance(node, ast.Constant):
+            return ExprTraveler.constant_travel(node)
 
     @staticmethod
     def _get_func_name(node: ast, elem_manager: CodeElementManager):
