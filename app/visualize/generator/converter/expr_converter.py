@@ -23,9 +23,6 @@ class ExprConverter:
         elif isinstance(expr_stmt_obj.expr_obj, BinopObj):
             return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())
 
-        elif isinstance(expr_stmt_obj.expr_obj, RangeObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())
-
         else:
             raise TypeError(f"[ExprConverter]:{type(expr_stmt_obj.expr_obj)}는 지원하지 않습니다.")
 
