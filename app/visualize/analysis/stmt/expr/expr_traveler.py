@@ -40,6 +40,10 @@ class ExprTraveler:
         return CallExpr.parse(func_name, args, keyword_dict)
 
     @staticmethod
+    def compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
+        pass
+
+    @staticmethod
     def _get_func_name(node: ast, elem_manager: CodeElementManager):
         if isinstance(node, ast.Name):
             return node.id

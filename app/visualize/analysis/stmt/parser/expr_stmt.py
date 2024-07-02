@@ -33,5 +33,8 @@ class ExprStmt:
         elif isinstance(node_value, ast.Lambda):
             raise NotImplementedError(f"[ExprParser]:{type(node_value)}는 정의되지 않았습니다.")
 
+        elif isinstance(node_value, ast.Compare):
+            compare_obj = ExprTraveler.compare_travel(node_value, elem_manager)
+            return compare_obj
         else:
             raise TypeError(f"[ExprParser]:{type(node_value)}는 지원하지 않습니다.")
