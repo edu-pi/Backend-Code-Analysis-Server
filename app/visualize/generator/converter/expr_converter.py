@@ -10,10 +10,9 @@ class ExprConverter:
     @staticmethod
     def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
         if isinstance(expr_stmt_obj.expr_obj, PrintObj):
-            call_id = viz_manager.get_call_id(expr_stmt_obj)
+            call_id = expr_stmt_obj.id
             depth = viz_manager.get_depth()
             return ExprConverter._print_convert(expr_stmt_obj.expr_obj, call_id, depth)
-        #Todo: BinopObj, CallObj, ConstantObj, NameObj, RangeObj 처리
 
         elif isinstance(expr_stmt_obj.expr_obj, ConstantObj):
             return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())

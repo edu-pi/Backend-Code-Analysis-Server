@@ -12,7 +12,7 @@ class ForStmt:
         target_name = ForStmt._get_target_name(node.target, elem_manager)
         iter_obj = ForStmt._get_condition_obj(node.iter, elem_manager)
 
-        return ForStmtObj(target_name=target_name, iter_obj=iter_obj)
+        return ForStmtObj(id=node.lineno, target_name=target_name, iter_obj=iter_obj)
 
     @staticmethod
     def _get_target_name(target, elem_manager: CodeElementManager):

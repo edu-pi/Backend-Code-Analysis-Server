@@ -4,6 +4,7 @@ from typing import Optional, Any
 
 @dataclass(frozen=True)
 class AssignViz:
+    id: int
     variables: list
     type: str = "assignViz"
 

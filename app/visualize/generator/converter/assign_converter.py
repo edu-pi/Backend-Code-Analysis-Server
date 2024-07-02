@@ -18,6 +18,6 @@ class AssignConverter:
                 variable_list.append(
                     Variable(name=target, expr=expression, highlights=highlights[expr_idx], depth=depth)
                 )
-            assign_viz_list.append(AssignViz(variables=variable_list))
+            assign_viz_list.append(AssignViz(id=assign_obj.id, variables=variable_list))
 
         return assign_viz_list
