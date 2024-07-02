@@ -11,6 +11,8 @@ class CompareExpr:
     def parse(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...]):
         value = CompareExpr._get_final_calculate_value(left_obj, comparators, ops)
         expressions = CompareExpr._get_expressions(left_obj, comparators, ops, value)
+
+        print(CompareObj(value=value, expressions=expressions))
         return CompareObj(value=value, expressions=expressions)
 
     @staticmethod
@@ -28,24 +30,14 @@ class CompareExpr:
     def _get_expressions(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...], value: bool):
         total_expressions = []
         # 피연자 값과 비교 연산자를 순차적으로 계산
-        if len(comparators) <= 1:   # 비교 연산자가 1개 이하인 경우, 자세한 표현 과정 반환
+        if len(comparators) <= 1:  # 비교 연산자가 1개 이하인 경우, 자세한 표현 과정 반환
             total_expressions.extend(CompareExpr._create_expressions(left_obj, comparators[0], ops[0]))
-        else:   # 비교 연산자가 2개 이상인 경우, 생략된 표현 과정 반환
+        else:  # 비교 연산자가 2개 이상인 경우, 생략된 표현 과정 반환
             total_expressions.append(CompareExpr._create_origin_expression(left_obj, comparators, ops))
 
         # 최종 결과값 추가
         total_expressions.append(str(value))
         return tuple(total_expressions)
-
-    @staticmethod
-    def _create_origin_expression(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...]):
-        expressions = [f"{left_obj.expressions[0]}"]
-
-        for idx, comparator_obj in enumerate(comparators):
-            expressions.append(f"{CompareExpr._get_op_value(ops[idx])}")
-            expressions.append(f"{comparator_obj.expressions[0]}")
-
-        return list_to_str(expressions)
 
     @staticmethod
     def _calculate_value(left_value, right_value, op: ast.cmpop):
@@ -92,6 +84,16 @@ class CompareExpr:
             total_expressions[i] = list_to_str([left_expression, CompareExpr._get_op_value(op), right_expression])
 
         return total_expressions
+
+    @staticmethod
+    def _create_origin_expression(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...]):
+        expressions = [f"{left_obj.expressions[0]}"]
+
+        for idx, comparator_obj in enumerate(comparators):
+            expressions.append(f"{CompareExpr._get_op_value(ops[idx])}")
+            expressions.append(f"{comparator_obj.expressions[0]}")
+
+        return list_to_str(expressions)
 
     @staticmethod
     def _get_op_value(op: ast.cmpop):
