@@ -1,7 +1,7 @@
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
-from app.visualize.generator.convertor.for_header_convertor import ForHeaderConvertor
+from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
