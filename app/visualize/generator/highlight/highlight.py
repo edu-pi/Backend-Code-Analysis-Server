@@ -2,7 +2,9 @@ def expressions_highlight_indices(parsed_exprs):
     highlights = []
     pre_expr = parsed_exprs[0]
 
-    for cur_expr in parsed_exprs[:-1]:
+    highlights.append(list(range(len(parsed_exprs[0]))))
+
+    for cur_expr in parsed_exprs[1:-1]:
         highlights.append(immediate_expression_indices(pre_expr, cur_expr))
         pre_expr = cur_expr
 
