@@ -38,7 +38,7 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
             ),
             PrintObj(
                 value="12\n",
-                expressions=("a + 2\n", "10 + 2\n", "12\n"),
+                expressions=("a + 2", "10 + 2", "12"),
             ),
         ),
         (
@@ -49,7 +49,7 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
             ),
             PrintObj(
                 value="10\n",
-                expressions=("a\n", "10\n"),
+                expressions=("a", "10"),
             ),
         ),
     ],
