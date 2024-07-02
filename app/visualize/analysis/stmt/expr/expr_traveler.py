@@ -3,6 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
+from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
 from app.visualize.analysis.stmt.expr.parser.list_expr import ListExpr
 from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
@@ -67,10 +68,27 @@ class ExprTraveler:
         return CallExpr.parse(func_name, args, keyword_dict)
 
     @staticmethod
-
     def _list_travel(node: ast.List, elem_manager: CodeElementManager):
         elts = [ExprTraveler.travel(elt, elem_manager) for elt in node.elts]
         return ListExpr.parse(elts)
+
+    @staticmethod
+    def _compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
+        if isinstance(node, ast.Compare):
+            left = ExprTraveler.compare_travel(node.left, elem_manager)
+            comparators = [ExprTraveler.compare_travel(comparor, elem_manager) for comparor in node.comparators]
+
+            return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
+
+        elif isinstance(node, ast.BinOp):
+            return ExprTraveler.travel(node, elem_manager)
+
+        elif isinstance(node, ast.Name):
+            return ExprTraveler.travel(node, elem_manager)
+
+        elif isinstance(node, ast.Constant):
+            return ExprTraveler.travel(node)
+
 
     @staticmethod
     def _get_func_name(node: ast):
@@ -83,6 +101,5 @@ class ExprTraveler:
         else:
             raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
 
-    def compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
-        pass
+
 
