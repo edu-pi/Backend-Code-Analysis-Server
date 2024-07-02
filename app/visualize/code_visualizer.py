@@ -34,6 +34,11 @@ class CodeVisualizer:
                 expr_obj = StmtTraveler.expr_travel(node, self._elem_manager)
                 steps.append(expr_obj)
 
+            elif isinstance(node, ast.If):
+                conditions = []
+                if_obj = StmtTraveler.if_travel(node, conditions, self._elem_manager)
+                steps.append(if_obj)
+
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {type(node)}")
 

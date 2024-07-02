@@ -27,6 +27,10 @@ class ExprTraveler:
         elif isinstance(node, ast.List):
             return ExprTraveler._list_travel(node, elem_manager)
 
+        elif isinstance(node, ast.Compare):
+            compare_obj = ExprTraveler.compare_travel(node, elem_manager)
+            return compare_obj
+
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
 
@@ -63,6 +67,7 @@ class ExprTraveler:
         return CallExpr.parse(func_name, args, keyword_dict)
 
     @staticmethod
+
     def _list_travel(node: ast.List, elem_manager: CodeElementManager):
         elts = [ExprTraveler.travel(elt, elem_manager) for elt in node.elts]
         return ListExpr.parse(elts)
@@ -77,3 +82,7 @@ class ExprTraveler:
 
         else:
             raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
+
+    def compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
+        pass
+

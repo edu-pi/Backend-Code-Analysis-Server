@@ -53,3 +53,16 @@ class StmtTraveler:
 
         else:
             raise TypeError(f"[StmtTraveler] {type(node)}는 잘못된 타입입니다.")
+
+
+
+    @staticmethod
+    def if_travel(node: ast.If, tests: list, elem_manager: CodeElementManager):
+        pass
+        # test - if("test") or elfi("test") 부분
+        tests.append(StmtTraveler._internal_travel(node.test, elem_manager))
+
+        # body
+
+        # orelse
+

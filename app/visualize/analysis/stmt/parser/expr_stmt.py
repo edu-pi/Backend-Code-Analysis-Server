@@ -15,3 +15,4 @@ class ExprStmt:
     @staticmethod
     def _get_expr_obj(node: ast, elem_manager: CodeElementManager):
         return ExprTraveler.travel(node, elem_manager)
+
