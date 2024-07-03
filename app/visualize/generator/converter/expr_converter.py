@@ -1,6 +1,6 @@
 from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj, ConstantObj, BinopObj, NameObj, RangeObj, ExprObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
-from app.visualize.generator.highlight.highlight import expressions_highlight_indices
+from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.model.models import PrintViz, ExprViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
@@ -29,8 +29,7 @@ class ExprConverter:
 
     @staticmethod
     def _print_convert(expr_obj: PrintObj, call_id, depth):
-
-        highlights = expressions_highlight_indices(expr_obj.expressions)
+        highlights = ExprHighlight.get_highlight_attr(expr_obj.expressions)
 
         print_vizs = [
             PrintViz(
@@ -47,7 +46,8 @@ class ExprConverter:
 
     @staticmethod
     def _expr_convert(expr_obj: ExprObj, call_id, depth):
-        highlights = expressions_highlight_indices(expr_obj.expressions)
+        highlights = ExprHighlight.get_highlight_attr(expr_obj.expressions)
+
         expr_vizs = [
             ExprViz(
                 id=call_id,

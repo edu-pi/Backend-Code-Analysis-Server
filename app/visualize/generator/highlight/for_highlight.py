@@ -1,7 +1,7 @@
 from app.visualize.generator.model.models import ConditionViz
 
 
-class ForHighlighter:
+class ForHighlight:
 
     @staticmethod
     def get_highlight_attr(condition: ConditionViz):
