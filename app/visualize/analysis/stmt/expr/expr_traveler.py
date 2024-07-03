@@ -4,6 +4,7 @@ from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
 from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.expr.parser.list_expr import ListExpr
 from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
 
 
@@ -33,14 +34,19 @@ class ExprTraveler:
 
     @staticmethod
     def call_travel(node: ast.Call, elem_manager: CodeElementManager):
-        func_name = ExprTraveler._get_func_name(node.func, elem_manager)
+        func_name = ExprTraveler._get_func_name(node.func)
         args = ExprTraveler._get_args(node.args, elem_manager)
         keyword_dict = ExprTraveler._keywords_to_dict(node.keywords, elem_manager)
 
         return CallExpr.parse(func_name, args, keyword_dict)
 
     @staticmethod
-    def _get_func_name(node: ast, elem_manager: CodeElementManager):
+    def list_travel(node: ast.List, elem_manager: CodeElementManager):
+        elts = ExprTraveler._get_args(node.elts, elem_manager)
+        return ListExpr.parse(elts)
+
+    @staticmethod
+    def _get_func_name(node: ast):
         if isinstance(node, ast.Name):
             return node.id
 
