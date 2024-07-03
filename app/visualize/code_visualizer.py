@@ -37,8 +37,7 @@ class CodeVisualizer:
                 steps.append(expr_obj)
 
             elif isinstance(node, ast.If):
-                conditions = []
-                if_obj = StmtTraveler.if_travel(node, conditions, self._elem_manager)
+                if_obj = StmtTraveler.if_travel(node, [], [], self._elem_manager)
                 steps.append(if_obj)
 
             else:
