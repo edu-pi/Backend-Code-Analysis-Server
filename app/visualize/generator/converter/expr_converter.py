@@ -9,19 +9,20 @@ class ExprConverter:
 
     @staticmethod
     def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
+        call_id = expr_stmt_obj.id
+        depth = viz_manager.get_depth()
+
         if isinstance(expr_stmt_obj.expr_obj, PrintObj):
-            call_id = expr_stmt_obj.id
-            depth = viz_manager.get_depth()
             return ExprConverter._print_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
         elif isinstance(expr_stmt_obj.expr_obj, ConstantObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())
+            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
         elif isinstance(expr_stmt_obj.expr_obj, NameObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())
+            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
         elif isinstance(expr_stmt_obj.expr_obj, BinopObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, viz_manager.get_depth())
+            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{type(expr_stmt_obj.expr_obj)}는 지원하지 않습니다.")
@@ -45,16 +46,15 @@ class ExprConverter:
         return print_vizs
 
     @staticmethod
-    def _expr_convert(expr_obj: ExprObj, depth):
+    def _expr_convert(expr_obj: ExprObj, call_id, depth):
         highlights = expressions_highlight_indices(expr_obj.expressions)
-
         expr_vizs = [
             ExprViz(
-                value=expr_obj.value,
-                type=expr_obj.type,
-                expressions=expr_obj.expressions[idx],
+                id=call_id,
                 depth=depth,
+                expr=expr_obj.expressions[idx],
                 highlights=highlights[idx],
+                type=expr_obj.type,
             )
             for idx in range(len(expr_obj.expressions))
         ]

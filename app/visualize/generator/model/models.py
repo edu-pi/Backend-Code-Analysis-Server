@@ -4,7 +4,6 @@ from typing import Optional, Any
 
 @dataclass(frozen=True)
 class AssignViz:
-    id: int
     variables: list
     type: str = "assignViz"
 
@@ -21,6 +20,7 @@ class Variable:
     expr: str
     name: str
     highlights: list
+    type: str
 
 
 """
@@ -89,8 +89,8 @@ class PrintViz:
 
 @dataclass(frozen=True)
 class ExprViz:
-    type: str
-    value: Any
+    id: int
     depth: int
-    expressions: tuple
+    expr: str
     highlights: []
+    type: str
