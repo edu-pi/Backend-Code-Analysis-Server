@@ -62,24 +62,38 @@ def create_assign():
         (
             ["e"],
             [1, 2, 3],
-            ["[1, 2, 3]"],
+            ["[1,2,3]"],
             "list",
             [
-                ExprViz(id=1, depth=1, expr="[1, 2, 3]", highlights=[0, 1, 2], type="list"),
+                ExprViz(id=1, depth=1, expr="[1,2,3]", highlights=[0, 1, 2], type="list"),
                 AssignViz(
-                    variables=[Variable(name="e", expr="[1, 2, 3]", highlights=[0, 1, 2], depth=1, type="list")],
+                    variables=[Variable(name="e", expr="[1,2,3]", highlights=[0, 1, 2], depth=1, type="list")],
                 ),
             ],
         ),
         (
             ["f"],
             ["Hello", "World"],
-            ["['Hello', 'World']"],
+            ["['Hello','World']"],
             "list",
             [
-                ExprViz(id=1, depth=1, expr="['Hello', 'World']", highlights=[0, 1], type="list"),
+                ExprViz(id=1, depth=1, expr="['Hello','World']", highlights=[0, 1], type="list"),
                 AssignViz(
-                    variables=[Variable(name="f", expr="['Hello', 'World']", highlights=[0, 1], depth=1, type="list")],
+                    variables=[Variable(name="f", expr="['Hello','World']", highlights=[0, 1], depth=1, type="list")],
+                ),
+            ],
+        ),
+        (
+            ["g"],
+            [11, "Hello"],
+            ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
+            "list",
+            [
+                ExprViz(id=1, depth=1, expr="[a + 1,b]", highlights=[0, 1], type="list"),
+                ExprViz(id=1, depth=1, expr="[10 + 1,10]", highlights=[0, 1], type="list"),
+                ExprViz(id=1, depth=1, expr="[11,10]", highlights=[0], type="list"),
+                AssignViz(
+                    variables=[Variable(name="g", expr="[11,10]", highlights=[0, 1], depth=1, type="list")],
                 ),
             ],
         ),
