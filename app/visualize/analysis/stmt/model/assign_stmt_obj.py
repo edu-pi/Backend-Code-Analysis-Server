@@ -7,4 +7,5 @@ class AssignStmtObj:
     targets: list[str]
     value: str
     expressions: list[str]
+    var_type: str
     type: str = "assign"

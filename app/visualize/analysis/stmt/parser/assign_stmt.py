@@ -15,7 +15,11 @@ class AssignStmt:
         AssignStmt._set_value_to_target(target_names, expr_obj.value, elem_manager)
 
         return AssignStmtObj(
-            id=node.lineno, targets=target_names, expressions=expr_obj.expressions, value=expr_obj.value
+            id=node.lineno,
+            targets=target_names,
+            expressions=expr_obj.expressions,
+            value=expr_obj.value,
+            var_type=expr_obj.type,
         )
 
     @staticmethod
