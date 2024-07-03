@@ -12,7 +12,6 @@ class CompareExpr:
         value = CompareExpr._get_final_calculate_value(left_obj, comparators, ops)
         expressions = CompareExpr._get_expressions(left_obj, comparators, ops, value)
 
-        print(CompareObj(value=value, expressions=expressions))
         return CompareObj(value=value, expressions=expressions)
 
     @staticmethod
