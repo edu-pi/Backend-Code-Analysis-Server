@@ -33,4 +33,7 @@ class NameExpr:
     # 변수의 변화 과정을 만들어 주는 함수
     @staticmethod
     def _create_expressions(identifier_name, value) -> tuple:
+        if isinstance(value, str):
+            return tuple([identifier_name, f"'{value}'"])
+
         return tuple([identifier_name, str(value)])

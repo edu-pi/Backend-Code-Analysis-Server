@@ -39,6 +39,9 @@ class AssignStmt:
         elif isinstance(node, ast.Constant):
             return ExprTraveler.constant_travel(node)
 
+        elif isinstance(node, ast.List):
+            return ExprTraveler.list_travel(node, elem_manager)
+
         else:
             raise TypeError(f"[AssignParser] {type(node)}는 잘못된 타입입니다.")
 

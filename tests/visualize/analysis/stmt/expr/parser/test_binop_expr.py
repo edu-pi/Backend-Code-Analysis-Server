@@ -39,6 +39,12 @@ from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
             ast.FloorDiv(),
             BinopObj(value=1, expressions=("a + 1 // 2", "2 + 1 // 2", "3 // 2", "1")),
         ),
+        (
+            ConstantObj(value="*", expressions=("'*'",)),
+            ConstantObj(value=3, expressions=("3",)),
+            ast.Mult(),
+            BinopObj(value="***", expressions=("'*' * 3", "'***'")),
+        ),
     ],
 )
 def test_parse(left_obj, right_obj, op, expected):
