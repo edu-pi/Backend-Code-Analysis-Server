@@ -15,13 +15,13 @@ class AssignConverter:
         highlights = AssignConverter._get_highlights(assign_obj, var_type)
 
         for expr_idx, expression in enumerate(assign_obj.expressions):
-            expr_viz = AssignConverter.assign_expr_convert(
+            expr_viz = AssignConverter._convert_to_expr_viz(
                 assign_obj, depth, expr_idx, expression, highlights, var_type
             )
             assign_viz_list.append(expr_viz)
 
             if expr_idx == len(assign_obj.expressions) - 1:
-                assign_viz = AssignConverter.assign_viz_convert(assign_obj, depth, expression, highlights, var_type)
+                assign_viz = AssignConverter.convert_to_assign_viz(assign_obj, depth, expression, highlights, var_type)
                 assign_viz_list.append(assign_viz)
 
         return assign_viz_list
@@ -34,7 +34,7 @@ class AssignConverter:
             return ListHighlight.get_highlight_attr(assign_obj.expressions)
 
     @staticmethod
-    def assign_expr_convert(assign_obj, depth, expr_idx, expression, highlights, var_type):
+    def _convert_to_expr_viz(assign_obj, depth, expr_idx, expression, highlights, var_type):
         return ExprViz(
             id=assign_obj.id,
             depth=depth,
@@ -44,7 +44,7 @@ class AssignConverter:
         )
 
     @staticmethod
-    def assign_viz_convert(assign_obj, depth, expression, highlights, var_type):
+    def convert_to_assign_viz(assign_obj, depth, expression, highlights, var_type):
         variable_list = [
             Variable(
                 depth=depth,
