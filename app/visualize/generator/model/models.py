@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional, Any
 
 
 @dataclass(frozen=True)
@@ -74,7 +73,7 @@ class PrintViz:
     depth: int
     expr: str
     highlights: []
-    console: Optional[str]
+    console: str | None
     type: str = "print"
 
 
