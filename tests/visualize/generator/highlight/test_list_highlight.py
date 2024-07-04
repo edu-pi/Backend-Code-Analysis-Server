@@ -15,6 +15,6 @@ class TestListHighlight:
         ],
     )
     def test_get_highlight_attr(parsed_exprs, expected):
-        result = ListHighlight.get_highlight_attr(parsed_exprs)
+        result = ListHighlight.get_highlight_indexes(parsed_exprs)
 
         assert result == expected

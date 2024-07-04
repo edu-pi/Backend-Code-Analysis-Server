@@ -29,9 +29,9 @@ class AssignConverter:
     @staticmethod
     def _get_highlights(assign_obj, var_type):
         if var_type == "variable":
-            return ExprHighlight.get_highlight_attr(assign_obj.expressions)
+            return ExprHighlight.get_highlight_indexes(assign_obj.expressions)
         elif var_type in ("list", "tuple"):
-            return ListHighlight.get_highlight_attr(assign_obj.expressions)
+            return ListHighlight.get_highlight_indexes(assign_obj.expressions)
 
     @staticmethod
     def _convert_to_expr_viz(assign_obj, depth, expr_idx, expression, highlights, var_type):

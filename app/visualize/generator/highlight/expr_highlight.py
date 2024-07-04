@@ -1,7 +1,7 @@
 class ExprHighlight:
 
     @staticmethod
-    def get_highlight_attr(parsed_exprs):
+    def get_highlight_indexes(parsed_exprs):
         highlights = []
         pre_expr = parsed_exprs[0]
 

@@ -1,7 +1,7 @@
 class ListHighlight:
 
     @staticmethod
-    def get_highlight_attr(list_exprs):
+    def get_highlight_indexes(list_exprs):
         pre_list = ListHighlight._expr_to_list(list_exprs[0])
         list_len = len(pre_list)
         highlights = [list(range(list_len))]

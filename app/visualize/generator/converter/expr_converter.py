@@ -29,7 +29,7 @@ class ExprConverter:
 
     @staticmethod
     def _print_convert(expr_obj: PrintObj, call_id, depth):
-        highlights = ExprHighlight.get_highlight_attr(expr_obj.expressions)
+        highlights = ExprHighlight.get_highlight_indexes(expr_obj.expressions)
 
         print_vizs = [
             PrintViz(
@@ -46,7 +46,7 @@ class ExprConverter:
 
     @staticmethod
     def _expr_convert(expr_obj: ExprObj, call_id, depth):
-        highlights = ExprHighlight.get_highlight_attr(expr_obj.expressions)
+        highlights = ExprHighlight.get_highlight_indexes(expr_obj.expressions)
 
         expr_vizs = [
             ExprViz(

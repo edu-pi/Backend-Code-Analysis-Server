@@ -12,6 +12,6 @@ from app.visualize.generator.highlight.expr_highlight import ExprHighlight
     ],
 )
 def test_get_highlight_attr(parsed_exprs, expected):
-    result = ExprHighlight.get_highlight_attr(parsed_exprs)
+    result = ExprHighlight.get_highlight_indexes(parsed_exprs)
 
     assert result == expected
