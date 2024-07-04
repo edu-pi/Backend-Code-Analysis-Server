@@ -17,7 +17,7 @@ class ForStmt:
     @staticmethod
     def _get_target_name(target, elem_manager: CodeElementManager):
         if isinstance(target, ast.Name):
-            name_obj = ExprTraveler.name_travel(target, elem_manager)
+            name_obj = ExprTraveler.travel(target, elem_manager)
             return name_obj.value
 
         else:
@@ -26,7 +26,7 @@ class ForStmt:
     @staticmethod
     def _get_condition_obj(iter: ast, elem_manager: CodeElementManager):
         if isinstance(iter, ast.Call):
-            range_obj = ExprTraveler.call_travel(iter, elem_manager)
+            range_obj = ExprTraveler.travel(iter, elem_manager)
             return range_obj
 
         elif isinstance(iter, ast.List):

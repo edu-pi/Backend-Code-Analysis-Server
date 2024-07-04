@@ -28,7 +28,10 @@ def test_get_identifier_value(elem_manager, identifier, expected):
     assert result == expected
 
 
-@pytest.mark.parametrize("identifier_name, value, expected", [("a", 10, ("a", "10")), ("abc", 10, ("abc", "10"))])
+@pytest.mark.parametrize(
+    "identifier_name, value, expected",
+    [("a", 10, ("a", "10")), ("abc", 10, ("abc", "10")), ("b", "Hello", ("b", "'Hello'"))],
+)
 def test_create_expressions(identifier_name, value, expected):
     result = NameExpr._create_expressions(identifier_name, value)
 
