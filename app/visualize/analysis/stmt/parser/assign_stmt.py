@@ -3,6 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 
 
 class AssignStmt:
@@ -15,11 +16,13 @@ class AssignStmt:
         AssignStmt._set_value_to_target(target_names, expr_obj.value, elem_manager)
 
         return AssignStmtObj(
-            id=node.lineno,
             targets=target_names,
-            expressions=expr_obj.expressions,
-            value=expr_obj.value,
-            var_type=expr_obj.type,
+            expr_stmt_obj=ExprStmtObj(
+                id=node.lineno,
+                expressions=expr_obj.expressions,
+                value=expr_obj.value,
+                var_type=expr_obj.type,
+            ),
         )
 
     @staticmethod

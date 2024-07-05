@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from typing import Any
 
 
 @dataclass(frozen=True)
 class ExprStmtObj:
     id: int
-    expr_obj: ExprObj
+    value: Any
+    expressions: tuple[str]
+    var_type: str
     type: str = "expr"

@@ -1,3 +1,4 @@
+from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.model.if_stmt_obj import IfStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
@@ -14,14 +15,14 @@ class ConverterTraveler:
         viz_objs = []
         for analysis_obj in analysis_objs:
             if analysis_obj.type == "assign":
-                viz_objs.extend(AssignConverter.convert(analysis_obj, viz_manager))
+                viz_objs.extend(ConverterTraveler._convert_to_assign_vizs(analysis_obj, viz_manager))
 
             elif analysis_obj.type == "for":
                 for_viz_list = ConverterTraveler._for_convert(analysis_obj, viz_manager)
                 viz_objs.extend(for_viz_list)
 
             elif analysis_obj.type == "expr":
-                viz_objs.extend(ExprConverter.convert(analysis_obj, viz_manager))
+                viz_objs.extend(ConverterTraveler._convert_to_expr_vizs(analysis_obj, viz_manager))
 
             elif analysis_obj.type == "if":
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
@@ -30,6 +31,14 @@ class ConverterTraveler:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
 
         return viz_objs
+
+    @staticmethod
+    def _convert_to_assign_vizs(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
+        steps = []
+        steps.extend(ConverterTraveler._convert_to_expr_vizs(assign_obj.expr_stmt_obj, viz_manager))
+        steps.append(AssignConverter.convert(assign_obj, viz_manager))
+
+        return steps
 
     @staticmethod
     def _for_convert(for_stmt: ForStmtObj, viz_manager: VisualizationManager):
@@ -65,3 +74,7 @@ class ConverterTraveler:
         viz_manager.decrease_depth()
 
         return body_steps_viz
+
+    @staticmethod
+    def _convert_to_expr_vizs(expr_stmt_obj, viz_manager: VisualizationManager):
+        return ExprConverter.convert(expr_stmt_obj, viz_manager)
