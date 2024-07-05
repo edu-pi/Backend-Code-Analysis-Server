@@ -2,7 +2,7 @@
 from app.visualize.analysis.stmt.expr.model.expr_obj import RangeObj
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
 from app.visualize.generator.highlight.for_highlight import ForHighlight
-from app.visualize.generator.model.models import ConditionViz, ForViz
+from app.visualize.generator.model.models import ForConditionViz, ForViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -43,7 +43,7 @@ class ForHeaderConvertor:
     def _get_range_condition(target_name, iter_obj):
         condition_value = iter_obj.expressions[-1]
 
-        return ConditionViz(
+        return ForConditionViz(
             target_name,
             cur=condition_value.start,
             start=condition_value.start,
