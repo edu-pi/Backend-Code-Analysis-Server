@@ -47,15 +47,20 @@ class ConverterTraveler:
 
     @staticmethod
     def _if_convert(if_stmt: IfStmtObj, viz_manager: VisualizationManager):
-        steps = []
-        # 1. if else define
+        steps = list()
+        # 1. if-else 구조 define
         steps.append(IfConverter.get_header_define_viz(if_stmt.conditions, viz_manager))
         # 2. if header
-        header_change_step_list = IfConverter.get_header_change_steps(if_stmt.conditions, viz_manager)
-        # 3. if header 결과 값이 true인 if문의 body obj의viz 생성
+        steps.extend(IfConverter.get_header_change_steps(if_stmt.conditions, viz_manager))
+        # 3. if header 결과 값이 true인 if 문의 body obj의 viz 생성
+        steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt, viz_manager))
+
+        return steps
+
+    @staticmethod
+    def _get_if_body_viz_list(if_stmt, viz_manager):
         viz_manager.increase_depth()
         body_steps_viz = ConverterTraveler.travel(if_stmt.body.body_steps, viz_manager)
         viz_manager.decrease_depth()
-        # 4.header_change_step_list의 expr 값이 "True"인 스텝 뒤에 body_steps_viz 추가
-        steps.extend(IfConverter.insert_body_steps_after_true_expression(header_change_step_list, body_steps_viz))
-        return steps
+
+        return body_steps_viz

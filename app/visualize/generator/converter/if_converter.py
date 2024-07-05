@@ -37,13 +37,18 @@ class IfConverter:
 
         for condition in conditions:
             if isinstance(condition, ElseConditionObj):
-                steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=""))
+                steps.append(
+                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
+                )
 
             elif isinstance(condition, IfConditionObj) or isinstance(condition, ElifConditionObj):
                 for expression in condition.expr_obj.expressions:
                     steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=expression))
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
+
+            if steps[-1].expr == "True":
+                return steps
 
         return steps
 
