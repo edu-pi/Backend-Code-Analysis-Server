@@ -72,7 +72,7 @@ class StmtTraveler:
         # parse elif or else
         StmtTraveler._parse_if_orelse(body_objs, conditions, elem_manager, node)
 
-        return IfStmtObj(conditions=tuple(conditions), body=body_objs[0])
+        return IfStmtObj(conditions=tuple(conditions), body=BodyObj(body_steps=body_objs, cur_value=0))
 
     @staticmethod
     def _create_and_append_condition_obj(conditions, elem_manager, node: ast.If | ast.stmt):
