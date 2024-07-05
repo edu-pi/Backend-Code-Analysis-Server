@@ -11,7 +11,7 @@ class IfStmt:
     def parse_condition(test_node: ast.expr, elem_manager: CodeElementManager):
         # Todo: ExprTraveler의 travel 함수가 만들어지면 변경할 에정
         if isinstance(test_node, ast.Compare):
-            expr_obj = ExprTraveler.compare_travel(test_node, elem_manager)
+            expr_obj = ExprTraveler.travel(test_node, elem_manager)
 
         return IfOrElifConditionObj(
             expr_obj=expr_obj,

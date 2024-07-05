@@ -29,7 +29,7 @@ class ExprTraveler:
             return ExprTraveler._list_travel(node, elem_manager)
 
         elif isinstance(node, ast.Compare):
-            compare_obj = ExprTraveler.compare_travel(node, elem_manager)
+            compare_obj = ExprTraveler._compare_travel(node, elem_manager)
             return compare_obj
 
         else:
@@ -75,8 +75,8 @@ class ExprTraveler:
     @staticmethod
     def _compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
         if isinstance(node, ast.Compare):
-            left = ExprTraveler.compare_travel(node.left, elem_manager)
-            comparators = [ExprTraveler.compare_travel(comparor, elem_manager) for comparor in node.comparators]
+            left = ExprTraveler._compare_travel(node.left, elem_manager)
+            comparators = [ExprTraveler._compare_travel(comparor, elem_manager) for comparor in node.comparators]
 
             return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
 
@@ -87,7 +87,7 @@ class ExprTraveler:
             return ExprTraveler.travel(node, elem_manager)
 
         elif isinstance(node, ast.Constant):
-            return ExprTraveler.travel(node)
+            return ExprTraveler.travel(node, elem_manager)
 
 
     @staticmethod
