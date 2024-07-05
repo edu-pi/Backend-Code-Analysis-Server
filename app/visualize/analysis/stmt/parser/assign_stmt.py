@@ -10,10 +10,10 @@ class AssignStmt:
 
     @staticmethod
     def parse(node: ast.Assign, elem_manager: CodeElementManager):
-        target_names = [AssignStmt._get_target_name(target_node, elem_manager) for target_node in node.targets]
+        target_names = tuple(AssignStmt._get_target_name(target_node, elem_manager) for target_node in node.targets)
         expr_obj = AssignStmt._change_node_to_expr_obj(node.value, elem_manager)
 
-        AssignStmt._set_value_to_target(target_names, expr_obj.value, elem_manager)
+        AssignStmt._set_value_to_target(target_names, expr_obj, elem_manager)
 
         return AssignStmtObj(
             targets=target_names,
@@ -40,6 +40,11 @@ class AssignStmt:
         return ExprTraveler.travel(node, elem_manager)
 
     @staticmethod
-    def _set_value_to_target(target_names: list[str], value, elem_manager: CodeElementManager):
+    def _set_value_to_target(target_names: tuple[str, ...], expr_obj, elem_manager: CodeElementManager):
         for target_name in target_names:
+            value = expr_obj.value
+
+            if expr_obj.type == "list":
+                value = list(expr_obj.value)
+
             elem_manager.set_element(target_name, value)
