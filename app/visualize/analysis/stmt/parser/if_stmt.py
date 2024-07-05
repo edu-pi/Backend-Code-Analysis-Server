@@ -2,22 +2,30 @@ import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.model.if_stmt_obj import ElseConditionObj, IfOrElifConditionObj
+from app.visualize.analysis.stmt.model.if_stmt_obj import ElseConditionObj, IfConditionObj, ElifConditionObj
 
 
 class IfStmt:
 
     @staticmethod
-    def parse_condition(test_node: ast.expr, elem_manager: CodeElementManager):
-        return IfOrElifConditionObj(
-            expr_obj=ExprTraveler.travel(test_node, elem_manager),
+    def parse_if_condition(test_node: ast.expr, elem_manager: CodeElementManager):
+        return IfConditionObj(
             id=test_node.lineno,
+            expr_obj=ExprTraveler.travel(test_node, elem_manager),
+            result=IfStmt._evaluate_test_value(test_node, elem_manager),
+        )
+
+    @staticmethod
+    def parse_elif_condition(test_node: ast.expr, elem_manager: CodeElementManager):
+        return ElifConditionObj(
+            id=test_node.lineno,
+            expr_obj=ExprTraveler.travel(test_node, elem_manager),
             result=IfStmt._evaluate_test_value(test_node, elem_manager),
         )
 
     @staticmethod
     def parse_else_condition(else_body_node: ast.stmt):
-        return ElseConditionObj(id=else_body_node.lineno - 1, result=False)
+        return ElseConditionObj(id=else_body_node.lineno - 1, expr_obj=None, result=False)
 
     @staticmethod
     def _evaluate_test_value(test_node: ast.expr, elem_manager: CodeElementManager):
