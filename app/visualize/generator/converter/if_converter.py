@@ -19,13 +19,11 @@ class IfConverter:
                 if_header_conditions.append(IfConverter._create_condition_viz(condition, "if"))
 
             elif isinstance(condition, ElifConditionObj):
-                if_header_conditions.append(
-                    if_header_conditions.append(IfConverter._create_condition_viz(condition, "elif"))
-                )
+                if_header_conditions.append(IfConverter._create_condition_viz(condition, "elif"))
+
             elif isinstance(condition, ElseConditionObj):
-                if_header_conditions.append(
-                    if_header_conditions.append(IfConverter._create_condition_viz(condition, "else"))
-                )
+                if_header_conditions.append(IfConverter._create_condition_viz(condition, "else"))
+
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
@@ -44,6 +42,9 @@ class IfConverter:
             elif isinstance(condition, IfConditionObj) or isinstance(condition, ElifConditionObj):
                 for expression in condition.expr_obj.expressions:
                     steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=expression))
+                steps.append(
+                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
+                )
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 

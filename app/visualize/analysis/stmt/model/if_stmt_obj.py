@@ -11,17 +11,14 @@ class ConditionObj:
     result: bool
 
 
-@dataclass(frozen=True)
 class IfConditionObj(ConditionObj):
     pass
 
 
-@dataclass(frozen=True)
 class ElifConditionObj(ConditionObj):
     pass
 
 
-@dataclass(frozen=True)
 class ElseConditionObj(ConditionObj):
     pass
 
