@@ -3,7 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
-from app.visualize.analysis.stmt.model.if_stmt_obj import ElseConditionObj, IfStmtObj
+from app.visualize.analysis.stmt.model.if_stmt_obj import ElseConditionObj, IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
@@ -27,8 +27,8 @@ class StmtTraveler:
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
-            body_steps = []
 
+            body_steps = []
             for body in node.body:
                 body_steps.append(StmtTraveler._internal_travel(body, elem_manager))
 
@@ -61,32 +61,67 @@ class StmtTraveler:
 
     @staticmethod
     def if_travel(
-        node: ast.If, conditions: list[ElseConditionObj], body_objs: list[BodyObj], elem_manager: CodeElementManager
+        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: CodeElementManager
     ) -> IfStmtObj:
-        # 조건문 parse: if("test") or elfi("test") 부분
-        condition = IfStmt.parse_condition(node.test, elem_manager)
+        # parse 조건문 : if("test") or elfi("test") 부분
+        StmtTraveler._append_condition_obj(conditions, elem_manager, node)
+
+        # parse body
+        StmtTraveler._parse_if_body(node, conditions, body_objs, elem_manager)
+
+        # parse elif or else
+        StmtTraveler._parse_if_orelse(body_objs, conditions, elem_manager, node)
+
+        return IfStmtObj(conditions=tuple(conditions), body=BodyObj(body_steps=body_objs, cur_value=0))
+
+    @staticmethod
+    def _append_condition_obj(conditions, elem_manager, node: ast.If | ast.stmt):
+        if len(conditions) == 0:  # if
+            condition = IfStmt.parse_if_condition(node.test, elem_manager)
+
+        elif isinstance(node, ast.If):  # elif
+            condition = IfStmt.parse_elif_condition(node.test, elem_manager)
+
+        else:
+            raise TypeError(f"[IfTraveler] {type(node)}는 잘못된 타입입니다.")
+
         conditions.append(condition)
 
-        # body parse
-        if condition.result is True:  # 조건절의 결과 값이 True이면 해당 body 로직 추가
+    @staticmethod
+    def _append_else_condition_obj(conditions, node: ast.stmt, result: bool):
+        if isinstance(node, ast.stmt):  # else
+            condition = IfStmt.parse_else_condition(node, result)
+
+        else:
+            raise TypeError(f"[IfTraveler] {type(node)}는 잘못된 타입입니다.")
+
+        conditions.append(condition)
+
+    @staticmethod
+    def _parse_if_body(
+        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: CodeElementManager
+    ):
+        if conditions[-1].result is True:  # 조건절의 결과 값이 True이면 해당 body 로직 추가
             for body in node.body:
                 body_objs.append(StmtTraveler._internal_travel(body, elem_manager))
 
-        # orelse parse : 다음 elif문 or else 부분
-        for orelse in node.orelse:
-            if isinstance(orelse, ast.If):  # elif 처리
-                # if_travel() 재귀
-                StmtTraveler.if_travel(orelse, conditions, body_objs, elem_manager)
+    @staticmethod
+    def _parse_if_orelse(body_objs, conditions, elem_manager, node):
+        # elif 처리
+        if isinstance(node.orelse[0], ast.If):
+            StmtTraveler.if_travel(node.orelse[0], conditions, body_objs, elem_manager)
 
-            elif isinstance(orelse, ast.stmt):  # else 처리
-                else_condition = IfStmt.parse_else_condition(orelse)
-                conditions.append(else_condition)
-                # if, elif문 들의 조건 값이 모두 false 일 때 else문 의 body 추가
-                if len(body_objs) == 0:
-                    body_objs.append(StmtTraveler._internal_travel(orelse, elem_manager))
-                    else_condition.result = True
-
+        # else 처리
+        elif isinstance(node.orelse[0], ast.stmt):
+            if len(body_objs) == 0: # if, elif문 들의 조건 값이 모두 false 일 때 else문 의 body 추가
+                StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], True)
             else:
-                raise TypeError(f"[IfTraveler] {type(orelse)}는 잘못된 타입입니다.")
+                StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], False)
 
-        return IfStmtObj(conditions=tuple(conditions), body=body_objs[0])
+            for stmt_node in node.orelse:
+                body_objs.append(StmtTraveler._internal_travel(stmt_node, elem_manager))
+
+        else:
+            raise TypeError(f"[IfTraveler] {type(node.orelse[0])}는 잘못된 타입입니다.")
+
+

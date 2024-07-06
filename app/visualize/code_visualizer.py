@@ -16,7 +16,6 @@ class CodeVisualizer:
 
     def visualize_code(self):
         analyzed_stmt_list = self._analysis_parsed_node()
-        # TODO: 시각화 노드 리스트 생성
         return ConverterTraveler.travel(analyzed_stmt_list, self._visualization_manager)
 
     def _analysis_parsed_node(self):
@@ -25,7 +24,6 @@ class CodeVisualizer:
         for node in self._parsed_node.body:
             if isinstance(node, ast.Assign):
                 assign_obj = StmtTraveler.assign_travel(node, self._elem_manager)
-                # TODO:Assing_obj를 리스트가 아닌객체로 변경하고, extend -> append로 변경
                 steps.append(assign_obj)
 
             elif isinstance(node, ast.For):

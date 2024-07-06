@@ -1,8 +1,8 @@
-from app.visualize.generator.model.models import ConditionViz
+from app.visualize.generator.model.models import ForConditionViz
 
 
-class ForHighlighter:
+class ForHighlight:
 
     @staticmethod
-    def get_highlight_attr(condition: ConditionViz):
+    def get_highlight_attr(condition: ForConditionViz):
         return condition.changed_attr()

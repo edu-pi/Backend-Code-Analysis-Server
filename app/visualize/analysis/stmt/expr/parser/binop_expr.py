@@ -46,7 +46,10 @@ class BinopExpr:
         for i in range(len(total_expressions)):
             total_expressions[i] = BinopExpr._concat_expression(total_expressions[i][0], total_expressions[i][1], op)
 
-        total_expressions.append(str(value))
+        if isinstance(value, str):
+            total_expressions.append(f"'{value}'")
+        else:
+            total_expressions.append(str(value))
 
         return tuple(total_expressions)
 

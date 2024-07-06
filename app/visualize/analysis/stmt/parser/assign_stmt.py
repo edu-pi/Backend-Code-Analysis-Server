@@ -15,13 +15,17 @@ class AssignStmt:
         AssignStmt._set_value_to_target(target_names, expr_obj.value, elem_manager)
 
         return AssignStmtObj(
-            id=node.lineno, targets=target_names, expressions=expr_obj.expressions, value=expr_obj.value
+            id=node.lineno,
+            targets=target_names,
+            expressions=expr_obj.expressions,
+            value=expr_obj.value,
+            var_type=expr_obj.type,
         )
 
     @staticmethod
     def _get_target_name(node: ast, elem_manager: CodeElementManager):
         if isinstance(node, ast.Name):
-            expr_obj = ExprTraveler.name_travel(node, elem_manager)
+            expr_obj = ExprTraveler.travel(node, elem_manager)
 
         else:
             raise TypeError(f"[AssignParser]: {type(node)}는 잘못된 타입입니다.")
@@ -30,17 +34,7 @@ class AssignStmt:
 
     @staticmethod
     def _change_node_to_expr_obj(node: ast, elem_manager: CodeElementManager):
-        if isinstance(node, ast.BinOp):
-            return ExprTraveler.binop_travel(node, elem_manager)
-
-        elif isinstance(node, ast.Name):
-            return ExprTraveler.name_travel(node, elem_manager)
-
-        elif isinstance(node, ast.Constant):
-            return ExprTraveler.constant_travel(node)
-
-        else:
-            raise TypeError(f"[AssignParser] {type(node)}는 잘못된 타입입니다.")
+        return ExprTraveler.travel(node, elem_manager)
 
     @staticmethod
     def _set_value_to_target(target_names: list[str], value, elem_manager: CodeElementManager):
