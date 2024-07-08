@@ -1,7 +1,9 @@
 from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.highlight.list_highlight import ListHighlight
-from app.visualize.generator.model.models import AssignViz, Variable, ExprViz
+from app.visualize.generator.model.assign_viz import AssignViz
+from app.visualize.generator.model.expr_viz import ExprViz
+from app.visualize.generator.model.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 

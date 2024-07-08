@@ -2,34 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class AssignViz:
-    variables: list
-    type: str = "assignViz"
-
-
-"""
-    @ list: Variable 리스트
-    @ type: 타입````
-"""
-
-
-@dataclass(frozen=True)
-class Variable:
-    depth: int
-    expr: str
-    name: str
-    highlights: list
-    type: str
-
-
-"""
-    @ depth: 깊이
-    @ expr: 변수에 들어갈 표현식
-    @ name: 변수 이름
-"""
-
-
-@dataclass(frozen=True)
 class ForConditionViz:
     target: str
     cur: int
@@ -65,31 +37,3 @@ class ForViz:
     @ condition: 조건절
     @ type : 타입
 """
-
-
-@dataclass(frozen=True)
-class PrintViz:
-    id: int
-    depth: int
-    expr: str
-    highlights: []
-    console: str | None
-    type: str = "print"
-
-
-"""
-    @ id: 식별값
-    @ depth: 깊이
-    @ name: 변수 이름
-    @ value: 변수 값
-
-"""
-
-
-@dataclass(frozen=True)
-class ExprViz:
-    id: int
-    depth: int
-    expr: str
-    highlights: []
-    type: str
