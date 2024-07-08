@@ -26,7 +26,7 @@ def create_assign():
             3,
             ["3"],
             "constant",
-            AssignViz(variables=[Variable(name="a", expr="3", highlights=[0], depth=1, type="variable")]),
+            AssignViz(variables=[Variable(id=1, name="a", expr="3", highlights=[0], depth=1, type="variable")]),
             id="a = 3: success case",
         ),
         pytest.param(
@@ -34,7 +34,7 @@ def create_assign():
             4,
             ["a + 1", "3 + 1", "4"],
             "binop",
-            AssignViz(variables=[Variable(name="b", expr="4", highlights=[0], depth=1, type="variable")]),
+            AssignViz(variables=[Variable(id=1, name="b", expr="4", highlights=[0], depth=1, type="variable")]),
             id="b = a + 1: success case",
         ),
         pytest.param(
@@ -44,8 +44,8 @@ def create_assign():
             "binop",
             AssignViz(
                 variables=[
-                    Variable(name="c", expr="5", highlights=[0], depth=1, type="variable"),
-                    Variable(name="d", expr="5", highlights=[0], depth=1, type="variable"),
+                    Variable(id=1, name="c", expr="5", highlights=[0], depth=1, type="variable"),
+                    Variable(id=1, name="d", expr="5", highlights=[0], depth=1, type="variable"),
                 ],
             ),
             id="c, d = b + 1: success case",
@@ -56,7 +56,7 @@ def create_assign():
             ["[1,2,3]"],
             "list",
             AssignViz(
-                variables=[Variable(name="e", expr="[1,2,3]", highlights=[0, 1, 2], depth=1, type="list")],
+                variables=[Variable(id=1, name="e", expr="[1,2,3]", highlights=[0, 1, 2], depth=1, type="list")],
             ),
             id="e = [1, 2, 3]: success case",
         ),
@@ -66,7 +66,7 @@ def create_assign():
             ["['Hello','World']"],
             "list",
             AssignViz(
-                variables=[Variable(name="f", expr="['Hello','World']", highlights=[0, 1], depth=1, type="list")],
+                variables=[Variable(id=1, name="f", expr="['Hello','World']", highlights=[0, 1], depth=1, type="list")],
             ),
             id="f = ['Hello', 'World']: success case",
         ),
@@ -76,7 +76,7 @@ def create_assign():
             ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
             "list",
             AssignViz(
-                variables=[Variable(name="g", expr="[11,10]", highlights=[0, 1], depth=1, type="list")],
+                variables=[Variable(id=1, name="g", expr="[11,10]", highlights=[0, 1], depth=1, type="list")],
             ),
             id="g = [a + 1, b]: success case",
         ),
