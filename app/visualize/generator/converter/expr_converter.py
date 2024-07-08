@@ -1,4 +1,3 @@
-from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj, ConstantObj, BinopObj, NameObj, RangeObj, ExprObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.model.expr_viz import ExprViz
@@ -30,9 +29,10 @@ class ExprConverter:
 
     @staticmethod
     def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, var_type, call_id, depth):
-        highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
         if var_type == "list":
             highlights = ListHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
+        else:
+            highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
 
         expr_vizs = [
             ExprViz(
