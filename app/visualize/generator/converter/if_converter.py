@@ -40,8 +40,9 @@ class IfConverter:
                 )
 
             elif isinstance(condition, IfConditionObj) or isinstance(condition, ElifConditionObj):
-                for expression in condition.expr_obj.expressions:
+                for expression in condition.expressions:
                     steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=expression))
+
                 steps.append(
                     IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
                 )
@@ -55,5 +56,5 @@ class IfConverter:
 
     @staticmethod
     def _create_condition_viz(condition, condition_type):
-        expr = condition.expr_obj.expressions[0] if condition_type != "else" else ""
+        expr = condition.expressions[0] if condition_type != "else" else ""
         return ConditionViz(id=condition.id, expr=expr, type=condition_type)

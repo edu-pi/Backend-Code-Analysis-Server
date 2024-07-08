@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
 from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
 
 
 @dataclass(frozen=True)
 class ConditionObj:
     id: int
-    expr_obj: ExprObj | None
+    expressions: tuple[str, ...] | None  # else의 경우 None
     result: bool
 
 
