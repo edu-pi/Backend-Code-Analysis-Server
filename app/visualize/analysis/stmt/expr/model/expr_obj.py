@@ -6,9 +6,9 @@ from app.visualize.analysis.stmt.expr.model.range_expression import RangeExpress
 
 @dataclass(frozen=True)
 class ExprObj:
-    type: str
     value: Any
     expressions: tuple[Any, ...]
+    type: str
 
 
 @dataclass(frozen=True)
