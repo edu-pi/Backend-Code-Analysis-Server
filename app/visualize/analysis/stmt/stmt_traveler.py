@@ -113,16 +113,13 @@ class StmtTraveler:
 
         # else 처리
         elif isinstance(node.orelse[0], ast.stmt):
-            is_exist_body = True if len(body_objs) != 0 else False
+            is_else_true = True if len(body_objs) == 0 else False
 
-            if not is_exist_body:
-                # else문의 body 추가
-                StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], True)
-            else:
-                StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], False)
-
-            for stmt_node in node.orelse:
-                body_objs.append(StmtTraveler._internal_travel(stmt_node, elem_manager))
+            StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], is_else_true)
+            if is_else_true:
+                # else 문의 body 추가
+                for stmt_node in node.orelse:
+                    body_objs.append(StmtTraveler._internal_travel(stmt_node, elem_manager))
 
         else:
             raise TypeError(f"[IfTraveler] {type(node.orelse[0])}는 잘못된 타입입니다.")
