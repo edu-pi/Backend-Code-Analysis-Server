@@ -1,4 +1,4 @@
-class CodeElementManager:
+class ElementContainer:
 
     def __init__(self):
         self.element_dict = {}

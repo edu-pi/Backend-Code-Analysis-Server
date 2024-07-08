@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
@@ -9,7 +9,7 @@ from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 class AssignStmt:
 
     @staticmethod
-    def parse(node: ast.Assign, elem_manager: CodeElementManager):
+    def parse(node: ast.Assign, elem_manager: ElementContainer):
         target_names = tuple(AssignStmt._get_target_name(target_node, elem_manager) for target_node in node.targets)
         expr_obj = AssignStmt._change_node_to_expr_obj(node.value, elem_manager)
 
@@ -26,7 +26,7 @@ class AssignStmt:
         )
 
     @staticmethod
-    def _get_target_name(node: ast, elem_manager: CodeElementManager):
+    def _get_target_name(node: ast, elem_manager: ElementContainer):
         if isinstance(node, ast.Name):
             expr_obj = ExprTraveler.travel(node, elem_manager)
 
@@ -36,11 +36,11 @@ class AssignStmt:
         return expr_obj.value
 
     @staticmethod
-    def _change_node_to_expr_obj(node: ast, elem_manager: CodeElementManager):
+    def _change_node_to_expr_obj(node: ast, elem_manager: ElementContainer):
         return ExprTraveler.travel(node, elem_manager)
 
     @staticmethod
-    def _set_value_to_target(target_names: tuple[str, ...], expr_obj, elem_manager: CodeElementManager):
+    def _set_value_to_target(target_names: tuple[str, ...], expr_obj, elem_manager: ElementContainer):
         for target_name in target_names:
             value = expr_obj.value
 

@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.element_manager import CodeElementManager
+from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
@@ -12,11 +12,11 @@ from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 class StmtTraveler:
 
     @staticmethod
-    def assign_travel(node: ast.Assign, elem_manager: CodeElementManager):
+    def assign_travel(node: ast.Assign, elem_manager: ElementContainer):
         return AssignStmt.parse(node, elem_manager)
 
     @staticmethod
-    def for_travel(node: ast.For, elem_manager: CodeElementManager):
+    def for_travel(node: ast.For, elem_manager: ElementContainer):
         # parse condition
         for_stmt_obj = ForStmt.parse(node, elem_manager)
 
@@ -38,11 +38,11 @@ class StmtTraveler:
         return for_stmt_obj
 
     @staticmethod
-    def expr_travel(node: ast.Expr, elem_manager: CodeElementManager):
+    def expr_travel(node: ast.Expr, elem_manager: ElementContainer):
         return ExprStmt.parse(node, elem_manager)
 
     @staticmethod
-    def _internal_travel(node: ast, elem_manager: CodeElementManager):
+    def _internal_travel(node: ast, elem_manager: ElementContainer):
 
         if isinstance(node, ast.Assign):
             return StmtTraveler.assign_travel(node, elem_manager)
@@ -60,7 +60,7 @@ class StmtTraveler:
 
     @staticmethod
     def if_travel(
-        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: CodeElementManager
+        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
     ) -> IfStmtObj:
         # parse 조건문 : if("test") or elfi("test") 부분
         StmtTraveler._append_condition_obj(conditions, elem_manager, node)
@@ -99,7 +99,7 @@ class StmtTraveler:
 
     @staticmethod
     def _parse_if_body(
-        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: CodeElementManager
+        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
     ):
         if conditions[-1].result is True:  # 조건절의 결과 값이 True이면 해당 body 로직 추가
             for body in node.body:

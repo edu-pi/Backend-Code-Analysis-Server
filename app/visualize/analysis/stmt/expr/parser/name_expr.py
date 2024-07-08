@@ -1,13 +1,13 @@
 import ast
 
-from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, NameObj
+from app.visualize.container.element_container import ElementContainer
+from app.visualize.analysis.stmt.expr.models.expr_obj import NameObj
 
 
 class NameExpr:
 
     @staticmethod
-    def parse(ctx: ast, identifier_name, elem_manager: CodeElementManager):
+    def parse(ctx: ast, identifier_name, elem_manager: ElementContainer):
         if isinstance(ctx, ast.Store):
             return NameObj(value=identifier_name, expressions=(identifier_name,))
 
@@ -24,7 +24,7 @@ class NameExpr:
 
     # 변수의 값을 가져오는 함수
     @staticmethod
-    def _get_identifier_value(identifier_name, elem_manager: CodeElementManager):
+    def _get_identifier_value(identifier_name, elem_manager: ElementContainer):
         try:
             return elem_manager.get_element(name=identifier_name)
         except NameError as e:
