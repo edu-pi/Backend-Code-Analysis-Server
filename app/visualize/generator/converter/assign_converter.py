@@ -12,7 +12,7 @@ class AssignConverter:
     def convert(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         depth = viz_manager.get_depth()
         expr_stmt_obj = assign_obj.expr_stmt_obj
-        var_type = Util.get_var_type(expr_stmt_obj.value)
+        var_type = Util.get_var_type(expr_stmt_obj.value, expr_stmt_obj.var_type)
         highlights = AssignConverter._get_highlights(expr_stmt_obj, var_type)
 
         return AssignConverter._convert_to_assign_viz(expr_stmt_obj, assign_obj.targets, depth, highlights, var_type)

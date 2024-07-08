@@ -12,8 +12,10 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 
 @pytest.fixture()
 def create_assign():
-    def _create_assign_obj(targets, value, expressions):
-        return AssignStmtObj(targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions))
+    def _create_assign_obj(targets, value, expressions, var_type):
+        return AssignStmtObj(
+            targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, var_type=var_type)
+        )
 
     return _create_assign_obj
 
@@ -86,6 +88,6 @@ def test_convert(create_assign, targets, value, expressions, var_type, expected)
     viz_manager = VisualizationManager()
     viz_manager.get_depth = MagicMock(return_value=1)
 
-    result = AssignConverter.convert(create_assign(targets, value, expressions), viz_manager)
+    result = AssignConverter.convert(create_assign(targets, value, expressions, var_type), viz_manager)
 
     assert result == expected
