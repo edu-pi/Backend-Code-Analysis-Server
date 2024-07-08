@@ -81,7 +81,7 @@ class CompareExpr:
         for i in range(len(total_expressions)):
             left_expression = total_expressions[i][0]
             right_expression = total_expressions[i][1]
-            total_expressions[i] = list_to_str([left_expression, CompareExpr._get_op_value(op), right_expression])
+            total_expressions[i] = util.list_to_str([left_expression, CompareExpr._get_op_to_str(op), right_expression])
 
         return total_expressions
 

@@ -85,6 +85,8 @@ class StmtTraveler:
         else:
             raise TypeError(f"[IfTraveler] {type(node)}는 잘못된 타입입니다.")
 
+        # 조건문 parse: if("test") or elif("test") 부분
+        condition = IfStmt.parse_condition(node.test, elem_manager)
         conditions.append(condition)
 
     @staticmethod
@@ -113,7 +115,7 @@ class StmtTraveler:
 
         # else 처리
         elif isinstance(node.orelse[0], ast.stmt):
-            if len(body_objs) == 0: # if, elif문 들의 조건 값이 모두 false 일 때 else문 의 body 추가
+            if len(body_objs) == 0:  # if, elif문 들의 조건 값이 모두 false 일 때 else문 의 body 추가
                 StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], True)
             else:
                 StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], False)
@@ -123,5 +125,3 @@ class StmtTraveler:
 
         else:
             raise TypeError(f"[IfTraveler] {type(node.orelse[0])}는 잘못된 타입입니다.")
-
-
