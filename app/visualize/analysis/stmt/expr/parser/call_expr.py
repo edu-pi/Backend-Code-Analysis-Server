@@ -1,6 +1,6 @@
-from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, RangeObj, PrintObj
 from app.visualize.analysis.stmt.expr.models.range_expression import RangeExpression
+from app.visualize.utils.util import Util
 
 
 class CallExpr:
@@ -27,7 +27,7 @@ class CallExpr:
         CallExpr._apply_keywords(default_keyword, keyword_arg_dict)
 
         arg_expressions = [arg.expressions for arg in args]
-        transposed_expressions = util.transpose_with_last_fill(arg_expressions)
+        transposed_expressions = Util.transpose_with_last_fill(arg_expressions)
 
         print_expressions = []
 
@@ -59,7 +59,7 @@ class CallExpr:
 
         # util의 transpose_with_last_fill을 이용하여 값 배열 생성
         # ['a', '10', '2'], ['3', '10', '2']
-        transposed_expressions = util.transpose_with_last_fill([arg.expressions for arg in args])
+        transposed_expressions = Util.transpose_with_last_fill([arg.expressions for arg in args])
 
         # 배열을 range_obj로 만들기
         range_expressions = [CallExpr._create_range_expression(range_list) for range_list in transposed_expressions]

@@ -1,7 +1,7 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, BinopObj
+from app.visualize.utils.util import Util
 
 
 class BinopExpr:
@@ -41,7 +41,7 @@ class BinopExpr:
     # a + sum([1, 2])
     @staticmethod
     def _create_expressions(left_expressions, right_expressions, op, value) -> tuple:
-        total_expressions = util.transpose_with_last_fill([left_expressions, right_expressions])
+        total_expressions = Util.transpose_with_last_fill([left_expressions, right_expressions])
 
         for i in range(len(total_expressions)):
             total_expressions[i] = BinopExpr._concat_expression(total_expressions[i][0], total_expressions[i][1], op)
