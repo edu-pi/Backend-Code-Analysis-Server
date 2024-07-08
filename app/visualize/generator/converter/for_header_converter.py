@@ -2,7 +2,7 @@
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 from app.visualize.generator.highlight.for_highlight import ForHighlight
-from app.visualize.generator.model.for_viz import ForViz, ForConditionViz
+from app.visualize.generator.models.for_viz import ForViz, ForConditionViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 

@@ -1,4 +1,4 @@
-from app.visualize.generator.model.for_viz import ForConditionViz
+from app.visualize.generator.models.for_viz import ForConditionViz
 
 
 class ForHighlight:
