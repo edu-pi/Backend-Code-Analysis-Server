@@ -30,7 +30,7 @@ class IfStmt:
     @staticmethod
     def _evaluate_test_value(test_node: ast.expr, elem_container: ElementContainer):
         """
-        Returns: 조건 절의 코드 실행 결과 반환
+        조건 절의 코드 실행 결과 반환
         """
         test_code = ast.unparse(test_node)
         return eval(test_code, elem_container.get_element_dict())
