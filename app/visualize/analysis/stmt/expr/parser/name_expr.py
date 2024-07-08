@@ -7,12 +7,12 @@ from app.visualize.analysis.stmt.expr.models.expr_obj import NameObj
 class NameExpr:
 
     @staticmethod
-    def parse(ctx: ast, identifier_name, elem_manager: ElementContainer):
+    def parse(ctx: ast, identifier_name, elem_container: ElementContainer):
         if isinstance(ctx, ast.Store):
             return NameObj(value=identifier_name, expressions=(identifier_name,))
 
         elif isinstance(ctx, ast.Load):
-            value = NameExpr._get_identifier_value(identifier_name, elem_manager)
+            value = NameExpr._get_identifier_value(identifier_name, elem_container)
             expressions = NameExpr._create_expressions(identifier_name, value)
             return NameObj(value=value, expressions=expressions)
 
@@ -24,9 +24,9 @@ class NameExpr:
 
     # 변수의 값을 가져오는 함수
     @staticmethod
-    def _get_identifier_value(identifier_name, elem_manager: ElementContainer):
+    def _get_identifier_value(identifier_name, elem_container: ElementContainer):
         try:
-            return elem_manager.get_element(name=identifier_name)
+            return elem_container.get_element(name=identifier_name)
         except NameError as e:
             raise NameError(f"[NameExpr]: {identifier_name}은 정의되지 않은 변수입니다.") from e
 

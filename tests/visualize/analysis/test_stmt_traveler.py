@@ -38,5 +38,5 @@ def elem_manager():
     ],
 )
 def test_for_travel(create_ast, code, expect, elem_manager):
-    actual = StmtTraveler.for_travel(create_ast(code), elem_manager)
+    actual = StmtTraveler._for_travel(create_ast(code), elem_manager)
     pass

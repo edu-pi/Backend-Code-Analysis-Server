@@ -7,7 +7,7 @@ from app.visualize.container.element_container import ElementContainer
 
 
 @pytest.fixture
-def elem_manager():
+def elem_container():
     mock = MagicMock(spec=ElementContainer)
     mock.get_element.return_value = 10
     return mock

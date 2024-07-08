@@ -1,5 +1,3 @@
-from typing import List
-
 from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.models.expr_obj import ListObj, ExprObj
 

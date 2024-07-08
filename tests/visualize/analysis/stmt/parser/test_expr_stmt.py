@@ -56,8 +56,8 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
         ),
     ],
 )
-def test__get_expr_obj(elem_manager, node, expect):
+def test__get_expr_obj(elem_container, node, expect):
     # expr 노드를 받아서 변수 이름을 반환하는지 통합테스트
-    actual = ExprStmt._get_expr_obj(node, elem_manager)
+    actual = ExprStmt._get_expr_obj(node, elem_container)
 
     assert actual == expect
