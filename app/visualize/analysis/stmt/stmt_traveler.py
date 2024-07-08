@@ -113,7 +113,10 @@ class StmtTraveler:
 
         # else 처리
         elif isinstance(node.orelse[0], ast.stmt):
-            if len(body_objs) == 0:  # if, elif문 들의 조건 값이 모두 false 일 때 else문 의 body 추가
+            is_exist_body = True if len(body_objs) != 0 else False
+
+            if not is_exist_body:
+                # else문의 body 추가
                 StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], True)
             else:
                 StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], False)
