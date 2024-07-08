@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from app.visualize.analysis.stmt.expr.model.range_expression import RangeExpression
+from app.visualize.analysis.stmt.expr.models.range_expression import RangeExpression
 
 
 @dataclass(frozen=True)

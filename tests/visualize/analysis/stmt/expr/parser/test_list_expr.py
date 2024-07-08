@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ListObj, ConstantObj, BinopObj, NameObj, ExprObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ListObj, ConstantObj, BinopObj, NameObj, ExprObj
 from app.visualize.analysis.stmt.expr.parser.list_expr import ListExpr
 
 

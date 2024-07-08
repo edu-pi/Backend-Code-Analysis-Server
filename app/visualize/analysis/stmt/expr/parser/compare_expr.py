@@ -2,7 +2,7 @@ import ast
 
 from app.visualize.analysis.stmt.expr.expr_util import util
 from app.visualize.analysis.stmt.expr.expr_util.util import list_to_str
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, CompareObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, CompareObj
 
 
 class CompareExpr:

@@ -2,7 +2,7 @@ import ast
 from unittest.mock import patch
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprTraveler
 

@@ -1,4 +1,4 @@
-from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.model.expr_viz import ExprViz
 from app.visualize.generator.model.print_viz import PrintViz

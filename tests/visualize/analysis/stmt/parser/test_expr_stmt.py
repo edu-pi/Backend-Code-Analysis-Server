@@ -2,7 +2,7 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj, BinopObj, ConstantObj, NameObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import PrintObj, BinopObj, ConstantObj, NameObj
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 
 

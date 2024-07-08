@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
 
@@ -28,11 +28,12 @@ def elem_manager():
     "code, expect",
     [
         (
-                """for i in range(3): \n    print('hello')""",
-                ExprObj(
-                    type="for", value={"end": "3", "start": "0", "step": "1"},
-                    expressions=[{"end": "3", "start": "0", "step": "1"}]
-                ),
+            """for i in range(3): \n    print('hello')""",
+            ExprObj(
+                type="for",
+                value={"end": "3", "start": "0", "step": "1"},
+                expressions=[{"end": "3", "start": "0", "step": "1"}],
+            ),
         )
     ],
 )

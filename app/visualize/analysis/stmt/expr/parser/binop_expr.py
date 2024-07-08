@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.analysis.stmt.expr.expr_util import util
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, BinopObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, BinopObj
 
 
 class BinopExpr:

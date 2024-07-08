@@ -1,8 +1,8 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
-from app.visualize.analysis.stmt.model.if_stmt_obj import IfStmtObj, ConditionObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
+from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt

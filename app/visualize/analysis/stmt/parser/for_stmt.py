@@ -2,7 +2,7 @@ import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 
 
 class ForStmt:

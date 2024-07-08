@@ -1,4 +1,4 @@
-from app.visualize.analysis.stmt.model.if_stmt_obj import (
+from app.visualize.analysis.stmt.models.if_stmt_obj import (
     ConditionObj,
     IfConditionObj,
     ElifConditionObj,

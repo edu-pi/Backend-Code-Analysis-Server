@@ -1,6 +1,6 @@
 import pytest
 
-from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.model.print_viz import PrintViz
 

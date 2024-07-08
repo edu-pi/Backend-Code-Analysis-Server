@@ -1,6 +1,6 @@
 from app.visualize.analysis.stmt.expr.expr_util import util
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, RangeObj, PrintObj
-from app.visualize.analysis.stmt.expr.model.range_expression import RangeExpression
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, RangeObj, PrintObj
+from app.visualize.analysis.stmt.expr.models.range_expression import RangeExpression
 
 
 class CallExpr:

@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
-from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 
 

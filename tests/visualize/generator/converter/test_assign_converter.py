@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
-from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.model.assign_viz import AssignViz
 from app.visualize.generator.model.variable_vlz import Variable

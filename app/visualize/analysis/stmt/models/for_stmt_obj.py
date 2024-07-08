@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import RangeObj
+from app.visualize.analysis.stmt.expr.models.expr_obj import RangeObj
 
 
 @dataclass
