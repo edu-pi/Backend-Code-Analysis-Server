@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Variable:
+    id: int
     depth: int
     expr: str
     name: str

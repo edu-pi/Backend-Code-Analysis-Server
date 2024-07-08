@@ -2,9 +2,9 @@ from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.model.assign_viz import AssignViz
-from app.visualize.generator.model.expr_viz import ExprViz
 from app.visualize.generator.model.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
+from app.visualize.utils.util import Util
 
 
 class AssignConverter:
@@ -12,8 +12,7 @@ class AssignConverter:
     def convert(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         depth = viz_manager.get_depth()
         expr_stmt_obj = assign_obj.expr_stmt_obj
-        var_type = AssignConverter._get_var_type(expr_stmt_obj.var_type)
-
+        var_type = Util.get_var_type(expr_stmt_obj.value)
         highlights = AssignConverter._get_highlights(expr_stmt_obj, var_type)
 
         return AssignConverter._convert_to_assign_viz(expr_stmt_obj, assign_obj.targets, depth, highlights, var_type)

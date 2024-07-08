@@ -5,6 +5,7 @@ from app.visualize.generator.model.expr_viz import ExprViz
 from app.visualize.generator.model.print_viz import PrintViz
 from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.visualization_manager import VisualizationManager
+from app.visualize.utils.util import Util
 
 
 class ExprConverter:
@@ -13,7 +14,7 @@ class ExprConverter:
     def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
         call_id = expr_stmt_obj.id
         depth = viz_manager.get_depth()
-        var_type = ExprConverter._get_var_type(expr_stmt_obj.var_type)
+        var_type = Util.get_var_type(expr_stmt_obj.value)
 
         if var_type == "variable":
             return ExprConverter._convert_to_expr_viz(expr_stmt_obj, var_type, call_id, depth)
@@ -26,13 +27,6 @@ class ExprConverter:
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
-
-    @staticmethod
-    def _get_var_type(var_type: str):
-        if var_type in ("name", "constant", "binop"):
-            var_type = "variable"
-
-        return var_type
 
     @staticmethod
     def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, var_type, call_id, depth):

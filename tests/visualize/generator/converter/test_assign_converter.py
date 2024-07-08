@@ -5,16 +5,15 @@ import pytest
 from app.visualize.analysis.stmt.model.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
-from app.visualize.generator.model.models import AssignViz, Variable, ExprViz
+from app.visualize.generator.model.assign_viz import AssignViz
+from app.visualize.generator.model.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 @pytest.fixture()
 def create_assign():
-    def _create_assign_obj(targets, value, expressions, var_type):
-        return AssignStmtObj(
-            targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, var_type=var_type)
-        )
+    def _create_assign_obj(targets, value, expressions):
+        return AssignStmtObj(targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions))
 
     return _create_assign_obj
 
@@ -87,6 +86,6 @@ def test_convert(create_assign, targets, value, expressions, var_type, expected)
     viz_manager = VisualizationManager()
     viz_manager.get_depth = MagicMock(return_value=1)
 
-    result = AssignConverter.convert(create_assign(targets, value, expressions, var_type), viz_manager)
+    result = AssignConverter.convert(create_assign(targets, value, expressions), viz_manager)
 
     assert result == expected

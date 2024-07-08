@@ -1,15 +1,14 @@
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.expr_converter import ExprConverter
-from app.visualize.generator.model.models import PrintViz
+from app.visualize.generator.model.print_viz import PrintViz
 
 
 @pytest.fixture
 def create_print():
     def _create_print_obj(value, expressions):
-        return ExprStmtObj(id=1, value=value, expressions=expressions, var_type="print")
+        return ExprStmtObj(id=1, value=value, expressions=expressions)
 
     return _create_print_obj
 

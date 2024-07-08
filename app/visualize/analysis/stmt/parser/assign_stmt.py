@@ -21,7 +21,6 @@ class AssignStmt:
                 id=node.lineno,
                 expressions=expr_obj.expressions,
                 value=expr_obj.value,
-                var_type=expr_obj.type,
             ),
         )
 
