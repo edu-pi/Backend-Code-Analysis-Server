@@ -1,9 +1,8 @@
 import ast
 
 from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
-from app.visualize.analysis.stmt.model.if_stmt_obj import ElseConditionObj, IfStmtObj, ConditionObj
+from app.visualize.analysis.stmt.model.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
@@ -86,7 +85,6 @@ class StmtTraveler:
             raise TypeError(f"[IfTraveler] {type(node)}는 잘못된 타입입니다.")
 
         # 조건문 parse: if("test") or elif("test") 부분
-        condition = IfStmt.parse_condition(node.test, elem_manager)
         conditions.append(condition)
 
     @staticmethod

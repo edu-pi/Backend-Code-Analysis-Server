@@ -79,7 +79,7 @@ class ExprTraveler:
     def _compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
         if isinstance(node, ast.Compare):
             left = ExprTraveler._compare_travel(node.left, elem_manager)
-            comparators = [ExprTraveler._compare_travel(comparor, elem_manager) for comparor in node.comparators]
+            comparators = tuple(ExprTraveler._compare_travel(comparor, elem_manager) for comparor in node.comparators)
 
             return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
 
