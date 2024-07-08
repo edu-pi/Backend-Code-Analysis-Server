@@ -28,6 +28,7 @@ class AssignConverter:
     def _convert_to_assign_viz(expr_stmt_obj, targets, depth, highlights, var_type):
         variable_list = [
             Variable(
+                id=expr_stmt_obj.id,
                 depth=depth,
                 expr=expr_stmt_obj.expressions[-1],
                 highlights=highlights[-1],
