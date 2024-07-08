@@ -49,6 +49,9 @@ class ExprTraveler:
         elif isinstance(node, ast.Constant):
             return ExprTraveler._constant_travel(node)
 
+        else:
+            raise TypeError(f"[ExprTraveler - binop parsing 중  {type(node)}는 잘못된 타입입니다.")
+
     @staticmethod
     def _name_travel(node: ast.Name, elem_manager: CodeElementManager):
         return NameExpr.parse(node.ctx, node.id, elem_manager)
@@ -116,6 +119,8 @@ class ExprTraveler:
         elif isinstance(node, ast.Constant):
             return ExprTraveler.travel(node, elem_manager)
 
+        else:
+            raise TypeError(f"[ExprTraveler - compare parsing 중  {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
     def _get_func_name(node: ast):
@@ -127,6 +132,3 @@ class ExprTraveler:
 
         else:
             raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
-
-
-
