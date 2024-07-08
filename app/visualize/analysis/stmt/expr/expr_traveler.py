@@ -75,33 +75,6 @@ class ExprTraveler:
         elts = [ExprTraveler.travel(elt, elem_manager) for elt in node.elts]
         return ListExpr.parse(elts)
 
-    def compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
-        if isinstance(node, ast.Compare):
-            left = ExprTraveler.compare_travel(node.left, elem_manager)
-            comparators = [ExprTraveler.compare_travel(comparor, elem_manager) for comparor in node.comparators]
-
-            return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
-
-        elif isinstance(node, ast.BinOp):
-            return ExprTraveler.binop_travel(node, elem_manager)
-
-        elif isinstance(node, ast.Name):
-            return ExprTraveler.name_travel(node, elem_manager)
-
-        elif isinstance(node, ast.Constant):
-            return ExprTraveler.constant_travel(node)
-
-    @staticmethod
-    def _get_func_name(node: ast, elem_manager: CodeElementManager):
-        if isinstance(node, ast.Name):
-            return node.id
-
-        elif isinstance(node, ast.Attribute):
-            raise NotImplementedError(f"[call_travel] {type(node)}정의되지 않았습니다.")
-
-        else:
-            raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
-
     @staticmethod
     def _compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
         if isinstance(node, ast.Compare):

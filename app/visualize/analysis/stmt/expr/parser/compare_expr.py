@@ -35,8 +35,6 @@ class CompareExpr:
         else:  # 비교 연산자가 2개 이상인 경우, 생략된 표현 과정 반환
             total_expressions.append(CompareExpr._create_origin_expression(left_obj, comparators, ops))
 
-        # 최종 결과값 추가
-        total_expressions.append(str(value))
         return tuple(total_expressions)
 
     @staticmethod

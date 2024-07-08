@@ -25,6 +25,7 @@ class ConverterTraveler:
 
             elif analysis_obj.type == "if":
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
+
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
 

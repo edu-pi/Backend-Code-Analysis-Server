@@ -8,22 +8,29 @@ from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
 
 @pytest.mark.parametrize(
     "left_obj, comparators, ops, expected",
-    [  # `1==2`
-        (
-            ConstantObj(value=1, expressions=("1",)),
+    [
+        pytest.param(
+            ConstantObj(
+                value=1,
+                expressions=("1",),
+            ),
             (ConstantObj(value=2, expressions=("2",)),),
             (ast.Eq(),),
-            CompareObj(value=False, expressions=("1 == 2", "False")),
+            CompareObj(value=False, expressions=("1 == 2",)),
+            id="1==2",
         ),
-        # `1 < a < 30`
-        (
-            ConstantObj(value=1, expressions=("1",)),
+        pytest.param(
+            ConstantObj(
+                value=1,
+                expressions=("1",),
+            ),
             (
                 NameObj(value=10, expressions=("a", "10")),
                 ConstantObj(value=30, expressions=("30",)),
             ),
             (ast.Lt(), ast.Lt()),
-            CompareObj(value=True, expressions=("1 < a < 30", "True")),
+            CompareObj(value=True, expressions=("1 < a < 30",)),
+            id="1 < a < 30",
         ),
     ],
 )
@@ -36,16 +43,16 @@ def test_parse(left_obj, comparators, ops, expected):
 @pytest.mark.parametrize(
     "left_value, right_value, op, expected",
     [
-        (3, 3, ast.Eq(), True),  # 3 == 3
-        (1, 12, ast.NotEq(), True),  # 1 != 12
-        (1, 12, ast.Lt(), True),  # 1 < 12
-        (12, 12, ast.LtE(), True),  # 12 <= 12
-        (9, 12, ast.LtE(), True),  # 9 <= 12
-        (20, 10, ast.Gt(), True),  # 20 > 10
-        (20, 20, ast.GtE(), True),  # 20 >= 20,
-        (30, 20, ast.GtE(), True),  # 30 >= 20
-        ("a", ["a", "b", "c"], ast.In(), True),
-        ("d", ["a", "b", "c"], ast.NotIn(), True),
+        pytest.param(3, 3, ast.Eq(), True, id="3 == 3"),  # 3 == 3
+        pytest.param(1, 12, ast.NotEq(), True, id="1 != 12"),  # 1 != 12
+        pytest.param(1, 12, ast.Lt(), True, id="1 < 12"),  # 1 < 12
+        pytest.param(12, 12, ast.LtE(), True, id="12 <= 12"),  # 12 <= 12
+        pytest.param(9, 12, ast.LtE(), True, id="9 <= 12"),  # 9 <= 12
+        pytest.param(20, 10, ast.Gt(), True, id="20 > 10"),  # 20 > 10
+        pytest.param(20, 20, ast.GtE(), True, id="20 >= 20,"),  # 20 >= 20,
+        pytest.param(30, 20, ast.GtE(), True, id=" 30 >= 20"),  # 30 >= 20
+        pytest.param("a", ["a", "b", "c"], ast.In(), True, id="a in ['a', 'b', 'c']"),
+        pytest.param("d", ["a", "b", "c"], ast.NotIn(), True, id="d not in ['a', 'b', 'c']"),
     ],
 )
 def test_calculate_value(left_value, right_value, op, expected):

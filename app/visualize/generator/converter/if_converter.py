@@ -54,17 +54,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def insert_body_steps_after_true_expression(header_change_step_list, body_steps_viz):
-        for index, step in enumerate(header_change_step_list):
-            # step.expr이 "True"인 경우
-            if step.expr == "True":
-                # 현재 스텝의 다음 위치에 body_steps_viz 삽입
-                header_change_step_list[index + 1 : index + 1] = body_steps_viz
-                return header_change_step_list  # 합쳐진 리스트 반환
-
-        return header_change_step_list
-
-    @staticmethod
     def _create_condition_viz(condition, condition_type):
         expr = condition.expr_obj.expressions[0] if condition_type != "else" else ""
         return ConditionViz(id=condition.id, expr=expr, type=condition_type)
