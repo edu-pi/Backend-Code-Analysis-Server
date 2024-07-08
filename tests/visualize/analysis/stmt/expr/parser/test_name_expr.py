@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, NameObj
-from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
+from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 
 
 @pytest.mark.parametrize(

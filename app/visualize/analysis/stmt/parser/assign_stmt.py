@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.expr.expr_traveler import ExprTraveler
+from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 

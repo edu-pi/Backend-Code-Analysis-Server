@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj, CompareObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, CompareObj
 from app.visualize.utils.util import Util
 
 

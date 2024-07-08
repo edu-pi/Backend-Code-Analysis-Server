@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.expr.models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
 

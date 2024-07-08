@@ -1,7 +1,7 @@
 import ast
 
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.expr.models.expr_obj import NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
 
 
 class NameExpr:

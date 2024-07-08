@@ -1,4 +1,4 @@
-from app.visualize.analysis.stmt.expr.models.expr_obj import ListObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ListObj, ExprObj
 from app.visualize.utils.util import Util
 
 

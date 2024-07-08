@@ -1,12 +1,12 @@
 import ast
 
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
-from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
-from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
-from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
-from app.visualize.analysis.stmt.expr.parser.list_expr import ListExpr
-from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
+from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
+from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
+from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareExpr
+from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.parser.expr.parser.list_expr import ListExpr
+from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 
 
 class ExprTraveler:
