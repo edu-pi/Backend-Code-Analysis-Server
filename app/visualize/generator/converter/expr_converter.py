@@ -1,7 +1,8 @@
 from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj, ConstantObj, BinopObj, NameObj, RangeObj, ExprObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
-from app.visualize.generator.model.models import PrintViz, ExprViz
+from app.visualize.generator.model.expr_viz import ExprViz
+from app.visualize.generator.model.print_viz import PrintViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 

@@ -1,7 +1,9 @@
 from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.model.if_stmt_obj import IfStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
+from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -20,6 +22,9 @@ class ConverterTraveler:
 
             elif analysis_obj.type == "expr":
                 viz_objs.extend(ExprConverter.convert(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == "if":
+                viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -40,3 +45,23 @@ class ConverterTraveler:
         viz_manager.decrease_depth()
 
         return steps
+
+    @staticmethod
+    def _if_convert(if_stmt: IfStmtObj, viz_manager: VisualizationManager):
+        steps = list()
+        # 1. if-else 구조 define
+        steps.append(IfConverter.get_header_define_viz(if_stmt.conditions, viz_manager))
+        # 2. if header
+        steps.extend(IfConverter.get_header_change_steps(if_stmt.conditions, viz_manager))
+        # 3. if header 결과 값이 true인 if 문의 body obj의 viz 생성
+        steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt, viz_manager))
+
+        return steps
+
+    @staticmethod
+    def _get_if_body_viz_list(if_stmt, viz_manager):
+        viz_manager.increase_depth()
+        body_steps_viz = ConverterTraveler.travel(if_stmt.body.body_steps, viz_manager)
+        viz_manager.decrease_depth()
+
+        return body_steps_viz

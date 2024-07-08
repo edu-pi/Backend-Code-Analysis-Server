@@ -26,6 +26,13 @@ class BinopObj(ExprObj):
 
 
 @dataclass(frozen=True)
+class CompareObj(ExprObj):
+    value: Any
+    expressions: tuple[str, ...]
+    type: str = field(default="compare", init=False)
+
+
+@dataclass(frozen=True)
 class CallObj(ExprObj):
     value: Any
     expressions: tuple[str, ...]

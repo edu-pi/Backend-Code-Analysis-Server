@@ -3,6 +3,7 @@ import ast
 from app.visualize.analysis.element_manager import CodeElementManager
 from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.expr.parser.call_expr import CallExpr
+from app.visualize.analysis.stmt.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
 from app.visualize.analysis.stmt.expr.parser.list_expr import ListExpr
 from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
@@ -27,6 +28,10 @@ class ExprTraveler:
         elif isinstance(node, ast.List):
             return ExprTraveler._list_travel(node, elem_manager)
 
+        elif isinstance(node, ast.Compare):
+            compare_obj = ExprTraveler._compare_travel(node, elem_manager)
+            return compare_obj
+
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
 
@@ -43,6 +48,9 @@ class ExprTraveler:
 
         elif isinstance(node, ast.Constant):
             return ExprTraveler._constant_travel(node)
+
+        else:
+            raise TypeError(f"[ExprTraveler - binop parsing 중  {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
     def _name_travel(node: ast.Name, elem_manager: CodeElementManager):
@@ -66,6 +74,26 @@ class ExprTraveler:
     def _list_travel(node: ast.List, elem_manager: CodeElementManager):
         elts = [ExprTraveler.travel(elt, elem_manager) for elt in node.elts]
         return ListExpr.parse(elts)
+
+    @staticmethod
+    def _compare_travel(node: ast.Compare, elem_manager: CodeElementManager):
+        if isinstance(node, ast.Compare):
+            left = ExprTraveler._compare_travel(node.left, elem_manager)
+            comparators = tuple(ExprTraveler._compare_travel(comparor, elem_manager) for comparor in node.comparators)
+
+            return CompareExpr.parse(left, tuple(comparators), tuple(node.ops))
+
+        elif isinstance(node, ast.BinOp):
+            return ExprTraveler.travel(node, elem_manager)
+
+        elif isinstance(node, ast.Name):
+            return ExprTraveler.travel(node, elem_manager)
+
+        elif isinstance(node, ast.Constant):
+            return ExprTraveler.travel(node, elem_manager)
+
+        else:
+            raise TypeError(f"[ExprTraveler - compare parsing 중  {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
     def _get_func_name(node: ast):

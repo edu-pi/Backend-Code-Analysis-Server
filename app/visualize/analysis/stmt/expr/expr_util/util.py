@@ -20,3 +20,7 @@ def transpose_with_last_fill(expressions):
         transposed_values.append(current_list)
 
     return transposed_values
+
+
+def list_to_str(list_: list):
+    return " ".join(list_)
