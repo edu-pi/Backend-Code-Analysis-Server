@@ -55,7 +55,7 @@ class NameObj(ExprObj):
 
 @dataclass(frozen=True)
 class ListObj(ExprObj):
-    value: tuple
+    value: list
     expressions: tuple[str, ...]
     type: str = field(default="list", init=False)
 

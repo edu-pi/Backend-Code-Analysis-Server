@@ -15,7 +15,7 @@ class ListExpr:
 
     @staticmethod
     def _get_value(elts: list[ExprObj]):
-        return tuple(elt.value for elt in elts)
+        return [elt.value for elt in elts]
 
     @staticmethod
     def _concat_expression(elts: list[ExprObj]):
