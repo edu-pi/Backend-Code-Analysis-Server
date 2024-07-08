@@ -8,7 +8,7 @@ from app.visualize.generator.model.print_viz import PrintViz
 @pytest.fixture
 def create_print():
     def _create_print_obj(value, expressions):
-        return ExprStmtObj(id=1, value=value, expressions=expressions, var_type="print")
+        return ExprStmtObj(id=1, value=value, expressions=expressions, expr_type="print")
 
     return _create_print_obj
 

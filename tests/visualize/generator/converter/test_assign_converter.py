@@ -14,7 +14,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 def create_assign():
     def _create_assign_obj(targets, value, expressions, var_type):
         return AssignStmtObj(
-            targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, var_type=var_type)
+            targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, expr_type=var_type)
         )
 
     return _create_assign_obj
