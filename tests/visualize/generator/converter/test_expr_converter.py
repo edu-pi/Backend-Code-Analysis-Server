@@ -1,14 +1,14 @@
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj
+from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.expr_converter import ExprConverter
-from app.visualize.generator.model.models import PrintViz
+from app.visualize.generator.model.print_viz import PrintViz
 
 
 @pytest.fixture
 def create_print():
     def _create_print_obj(value, expressions):
-        return PrintObj(value=value, expressions=expressions)
+        return ExprStmtObj(id=1, value=value, expressions=expressions, expr_type="print")
 
     return _create_print_obj
 
@@ -16,7 +16,7 @@ def create_print():
 @pytest.mark.parametrize(
     "value, expressions, expected",
     [
-        (
+        pytest.param(
             "*\n",
             [
                 "'*' * (i + 1)\n",
@@ -46,11 +46,12 @@ def create_print():
                     console="*\n",
                 ),
             ],
+            id="'*' * (i + 1): success case",
         )
     ],
 )
 def test_print_convert(create_print, value, expressions, expected):
     print_obj = create_print(value, expressions)
-    result = ExprConverter._print_convert(print_obj, 1, 1)
+    result = ExprConverter._convert_to_print_viz(print_obj, 1, 1)
 
     assert result == expected

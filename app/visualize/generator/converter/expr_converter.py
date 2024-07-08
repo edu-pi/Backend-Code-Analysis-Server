@@ -1,9 +1,10 @@
-from app.visualize.analysis.stmt.expr.model.expr_obj import PrintObj, ConstantObj, BinopObj, NameObj, RangeObj, ExprObj
 from app.visualize.analysis.stmt.model.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.model.expr_viz import ExprViz
 from app.visualize.generator.model.print_viz import PrintViz
+from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.visualization_manager import VisualizationManager
+from app.visualize.utils.util import Util
 
 
 class ExprConverter:
@@ -12,52 +13,53 @@ class ExprConverter:
     def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
         call_id = expr_stmt_obj.id
         depth = viz_manager.get_depth()
+        var_type = Util.get_var_type(expr_stmt_obj.value, expr_stmt_obj.expr_type)
 
-        if isinstance(expr_stmt_obj.expr_obj, PrintObj):
-            return ExprConverter._print_convert(expr_stmt_obj.expr_obj, call_id, depth)
+        if var_type == "variable":
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, var_type, call_id, depth)
 
-        elif isinstance(expr_stmt_obj.expr_obj, ConstantObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
+        elif var_type == "list":
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, var_type, call_id, depth)
 
-        elif isinstance(expr_stmt_obj.expr_obj, NameObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
-
-        elif isinstance(expr_stmt_obj.expr_obj, BinopObj):
-            return ExprConverter._expr_convert(expr_stmt_obj.expr_obj, call_id, depth)
+        elif var_type == "print":
+            return ExprConverter._convert_to_print_viz(expr_stmt_obj, call_id, depth)
 
         else:
-            raise TypeError(f"[ExprConverter]:{type(expr_stmt_obj.expr_obj)}는 지원하지 않습니다.")
+            raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
 
     @staticmethod
-    def _print_convert(expr_obj: PrintObj, call_id, depth):
-        highlights = ExprHighlight.get_highlight_indexes(expr_obj.expressions)
-
-        print_vizs = [
-            PrintViz(
-                id=call_id,
-                depth=depth,
-                expr=expr_obj.expressions[idx],
-                highlights=highlights[idx],
-                console=expr_obj.value if idx == len(expr_obj.expressions) - 1 else None,
-            )
-            for idx in range(len(expr_obj.expressions))
-        ]
-
-        return print_vizs
-
-    @staticmethod
-    def _expr_convert(expr_obj: ExprObj, call_id, depth):
-        highlights = ExprHighlight.get_highlight_indexes(expr_obj.expressions)
+    def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, var_type, call_id, depth):
+        if var_type == "list":
+            highlights = ListHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
+        else:
+            highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
 
         expr_vizs = [
             ExprViz(
                 id=call_id,
                 depth=depth,
-                expr=expr_obj.expressions[idx],
+                expr=expr_stmt_obj.expressions[idx],
                 highlights=highlights[idx],
-                type=expr_obj.type,
+                type=var_type,
             )
-            for idx in range(len(expr_obj.expressions))
+            for idx in range(len(expr_stmt_obj.expressions))
         ]
 
         return expr_vizs
+
+    @staticmethod
+    def _convert_to_print_viz(expr_stmt_obj: ExprStmtObj, call_id, depth):
+        highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
+
+        print_vizs = [
+            PrintViz(
+                id=call_id,
+                depth=depth,
+                expr=expr_stmt_obj.expressions[idx],
+                highlights=highlights[idx],
+                console=expr_stmt_obj.value if idx == len(expr_stmt_obj.expressions) - 1 else None,
+            )
+            for idx in range(len(expr_stmt_obj.expressions))
+        ]
+
+        return print_vizs
