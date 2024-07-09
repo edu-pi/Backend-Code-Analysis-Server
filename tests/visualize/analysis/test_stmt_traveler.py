@@ -3,9 +3,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
-from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, IfConditionObj, ElifConditionObj, ElseConditionObj
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.models.if_stmt_obj import (
+    IfStmtObj,
+    IfConditionObj,
+    ElifConditionObj,
+    ElseConditionObj,
+    ConditionObj,
+)
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, PrintObj
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 from app.visualize.container.element_container import ElementContainer
@@ -51,20 +58,17 @@ def test_for_travel(create_ast, code, expect, elem_manager):
         pytest.param(
             """
 if a > 10:
-    pass
+    print("a > 10")
 elif a < 10:
-    pass
-elif a < 12:
-    pass
+    print("a < 10")
 else:
-    pass
+    print("a > 10")
             """,
             IfStmtObj(
                 conditions=(
                     IfConditionObj(id=1, expressions=("a>10",), result=False),
                     ElifConditionObj(id=2, expressions=("a<10",), result=False),
-                    ElifConditionObj(id=3, expressions=("a<12",), result=False),
-                    ElseConditionObj(id=4, expressions=None, result=True),
+                    ElseConditionObj(id=3, expressions=None, result=True),
                 ),
                 body=BodyObj(body_steps=[[]], cur_value=0),
             ),
@@ -72,21 +76,118 @@ else:
         ),
     ],
 )
-def test_if_travel(code, expect, elem_manager):
+def test_if_travel(code: str, expect, elem_manager):
     ast_if = ast.parse(code).body[0]
     with patch.object(
         IfStmt, "parse_if_condition", return_value=IfConditionObj(id=1, expressions=("a>10",), result=False)
     ), patch.object(
-        IfStmt,
-        "parse_elif_condition",
-        side_effect=[
-            ElifConditionObj(id=2, expressions=("a<10",), result=False),
-            ElifConditionObj(id=3, expressions=("a<12",), result=False),
-        ],
+        IfStmt, "parse_elif_condition", return_value=ElifConditionObj(id=2, expressions=("a<10",), result=False)
     ), patch.object(
-        IfStmt, "parse_else_condition", return_value=ElseConditionObj(id=4, expressions=None, result=True)
+        IfStmt, "parse_else_condition", return_value=ElseConditionObj(id=3, expressions=None, result=True)
     ), patch.object(
         StmtTraveler, "_internal_travel", return_value=[]
     ):
         actual = StmtTraveler.if_travel(ast_if, [], [], elem_manager)
         assert actual == expect
+
+
+@pytest.mark.parametrize(
+    "conditions, node, expected",
+    [
+        pytest.param(
+            [],
+            ast.If(test=ast.parse("a > 10").body[0].value),
+            IfConditionObj(id=1, expressions=("a>10",), result=False),
+            id="conditions is empty",
+        ),
+        pytest.param(
+            [IfConditionObj(id=1, expressions=("a>10",), result=False)],
+            ast.If(test=ast.parse("True").body[0].value),
+            ElifConditionObj(id=2, expressions=("a<10",), result=False),
+            id="conditions is not empty",
+        ),
+    ],
+)
+def test_append_condition_obj(conditions, node, expected, elem_manager):
+    with patch.object(
+        IfStmt, "parse_if_condition", return_value=IfConditionObj(id=1, expressions=("a>10",), result=False)
+    ), patch.object(
+        IfStmt, "parse_elif_condition", return_value=ElifConditionObj(id=2, expressions=("a<10",), result=False)
+    ):
+        StmtTraveler._append_condition_obj(conditions, elem_manager, node)
+        assert conditions[-1] == expected
+
+
+@pytest.mark.parametrize(
+    "conditions, node, result, expected",
+    [
+        pytest.param(
+            [],
+            ast.parse("print('hello')").body[0],
+            True,
+            ElseConditionObj(id=0, expressions=None, result=True),
+            id="else condition when result True",
+        ),
+        pytest.param(
+            [],
+            ast.parse("print('hello')").body[0],
+            False,
+            ElseConditionObj(id=0, expressions=None, result=False),
+            id="else condition when result False",
+        ),
+    ],
+)
+def test_append_else_condition_obj(conditions, node, result, expected):
+    with patch.object(
+        IfStmt,
+        "parse_else_condition",
+        side_effect=[
+            ElseConditionObj(id=0, expressions=None, result=True),
+            ElseConditionObj(id=0, expressions=None, result=False),
+        ],
+    ):
+        StmtTraveler._append_else_condition_obj(conditions, node, result)
+        assert conditions[-1].id == expected.id
+
+
+@pytest.mark.parametrize(
+    "node, conditions, body_objs",
+    [
+        pytest.param(
+            ast.parse("if a > 10: \n    print('hello')").body[0],
+            [IfConditionObj(id=1, expressions=("a>10",), result=True)],
+            [],
+            id="if condition is True - 바디 추가 함",
+        ),
+    ],
+)
+def test_parse_if_body_추기(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
+    with patch.object(
+        StmtTraveler,
+        "_internal_travel",
+        return_value=ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",))),
+    ):
+        StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
+        assert body_objs[-1] == ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",)))
+
+
+@pytest.mark.parametrize(
+    "node, conditions, body_objs",
+    [
+        pytest.param(
+            ast.parse("if a < 10: \n    print('hello')").body[0],
+            [IfConditionObj(id=1, expressions=("a<10",), result=False)],
+            [ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",)))],
+            id="if condition is False - 바디 추가 안함",
+        )
+    ],
+)
+def test_parse_if_body_추가_안함(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
+    with patch.object(
+        StmtTraveler,
+        "_internal_travel",
+        return_value=ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",))),
+    ):
+        temp_body_objs = list(body_objs)
+        StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
+        assert temp_body_objs == body_objs

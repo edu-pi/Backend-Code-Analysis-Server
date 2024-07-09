@@ -68,7 +68,8 @@ class StmtTraveler:
         StmtTraveler._parse_if_body(node, conditions, body_objs, elem_manager)
 
         # parse elif or else
-        StmtTraveler._parse_if_orelse(body_objs, conditions, elem_manager, node)
+        if isinstance(node, ast.If) and node.orelse:  # 빈 배열이면 탐색 안함
+            StmtTraveler._parse_if_orelse(body_objs, conditions, elem_manager, node)
 
         return IfStmtObj(conditions=tuple(conditions), body=BodyObj(body_steps=body_objs, cur_value=0))
 
