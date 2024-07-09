@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, NameObj
-from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
+from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 
 
 @pytest.mark.parametrize(
@@ -19,8 +19,8 @@ from app.visualize.analysis.stmt.expr.parser.name_expr import NameExpr
         ),
     ],
 )
-def test_parse(elem_manager, ctx, identifier_name, expected):
-    result = NameExpr.parse(ctx, identifier_name, elem_manager)
+def test_parse(elem_container, ctx, identifier_name, expected):
+    result = NameExpr.parse(ctx, identifier_name, elem_container)
 
     assert result == expected
 
@@ -29,8 +29,8 @@ def test_parse(elem_manager, ctx, identifier_name, expected):
     "identifier, expected",
     [pytest.param("a", 10, id="a: success case"), pytest.param("abc", 10, id="abc: success case")],
 )
-def test_get_identifier_value(elem_manager, identifier, expected):
-    result = NameExpr._get_identifier_value(identifier, elem_manager)
+def test_get_identifier_value(elem_container, identifier, expected):
+    result = NameExpr._get_identifier_value(identifier, elem_container)
 
     assert result == expected
 

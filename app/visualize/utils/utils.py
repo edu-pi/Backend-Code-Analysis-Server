@@ -1,10 +1,4 @@
-import re
-
-
-def replace_word(expression, original_word, new_word):
-    pattern = rf"\b{original_word}\b"
-    replaced_expression = re.sub(pattern, str(new_word), expression)
-    return replaced_expression
+# util 함수들을 모아놓은 파일
 
 
 # 변수들의 표현식 리스트를 받아와서 배열의 행과 열을 바꿔주고 마지막 값으로 채워주는 함수
@@ -24,3 +18,21 @@ def transpose_with_last_fill(expressions):
 
 def list_to_str(list_: list):
     return " ".join(list_)
+
+
+def get_var_type(var_value, obj_type: str):
+    if obj_type in ("binop", "constant"):
+        return "variable"
+
+    elif obj_type == "name":
+        if isinstance(var_value, list):
+            return "list"
+
+        else:
+            return "variable"
+
+    elif obj_type == "list":
+        return "list"
+
+    else:
+        return obj_type

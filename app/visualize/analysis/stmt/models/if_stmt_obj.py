@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.visualize.analysis.stmt.model.for_stmt_obj import BodyObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 
 
 @dataclass(frozen=True)

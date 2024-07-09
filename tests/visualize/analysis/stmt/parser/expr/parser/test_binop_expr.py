@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, NameObj, BinopObj, ConstantObj
-from app.visualize.analysis.stmt.expr.parser.binop_expr import BinopExpr
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, NameObj, BinopObj, ConstantObj
+from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 
 
 @pytest.mark.parametrize(

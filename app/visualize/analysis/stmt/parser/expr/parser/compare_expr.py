@@ -1,8 +1,7 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.expr_util import util
-from app.visualize.analysis.stmt.expr.expr_util.util import list_to_str
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj, CompareObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, CompareObj
+from app.visualize.utils import utils
 
 
 class CompareExpr:
@@ -74,12 +73,14 @@ class CompareExpr:
 
     @staticmethod
     def _create_expressions(left_obj, right_obj, op) -> tuple:
-        total_expressions = util.transpose_with_last_fill([left_obj.expressions, right_obj.expressions])
+        total_expressions = utils.transpose_with_last_fill([left_obj.expressions, right_obj.expressions])
 
         for i in range(len(total_expressions)):
             left_expression = total_expressions[i][0]
             right_expression = total_expressions[i][1]
-            total_expressions[i] = util.list_to_str([left_expression, CompareExpr._get_op_to_str(op), right_expression])
+            total_expressions[i] = utils.list_to_str(
+                [left_expression, CompareExpr._get_op_to_str(op), right_expression]
+            )
 
         return total_expressions
 
@@ -91,7 +92,7 @@ class CompareExpr:
             expressions.append(f"{CompareExpr._get_op_to_str(ops[idx])}")
             expressions.append(f"{comparator_obj.expressions[0]}")
 
-        return list_to_str(expressions)
+        return utils.list_to_str(expressions)
 
     @staticmethod
     def _get_op_to_str(op: ast.cmpop):

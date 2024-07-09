@@ -1,8 +1,8 @@
 # for_stmt_obj를 받아서 for_viz를 반환하는 클래스
-from app.visualize.analysis.stmt.expr.model.expr_obj import RangeObj
-from app.visualize.analysis.stmt.model.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 from app.visualize.generator.highlight.for_highlight import ForHighlight
-from app.visualize.generator.model.for_viz import ForViz, ForConditionViz
+from app.visualize.generator.models.for_viz import ForViz, ForConditionViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 

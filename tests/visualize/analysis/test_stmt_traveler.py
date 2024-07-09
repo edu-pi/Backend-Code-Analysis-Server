@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.visualize.analysis.element_manager import CodeElementManager
-from app.visualize.analysis.stmt.expr.model.expr_obj import ExprObj
+from app.visualize.container.element_container import ElementContainer
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
 
@@ -20,7 +20,7 @@ def create_ast():
 
 @pytest.fixture
 def elem_manager():
-    mock = MagicMock(spec=CodeElementManager)
+    mock = MagicMock(spec=ElementContainer)
     return mock
 
 
@@ -28,14 +28,15 @@ def elem_manager():
     "code, expect",
     [
         (
-                """for i in range(3): \n    print('hello')""",
-                ExprObj(
-                    type="for", value={"end": "3", "start": "0", "step": "1"},
-                    expressions=[{"end": "3", "start": "0", "step": "1"}]
-                ),
+            """for i in range(3): \n    print('hello')""",
+            ExprObj(
+                type="for",
+                value={"end": "3", "start": "0", "step": "1"},
+                expressions=[{"end": "3", "start": "0", "step": "1"}],
+            ),
         )
     ],
 )
 def test_for_travel(create_ast, code, expect, elem_manager):
-    actual = StmtTraveler.for_travel(create_ast(code), elem_manager)
+    actual = StmtTraveler._for_travel(create_ast(code), elem_manager)
     pass

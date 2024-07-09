@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ConstantObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ConstantObj
 
 
 class ConstantExpr:

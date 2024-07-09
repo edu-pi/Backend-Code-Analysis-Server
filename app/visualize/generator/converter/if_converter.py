@@ -1,10 +1,10 @@
-from app.visualize.analysis.stmt.model.if_stmt_obj import (
+from app.visualize.analysis.stmt.models.if_stmt_obj import (
     ConditionObj,
     IfConditionObj,
     ElifConditionObj,
     ElseConditionObj,
 )
-from app.visualize.generator.model.if_viz import ConditionViz, IfElseDefineViz, IfElseChangeViz
+from app.visualize.generator.models.if_viz import ConditionViz, IfElseDefineViz, IfElseChangeViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 

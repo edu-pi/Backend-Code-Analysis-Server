@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.expr.model.expr_obj import ConstantObj
-from app.visualize.analysis.stmt.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ConstantObj
+from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import ConstantExpr
 
 
 @pytest.mark.parametrize(
