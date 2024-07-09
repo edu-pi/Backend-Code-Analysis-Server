@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.utils.util import Util
+from app.visualize.utils.utils import Util
 
 
 class TupleExpr:

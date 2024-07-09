@@ -4,7 +4,7 @@ from app.visualize.generator.models.expr_viz import ExprViz
 from app.visualize.generator.models.print_viz import PrintViz
 from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.visualization_manager import VisualizationManager
-from app.visualize.utils.util import Util
+from app.visualize.utils.utils import Util
 
 
 class ExprConverter:

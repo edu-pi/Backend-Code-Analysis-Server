@@ -4,7 +4,7 @@ from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
-from app.visualize.utils.util import Util
+from app.visualize.utils.utils import Util
 
 
 class AssignConverter:
