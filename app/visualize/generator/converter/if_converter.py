@@ -55,6 +55,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_viz(condition, condition_type):
+    def _create_condition_viz(condition: ConditionObj, condition_type):
         expr = condition.expressions[0] if condition_type != "else" else ""
         return ConditionViz(id=condition.id, expr=expr, type=condition_type)
