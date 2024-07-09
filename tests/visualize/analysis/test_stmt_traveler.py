@@ -161,7 +161,7 @@ def test_append_else_condition_obj(conditions, node, result, expected):
         ),
     ],
 )
-def test_parse_if_body_추기(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
+def test_parse_if_body_추가(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
     with patch.object(
         StmtTraveler,
         "_internal_travel",
@@ -191,3 +191,42 @@ def test_parse_if_body_추가_안함(node: ast.If, conditions: list[ConditionObj
         temp_body_objs = list(body_objs)
         StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
         assert temp_body_objs == body_objs
+<<<<<<< HEAD
+=======
+
+
+def test_parse_if_orelse_elif문_분기_실행(elem_manager):
+    body_objs = []
+    conditions = [IfConditionObj(id=1, expressions=("a>10",), result=False)]
+    if_node = ast.parse("if a < 10: \n    print('hello')\nelif a>10: \n   print('world')").body[0]
+
+    with patch.object(StmtTraveler, "if_travel", return_value=None) as mock_if_travel:
+        StmtTraveler._parse_if_branches(body_objs, conditions, elem_manager, if_node.orelse)
+
+        mock_if_travel.assert_called_once()
+        mock_if_travel.assert_called_with(if_node.orelse[0], conditions, body_objs, elem_manager)
+
+
+def test_parse_if_orelse_else문_분기_실행(elem_manager):
+    if_node = ast.parse("if a < 10: \n   print('world') \nelse: \n   print('world')").body[0]
+
+    with patch.object(StmtTraveler, "_parse_else", return_value=None) as mock_if_travel:
+        StmtTraveler._parse_if_branches([], [], elem_manager, if_node.orelse)
+
+        mock_if_travel.assert_called_once()
+        mock_if_travel.assert_called_with([], [], elem_manager, if_node.orelse)
+
+
+@pytest.mark.parametrize(
+    "target",
+    [
+        pytest.param(ast.Constant(value=10), id="10"),
+        pytest.param(ast.Assign(targets=[ast.Name(id="a")], value=ast.Constant(value=10)), id="assign"),
+    ],
+)
+def test_parse_if_orelse_예외발생(target, elem_manager):
+    # 예외가 터지면 통과, 안터지면 실패
+    with pytest.raises(TypeError):
+        StmtTraveler._parse_if_branches([], [], elem_manager, target)
+        assert False
+>>>>>>> ef975c1 ([#141]test: StmtTraveler의 _parse_else 유닛 테스트)

@@ -69,7 +69,7 @@ class StmtTraveler:
 
         # parse elif or else
         if isinstance(node, ast.If) and node.orelse:  # 빈 배열이면 탐색 안함
-            StmtTraveler._parse_if_branches(body_objs, conditions, elem_manager, node)
+            StmtTraveler._parse_if_branches(body_objs, conditions, elem_manager, node.orelse)
 
         return IfStmtObj(conditions=tuple(conditions), body=BodyObj(body_steps=body_objs, cur_value=0))
 
@@ -96,25 +96,26 @@ class StmtTraveler:
                 body_objs.append(StmtTraveler.travel(body, elem_manager))
 
     @staticmethod
-    def _parse_if_branches(body_objs, conditions, elem_manager, node):
+    def _parse_if_branches(body_objs, conditions, elem_manager, orelse_node):
         # elif 처리
-        if isinstance(node.orelse[0], ast.If):
-            StmtTraveler._if_travel(node.orelse[0], conditions, body_objs, elem_manager)
+        if isinstance(orelse_node[0], ast.If):
+            StmtTraveler.if_travel(orelse_node[0], conditions, body_objs, elem_manager)
 
         # else 처리
-        elif isinstance(node.orelse[0], ast.stmt):
-            StmtTraveler._parse_else(body_objs, conditions, elem_manager, node)
+        elif isinstance(orelse_node[0], ast.stmt):
+            StmtTraveler._parse_else(body_objs, conditions, elem_manager, orelse_node)
 
         else:
-            raise TypeError(f"[IfTraveler] {type(node.orelse[0])}는 잘못된 타입입니다.")
+            raise TypeError(f"[IfTraveler] {type(orelse_node[0])}는 잘못된 타입입니다.")
 
     @staticmethod
-    def _parse_else(body_objs, conditions, elem_manager, node):
-        is_else_true = True if len(body_objs) == 0 else False
-        StmtTraveler._append_else_condition_obj(conditions, node.orelse[0], is_else_true)
-        if is_else_true:
+    def _parse_else(body_objs, conditions, elem_manager, nodes: list[ast.stmt]):
+        is_else_condition_true = True if len(body_objs) == 0 else False
+        StmtTraveler._append_else_condition_obj(conditions, nodes[0], is_else_condition_true)
+
+        if is_else_condition_true:
             # else 문의 body 추가
-            for stmt_node in node.orelse:
+            for stmt_node in nodes:
                 body_objs.append(StmtTraveler._internal_travel(stmt_node, elem_manager))
 
     @staticmethod
