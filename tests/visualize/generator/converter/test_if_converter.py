@@ -52,4 +52,4 @@ from app.visualize.generator.model.if_viz import ConditionViz
     ],
 )
 def test__create_condition_viz(condition: ConditionObj, condition_type, expected):
-    assert IfConverter._create_condition_viz(condition, condition_type) == expected
+    assert IfConverter._create_condition_viz(condition) == expected

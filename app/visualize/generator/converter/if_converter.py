@@ -15,14 +15,8 @@ class IfConverter:
         if_header_conditions = []
 
         for condition in conditions:
-            if isinstance(condition, IfConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "if"))
-
-            elif isinstance(condition, ElifConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "elif"))
-
-            elif isinstance(condition, ElseConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "else"))
+            if isinstance(condition, ConditionObj):
+                if_header_conditions.append(IfConverter._create_condition_viz(condition))
 
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
@@ -55,6 +49,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_viz(condition: ConditionObj, condition_type):
-        expr = condition.expressions[0] if condition_type != "else" else ""
-        return ConditionViz(id=condition.id, expr=expr, type=condition_type)
+    def _create_condition_viz(condition: ConditionObj):
+        expr = condition.expressions[0] if condition.type != "else" else ""
+        return ConditionViz(id=condition.id, expr=expr, type=condition.type)

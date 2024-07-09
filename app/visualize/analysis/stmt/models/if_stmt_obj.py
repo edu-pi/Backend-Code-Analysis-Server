@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 
@@ -8,18 +8,22 @@ class ConditionObj:
     id: int
     expressions: tuple[str, ...] | None  # else의 경우 None
     result: bool
+    type: str
 
 
+@dataclass(frozen=True)
 class IfConditionObj(ConditionObj):
-    pass
+    type: str = field(default="if", init=False)
 
 
+@dataclass(frozen=True)
 class ElifConditionObj(ConditionObj):
-    pass
+    type: str = field(default="elif", init=False)
 
 
+@dataclass(frozen=True)
 class ElseConditionObj(ConditionObj):
-    pass
+    type: str = field(default="else", init=False)
 
 
 @dataclass(frozen=True)
