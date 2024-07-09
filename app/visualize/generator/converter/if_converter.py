@@ -21,27 +21,22 @@ class IfConverter:
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
-        return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=if_header_conditions)
+        return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
 
     @staticmethod
     def get_header_change_steps(conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager):
         steps = []
 
         for condition in conditions:
-            if isinstance(condition, ElseConditionObj):
-                steps.append(
-                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
-                )
+            if not isinstance(condition, ConditionObj):
+                raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
-            elif isinstance(condition, IfConditionObj) or isinstance(condition, ElifConditionObj):
+            if type(condition) in (IfConditionObj, ElifConditionObj):
                 for expression in condition.expressions:
                     steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=expression))
 
-                steps.append(
-                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
-                )
-            else:
-                raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
+            # 결과 처리 : condition의 결과 추가
+            steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result)))
 
             if steps[-1].expr == "True":
                 return steps
