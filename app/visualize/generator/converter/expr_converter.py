@@ -4,7 +4,7 @@ from app.visualize.generator.models.expr_viz import ExprViz
 from app.visualize.generator.models.print_viz import PrintViz
 from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.visualization_manager import VisualizationManager
-from app.visualize.utils.utils import Util
+from app.visualize.utils import utils
 
 
 class ExprConverter:
@@ -13,7 +13,7 @@ class ExprConverter:
     def convert(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager):
         call_id = expr_stmt_obj.id
         depth = viz_manager.get_depth()
-        var_type = Util.get_var_type(expr_stmt_obj.value, expr_stmt_obj.expr_type)
+        var_type = utils.get_var_type(expr_stmt_obj.value, expr_stmt_obj.expr_type)
 
         if var_type == "variable":
             return ExprConverter._convert_to_expr_viz(expr_stmt_obj, var_type, call_id, depth)

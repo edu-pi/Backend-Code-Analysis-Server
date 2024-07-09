@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.utils.utils import Util
+from app.visualize.utils import utils
 
 
 class TupleExpr:
@@ -35,7 +35,7 @@ class TupleExpr:
     # ctx가 Load일 때 tuple을 계산해 value와 expression을 계산하는 함수
     @staticmethod
     def _create_expressions(elts):
-        transposed_expressions = Util.transpose_with_last_fill(elts)
+        transposed_expressions = utils.transpose_with_last_fill(elts)
         tuple_expressions = list(map(tuple, transposed_expressions))
 
         return tuple_expressions
