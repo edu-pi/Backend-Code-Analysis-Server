@@ -5,6 +5,7 @@ from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.converter.if_converter import IfConverter
+from app.visualize.generator.models.flow_control_viz import FlowControlViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -26,6 +27,9 @@ class ConverterTraveler:
 
             elif analysis_obj.type == "if":
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == "flowControl":
+                viz_objs.append(ConverterTraveler._flow_control_convert(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -80,3 +84,12 @@ class ConverterTraveler:
     @staticmethod
     def _convert_to_expr_vizs(expr_stmt_obj, viz_manager: VisualizationManager):
         return ExprConverter.convert(expr_stmt_obj, viz_manager)
+
+    @staticmethod
+    def _flow_control_convert(flow_control_obj, viz_manager: VisualizationManager):
+        return FlowControlViz(
+            id=flow_control_obj.id,
+            depth=viz_manager.get_depth(),
+            expr=flow_control_obj.expr,
+            highlights=list(range(len(flow_control_obj.expr))),
+        )

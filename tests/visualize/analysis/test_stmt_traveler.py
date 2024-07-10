@@ -1,5 +1,5 @@
 import ast
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -7,13 +7,28 @@ from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
-    IfConditionObj,
     ElifConditionObj,
     ElseConditionObj,
+    IfConditionObj,
     ConditionObj,
 )
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
+
+
+@pytest.mark.parametrize(
+    "code, called_func",
+    [
+        pytest.param("a=b", "_assign_travel", id="assign"),
+        pytest.param("print('hello')", "_expr_travel", id="expr"),
+        pytest.param("pass", "_pass_travel", id="pass"),
+    ],
+)
+def test_travel(code: str, called_func: str, create_ast, elem_container):
+    stmt_node = create_ast(code)
+    with patch.object(StmtTraveler, called_func) as mock_travel:
+        StmtTraveler.travel(stmt_node, elem_container)
+        mock_travel.assert_called_once()
 
 
 @pytest.mark.parametrize(

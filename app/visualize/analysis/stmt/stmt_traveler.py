@@ -28,6 +28,7 @@ class StmtTraveler:
 
         elif isinstance(node, ast.Pass):
             return StmtTraveler._pass_travel(node)
+
         else:
             raise TypeError(f"[StmtTraveler] {type(node)}는 잘못된 타입입니다.")
 
@@ -133,5 +134,5 @@ class StmtTraveler:
         conditions.append(condition)
 
     @staticmethod
-    def _pass_travel(node):
+    def _pass_travel(node: ast.Pass):
         return PassStmt.parse(node)
