@@ -10,16 +10,6 @@ from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.container.element_container import ElementContainer
 
 
-@pytest.fixture
-def create_ast():
-    # 코드를 ast 노드로 변환하는 함수를 반환
-    def _create_ast_node(code):
-        # ast.Call 반환
-        return ast.parse(code).body[0]
-
-    return _create_ast_node
-
-
 @pytest.mark.parametrize(
     "input_code, expected, travel_return_value, evaluate_test_value_return",
     [
@@ -51,7 +41,7 @@ def test_parse_if_condition(
 
 
 @pytest.mark.parametrize(
-    "input_code, expected, travel_return_value, evaluate_test_value_return",
+    "input_code, expected, travel_return_value, evaluate_test_return_value",
     [
         pytest.param(
             "a>10",
@@ -70,12 +60,12 @@ def test_parse_if_condition(
     ],
 )
 def test_parse_elif_condition(
-    input_code, expected, travel_return_value, evaluate_test_value_return, create_ast, elem_container
+    input_code, expected, travel_return_value, evaluate_test_return_value, create_ast, elem_container
 ):
     test_node = create_ast(input_code).value
     with (
         patch.object(ExprTraveler, "travel", return_value=travel_return_value),
-        patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_value_return),
+        patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_return_value),
     ):
         assert IfStmt.parse_elif_condition(test_node, elem_container) == expected
 
@@ -126,8 +116,8 @@ def test_parse_if_condition(input_code, expected, create_ast):
         ),
     ],
 )
-def test__evaluate_test_value(input_code: str, expected):
-    test_node = ast.parse(input_code).body[0].value
+def test__evaluate_test_value(input_code: str, expected, create_ast):
+    test_node = create_ast(input_code).value
     elem_manager = MagicMock(spec=ElementContainer)
     elem_manager.get_element_dict.return_value = {"a": 10, "b": 12}
 

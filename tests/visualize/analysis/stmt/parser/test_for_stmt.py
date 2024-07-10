@@ -10,8 +10,8 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprTraveler
 @pytest.mark.parametrize(
     "target, expect",
     [
-        (ast.Name(id="i", ctx=ast.Store()), "i"),
-        (ast.Name(id="a", ctx=ast.Store()), "a"),
+        pytest.param(ast.Name(id="i", ctx=ast.Store()), "i", id="i"),
+        pytest.param(ast.Name(id="a", ctx=ast.Store()), "a", id="a"),
     ],
 )
 def test__get_target_name(elem_container, target, expect):
