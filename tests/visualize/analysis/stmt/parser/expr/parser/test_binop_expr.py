@@ -46,9 +46,9 @@ def test_parse(mocker, left_obj: ExprObj, right_obj: ExprObj, op: ast, expected:
 
     result = BinopExpr.parse(left_obj, right_obj, op)
 
-    assert mock_calculate_value.call_count == 1
-    assert mock_create_expressions.call_count == 1
     assert result == expected
+    assert mock_calculate_value.call_once_with(left_obj.value, right_obj.value, op)
+    assert mock_create_expressions.call_once_with(left_obj.expressions, right_obj.expressions, op, expected.value)
 
 
 @pytest.mark.parametrize(
