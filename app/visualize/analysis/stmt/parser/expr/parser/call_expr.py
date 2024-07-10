@@ -10,13 +10,13 @@ class CallExpr:
     def parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
 
         if func_name == "print":
-            end_keyword, print_expressions = CallExpr._print_parse(args, keyword_arg_dict)
-            return PrintObj(value=print_expressions[-1] + end_keyword, expressions=print_expressions)
+            value, expressions = CallExpr._print_parse(args, keyword_arg_dict)
+            return PrintObj(value=value, expressions=expressions)
 
         elif func_name == "range":
-            range_iter, range_expressions = CallExpr._range_parse(args)
+            value, expressions = CallExpr._range_parse(args)
 
-            return RangeObj(value=range_iter, expressions=range_expressions)
+            return RangeObj(value=value, expressions=expressions)
 
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")
@@ -36,7 +36,9 @@ class CallExpr:
             str_expression = default_keyword["sep"].join(expressions)
             print_expressions.append(str_expression)
 
-        return default_keyword["end"], tuple(print_expressions)
+        value = print_expressions[-1] + default_keyword["end"]
+
+        return value, tuple(print_expressions)
 
     # print 함수의 키워드 파싱 : end, sep만 지원 Todo. file, flush
     @staticmethod

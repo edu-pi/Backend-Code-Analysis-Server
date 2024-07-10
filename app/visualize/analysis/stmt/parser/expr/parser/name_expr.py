@@ -7,20 +7,20 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
 class NameExpr:
 
     @staticmethod
-    def parse(ctx: ast, identifier_name, elem_container: ElementContainer):
-        if isinstance(ctx, ast.Store):
-            return NameObj(value=identifier_name, expressions=(identifier_name,))
+    def parse(node: ast.Name, elem_container: ElementContainer):
+        if isinstance(node.ctx, ast.Store):
+            return NameObj(value=node.id, expressions=(node.id,))
 
-        elif isinstance(ctx, ast.Load):
-            value = NameExpr._get_identifier_value(identifier_name, elem_container)
-            expressions = NameExpr._create_expressions(identifier_name, value)
+        elif isinstance(node.ctx, ast.Load):
+            value = NameExpr._get_identifier_value(node.id, elem_container)
+            expressions = NameExpr._create_expressions(node.id, value)
             return NameObj(value=value, expressions=expressions)
 
-        elif isinstance(ctx, ast.Del):
-            raise NotImplementedError(f"Unsupported node type: {type(ctx)}")
+        elif isinstance(node.ctx, ast.Del):
+            raise NotImplementedError(f"Unsupported node type: {type(node.ctx)}")
 
         else:
-            raise TypeError(f"[call_travel] {type(ctx)}는 잘못된 타입입니다.")
+            raise TypeError(f"[call_travel] {type(node.ctx)}는 잘못된 타입입니다.")
 
     # 변수의 값을 가져오는 함수
     @staticmethod

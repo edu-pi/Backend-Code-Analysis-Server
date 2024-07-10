@@ -1,21 +1,128 @@
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ConstantObj, NameObj, BinopObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
+    ExprObj,
+    ConstantObj,
+    NameObj,
+    BinopObj,
+    PrintObj,
+    RangeObj,
+)
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 
 
-@pytest.mark.parametrize("func_name, args, keyword_arg_dict, expected", [])
-@pytest.mark.skip
-def test_parse(func_name, args, keyword_arg_dict, expected):
-    pass
+@pytest.mark.parametrize(
+    "func_name, args, keyword_arg_dict, expected",
+    [
+        pytest.param(
+            "print",
+            [ConstantObj(value="abc", expressions=("abc",))],
+            {},
+            PrintObj(value="abc\n", expressions=("abc",)),
+            id="print('abc'): success case",
+        ),
+        pytest.param(
+            "print",
+            [BinopObj(value="'****'", expressions=("'*' * 4", "'****'"))],
+            {},
+            PrintObj(value="****\n", expressions=("'*' * 4", "'****'")),
+            id="print('*' * 4): success case",
+        ),
+        pytest.param(
+            "print",
+            [ConstantObj(value="abc", expressions=("abc",))],
+            {"end": " "},
+            PrintObj(value="abc ", expressions=("abc",)),
+            id="print('abc', end=' '): success case",
+        ),
+        pytest.param(
+            "print",
+            [ConstantObj(value="abc", expressions=("abc",)), ConstantObj(value="def", expressions=("def",))],
+            {},
+            PrintObj(value="abc def\n", expressions=("abc def",)),
+            id="print('abc', 'def'): success case",
+        ),
+        pytest.param(
+            "print",
+            [ConstantObj(value="abc", expressions=("abc",)), ConstantObj(value="def", expressions=("def",))],
+            {"sep": "-"},
+            PrintObj(value="abc-def\n", expressions=("abc-def",)),
+            id="print('abc', 'def', sep='-'): success case",
+        ),
+    ],
+)
+def test_parse_case_print(mocker, func_name: str, args: list[ExprObj], keyword_arg_dict: dict, expected: PrintObj):
+    mock_print_parse = mocker.patch.object(
+        CallExpr,
+        "_print_parse",
+        return_value=(expected.value, expected.expressions),
+    )
+    result = CallExpr.parse(func_name, args, keyword_arg_dict)
+
+    assert isinstance(result, PrintObj)
+    assert mock_print_parse.called_once_with(args, keyword_arg_dict)
+
+
+@pytest.mark.parametrize(
+    "func_name, args, expected",
+    [
+        pytest.param(
+            "range",
+            [ConstantObj(value=10, expressions=("10",))],
+            RangeObj(
+                value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), expressions=(RangeExpression(start="0", end="10", step="1"),)
+            ),
+            id="range(10): success case",
+        ),
+        pytest.param(
+            "range",
+            [NameObj(value=10, expressions=("a", "10"))],
+            RangeObj(
+                value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                expressions=(
+                    RangeExpression(start="0", end="a", step="1"),
+                    RangeExpression(start="0", end="10", step="1"),
+                ),
+            ),
+            id="range(a): success case",
+        ),
+        pytest.param(
+            "range",
+            [ConstantObj(value=2, expressions=("2",)), ConstantObj(value=10, expressions=("10",))],
+            RangeObj(value=(2, 3, 4, 5, 6, 7, 8, 9), expressions=(RangeExpression(start="2", end="10", step="1"),)),
+            id="range(2, 10): success case",
+        ),
+        pytest.param(
+            "range",
+            [
+                ConstantObj(value=2, expressions=("2",)),
+                ConstantObj(value=10, expressions=("10",)),
+                ConstantObj(value=2, expressions=("2",)),
+            ],
+            RangeObj(value=(2, 4, 6, 8), expressions=(RangeExpression(start="2", end="10", step="1"),)),
+            id="range(2, 10, 2): success case",
+        ),
+    ],
+)
+def test_parse_case_range(mocker, func_name: str, args: list[ExprObj], expected: RangeObj):
+    keyword_arg_dict = {}
+    mock_range_parse = mocker.patch.object(
+        CallExpr,
+        "_range_parse",
+        return_value=(expected.value, expected.expressions),
+    )
+    result = CallExpr.parse(func_name, args, keyword_arg_dict)
+
+    assert isinstance(result, RangeObj)
+    assert mock_range_parse.called_once_with(args, keyword_arg_dict)
 
 
 @pytest.mark.parametrize(
     "args, keyword_arg_dict, expected",
     [
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",))], {}, ("\n", ("abc",)), id="print('abc'): success case"
+            [ConstantObj(value="abc", expressions=("abc",))], {}, ("abc\n", ("abc",)), id="print('abc'): success case"
         ),
         pytest.param(
             [
@@ -23,7 +130,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
                 ConstantObj(value=1, expressions=("1",)),
             ],
             {},
-            ("\n", ("abc 1",)),
+            ("abc 1\n", ("abc 1",)),
             id="print(abc, 1): success case",
         ),
         pytest.param(
@@ -33,7 +140,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
             ],
             {},
             (
-                "\n",
+                "abc 3\n",
                 (
                     "abc a",
                     "abc 3",
@@ -47,7 +154,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
                 BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
             ],
             {},
-            ("\n", ("abc a + 1", "abc 2 + 1", "abc 3")),
+            ("abc 3\n", ("abc a + 1", "abc 2 + 1", "abc 3")),
             id="print(abc,a + 1): success case",
         ),
         pytest.param(
@@ -57,7 +164,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
             ],
             {"sep": "-"},
             (
-                "\n",
+                "abc-3\n",
                 (
                     "abc-a",
                     "abc-3",
