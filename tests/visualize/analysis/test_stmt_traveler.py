@@ -188,7 +188,6 @@ def test_parse_if_orelse_elif문_분기_실행(node: ast.If, conditions, elem_co
     ],
 )
 def test_parse_if_orelse_else문_분기_실행(node: ast.If, elem_container):
-
     with patch.object(StmtTraveler, "_parse_else", return_value=None) as mock_if_travel:
         StmtTraveler._parse_if_branches([], [], elem_container, node.orelse)
 
