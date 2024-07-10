@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 import pytest
 
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
@@ -11,13 +9,6 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
 from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.models.if_viz import ConditionViz, IfElseChangeViz
 from app.visualize.generator.visualization_manager import VisualizationManager
-
-
-@pytest.fixture
-def viz_manager():
-    mock = MagicMock(spec=VisualizationManager)
-    mock.get_depth.return_value = 1
-    return mock
 
 
 @pytest.mark.parametrize(
@@ -81,8 +72,8 @@ def test_get_header_define_viz(conditions: tuple[ConditionObj, ...], expected):
         ),
     ],
 )
-def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected, viz_manager):
-    assert IfConverter.get_header_change_steps(conditions, viz_manager) == expected
+def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected, mock_viz_manager_with_custom_depth):
+    assert IfConverter.get_header_change_steps(conditions, mock_viz_manager_with_custom_depth(1)) == expected
 
 
 @pytest.mark.parametrize(
@@ -126,5 +117,5 @@ def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected,
         ),
     ],
 )
-def test__create_condition_viz(condition: ConditionObj, condition_type, expected, viz_manager):
+def test__create_condition_viz(condition: ConditionObj, condition_type, expected):
     assert IfConverter._create_condition_viz(condition) == expected

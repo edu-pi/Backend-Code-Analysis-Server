@@ -1,5 +1,5 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
@@ -11,7 +11,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 class ConverterTraveler:
 
     @staticmethod
-    def travel(analysis_objs, viz_manager: VisualizationManager):
+    def travel(analysis_objs, viz_manager: VisualizationManager) -> list:
         viz_objs = []
         for analysis_obj in analysis_objs:
             if analysis_obj.type == "assign":
@@ -63,14 +63,16 @@ class ConverterTraveler:
         # 2. if header
         steps.extend(IfConverter.get_header_change_steps(if_stmt.conditions, viz_manager))
         # 3. if header 결과 값이 true인 if 문의 body obj의 viz 생성
-        steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt, viz_manager))
+        if not if_stmt.body:
+            raise ValueError("[ConverterTraveler] if_stmt.body is None")
+        steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt.body, viz_manager))
 
         return steps
 
     @staticmethod
-    def _get_if_body_viz_list(if_stmt, viz_manager):
+    def _get_if_body_viz_list(if_body: BodyObj, viz_manager):
         viz_manager.increase_depth()
-        body_steps_viz = ConverterTraveler.travel(if_stmt.body.body_steps, viz_manager)
+        body_steps_viz = ConverterTraveler.travel(if_body.body_steps, viz_manager)
         viz_manager.decrease_depth()
 
         return body_steps_viz

@@ -11,7 +11,9 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 class IfConverter:
 
     @staticmethod
-    def get_header_define_viz(conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager):
+    def get_header_define_viz(
+        conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager
+    ) -> IfElseDefineViz:
         if_header_conditions = []
 
         for condition in conditions:
@@ -24,7 +26,9 @@ class IfConverter:
         return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
 
     @staticmethod
-    def get_header_change_steps(conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager):
+    def get_header_change_steps(
+        conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager
+    ) -> list[IfElseChangeViz]:
         steps = []
 
         for condition in conditions:
@@ -44,6 +48,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_viz(condition: ConditionObj):
+    def _create_condition_viz(condition: ConditionObj) -> ConditionViz:
         expr = condition.expressions[0] if condition.type != "else" else ""
         return ConditionViz(id=condition.id, expr=expr, type=condition.type)

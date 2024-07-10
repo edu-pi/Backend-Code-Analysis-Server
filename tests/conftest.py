@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.visualize.container.element_container import ElementContainer
+from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 @pytest.fixture
@@ -11,6 +12,25 @@ def elem_container():
     mock = MagicMock(spec=ElementContainer)
     mock.get_element.return_value = 10
     return mock
+
+
+@pytest.fixture
+def set_element_return_value(elem_manager):
+    def _set_element_return_value(value):
+        elem_manager.get_element.return_value = value
+        return elem_manager
+
+    return _set_element_return_value
+
+
+@pytest.fixture
+def mock_viz_manager_with_custom_depth():
+    def _mock_viz_manager_with_custom_depth(depth):
+        viz_mockup = MagicMock(spec=VisualizationManager)
+        viz_mockup.get_depth.return_value = depth
+        return viz_mockup
+
+    return _mock_viz_manager_with_custom_depth
 
 
 @pytest.fixture
