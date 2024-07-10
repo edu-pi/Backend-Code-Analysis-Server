@@ -1,42 +1,54 @@
 import ast
+from unittest import mock
 
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, BinopObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, BinopObj, ConstantObj, NameObj
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 
 
 @pytest.mark.parametrize(
-    "value, expressions",
+    "left_obj, right_obj, op, expected",
     [
-        pytest.param(11, ("10 + 1", "11"), id="10 + 1: success case"),
-        pytest.param("Hello World", ("'Hello' + ' World'", "'Hello World'"), id="'Hello' + 'World': success case"),
-        pytest.param(104, ("a + 1", "104"), id="a: success case"),
-        pytest.param("****", ("'*' * 4", "'****'"), id="'*' * 4: success case"),
+        pytest.param(
+            ConstantObj(value=10, expressions=("10",)),
+            ConstantObj(value=1, expressions=("1",)),
+            ast.Add(),
+            BinopObj(value=11, expressions=("10 + 1", "11")),
+            id="10 + 1: success case",
+        ),
+        pytest.param(
+            ConstantObj(value="Hello", expressions=("Hello",)),
+            ConstantObj(value="World", expressions=("World",)),
+            ast.Add(),
+            BinopObj(value="HelloWorld", expressions=("Hello + World", "HelloWorld")),
+            id="'Hello' + 'World': success case",
+        ),
+        pytest.param(
+            NameObj(value=10, expressions=("a", "10")),
+            ConstantObj(value=1, expressions=("1",)),
+            ast.Add(),
+            BinopObj(value=11, expressions=("a + 1", "10 + 1", "11")),
+            id="a + 1: success case",
+        ),
+        pytest.param(
+            ConstantObj(value="*", expressions=("'*'",)),
+            ConstantObj(value=4, expressions=("4",)),
+            ast.Mult(),
+            BinopObj(value="****", expressions=("* * 4", "****")),
+            id="'*' * 4: success case",
+        ),
     ],
 )
-def test_parse(mocker, value, expressions):
-    # ExprObj에 들어갈 값 객체
-    value = "mocked_value"
-    expressions = ("mocked_expression",)
+def test_parse(mocker, left_obj: ExprObj, right_obj: ExprObj, op: ast, expected: BinopObj):
+    mock_calculate_value = mocker.patch.object(BinopExpr, "_calculate_value", return_value=expected.value)
+    mock_create_expressions = mocker.patch.object(BinopExpr, "_create_expressions", return_value=expected.expressions)
 
-    mock_left_obj = mocker.MagicMock(spec=ExprObj, value=value, expressions=expressions)
-    mock_right_obj = mocker.MagicMock(spec=ExprObj, value=value, expressions=expressions)
-    mock_op = mocker.MagicMock(spec=ast)
+    result = BinopExpr.parse(left_obj, right_obj, op)
 
-    mocker.patch(
-        "app.visualize.analysis.stmt.parser.expr.parser.binop_expr.BinopExpr._calculate_value", return_value=value
-    )
-    mocker.patch(
-        "app.visualize.analysis.stmt.parser.expr.parser.binop_expr.BinopExpr._create_expressions",
-        return_value=expressions,
-    )
-
-    result = BinopExpr.parse(mock_left_obj, mock_right_obj, mock_op)
-
-    assert isinstance(result, BinopObj)
-    assert result.value == value
-    assert result.expressions == expressions
+    assert mock_calculate_value.call_count == 1
+    assert mock_create_expressions.call_count == 1
+    assert result == expected
 
 
 @pytest.mark.parametrize(

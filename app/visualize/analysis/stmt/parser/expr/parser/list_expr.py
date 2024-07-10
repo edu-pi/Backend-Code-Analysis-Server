@@ -7,7 +7,7 @@ class ListExpr:
     @staticmethod
     def parse(elts: list[ExprObj]):
         value = ListExpr._get_value(elts)
-        expressions = ListExpr._concat_expression(elts)
+        expressions = ListExpr._concat_expressions(elts)
 
         return ListObj(value=value, expressions=expressions)
 
@@ -16,7 +16,7 @@ class ListExpr:
         return [elt.value for elt in elts]
 
     @staticmethod
-    def _concat_expression(elts: list[ExprObj]):
+    def _concat_expressions(elts: list[ExprObj]):
         elts_expression_lists = [elt.expressions for elt in elts]
 
         # [("a + 1", "10 + 1", "11"), ("20",)] -> [("a + 1", "20"), ("10 + 1", "20"), ("11", "20")]

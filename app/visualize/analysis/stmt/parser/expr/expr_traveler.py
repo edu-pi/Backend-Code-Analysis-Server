@@ -54,7 +54,7 @@ class ExprTraveler:
 
     @staticmethod
     def _name_travel(node: ast.Name, elem_container: ElementContainer):
-        return NameExpr.parse(node.ctx, node.id, elem_container)
+        return NameExpr.parse(node, elem_container)
 
     @staticmethod
     def _constant_travel(node: ast.Constant):

@@ -7,21 +7,38 @@ from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import Constan
 
 
 @pytest.mark.parametrize(
-    "mock_value, expected",
+    "node, expected",
     [
-        pytest.param(10, ConstantObj(value=10, expressions=("10",)), id="10: success case"),
-        pytest.param("Hello", ConstantObj(value="Hello", expressions=("'Hello'",)), id="'Hello': success case"),
-        pytest.param("World", ConstantObj(value="World", expressions=("'World'",)), id="'World': success case"),
+        pytest.param(ast.Constant(value=10), ConstantObj(value=10, expressions=("10",)), id="10: success case"),
+        pytest.param(
+            ast.Constant(value="Hello"),
+            ConstantObj(value="Hello", expressions=("'Hello'",)),
+            id="'Hello': success case",
+        ),
+        pytest.param(
+            ast.Constant(value="World"),
+            ConstantObj(value="World", expressions=("'World'",)),
+            id="'World': success case",
+        ),
     ],
 )
-def test_parse(mocker, mock_value, expected):
-    mocker.patch(
-        "app.visualize.analysis.stmt.parser.expr.parser.constant_expr.ConstantExpr._get_literal",
-        return_value=mock_value,
+def test_parse(mocker, node: ast.Constant, expected: ConstantObj):
+    mock_get_literal = mocker.patch.object(
+        ConstantExpr,
+        "_get_literal",
+        return_value=expected.value,
     )
-    result = ConstantExpr.parse(mocker.MagicMock(spec=ast.Constant))
+
+    mock_create_expressions = mocker.patch.object(
+        ConstantExpr,
+        "_create_expressions",
+        return_value=expected.expressions,
+    )
+    result = ConstantExpr.parse(node)
 
     assert result == expected
+    assert mock_get_literal.called_once_with(node)
+    assert mock_create_expressions.called_once_with(expected.value)
 
 
 @pytest.mark.parametrize(

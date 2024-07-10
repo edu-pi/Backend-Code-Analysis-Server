@@ -7,34 +7,43 @@ from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 
 
 @pytest.mark.parametrize(
-    "ctx, identifier_name, value, expressions",
+    "node, expected",
     [
-        pytest.param(ast.Store(), "a", "a", ("a",), id="a ast.Store(): success case"),
-        pytest.param(ast.Store(), "abc", "abc", ("abc",), id="abc ast.Store(): success case"),
-        pytest.param(ast.Load(), "a", 10, ("a", "10"), id="a ast.Load(): success case"),
-        pytest.param(ast.Load(), "abc", 10, ("abc", "10"), id="abc ast.Load(): success case"),
+        pytest.param(
+            ast.Name(ctx=ast.Store(), id="a"), NameObj(value="a", expressions=("a",)), id="a ast.Store(): success case"
+        ),
+        pytest.param(
+            ast.Name(ctx=ast.Store(), id="abc"),
+            NameObj(value="a", expressions=("a",)),
+            id="abc ast.Store(): success case",
+        ),
+        pytest.param(
+            ast.Name(ctx=ast.Load(), id="a"),
+            NameObj(value=10, expressions=("a", "10")),
+            id="a ast.Load(): success case",
+        ),
+        pytest.param(
+            ast.Name(ctx=ast.Load(), id="a"),
+            NameObj(value=10, expressions=("a", "10")),
+            id="abc ast.Load(): success case",
+        ),
     ],
 )
-def test_parse(elem_container, mocker, ctx, identifier_name, value, expressions):
-    mocker.patch(
-        "app.visualize.analysis.stmt.parser.expr.parser.name_expr.NameExpr._get_identifier_value", return_value=value
-    )
-    mocker.patch(
-        "app.visualize.analysis.stmt.parser.expr.parser.name_expr.NameExpr._create_expressions",
-        return_value=expressions,
-    )
-    result = NameExpr.parse(ctx, identifier_name, elem_container)
+def test_parse(elem_container, mocker, node: ast.Name, expected: NameObj):
+    mock_get_identifier_value = mocker.patch.object(NameExpr, "_get_identifier_value", return_value=expected.value)
+    mock_create_expressions = mocker.patch.object(NameExpr, "_create_expressions", return_value=expected.expressions)
+    result = NameExpr.parse(node, elem_container)
 
     assert isinstance(result, NameObj)
-    assert result.value == value
-    assert result.expressions == expressions
+    assert mock_get_identifier_value.call_once_with(node.id, elem_container)
+    assert mock_create_expressions.call_once_with(node.id, expected.value)
 
 
 def test_parse_fail_ast_del(elem_container, mocker):
-    ast_del = mocker.MagicMock(spec=ast.Del)
+    ast_name_ctx_del = mocker.MagicMock(spec=ast.Name, ctx=ast.Del())
 
     with pytest.raises(NotImplementedError):
-        NameExpr.parse(ast_del, "a", elem_container)
+        NameExpr.parse(ast_name_ctx_del, elem_container)
 
 
 @pytest.mark.parametrize(
