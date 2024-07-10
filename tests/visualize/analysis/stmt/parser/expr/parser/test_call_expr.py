@@ -1,6 +1,6 @@
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, ConstantObj, NameObj, BinopObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ConstantObj, NameObj, BinopObj, ExprObj
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 
