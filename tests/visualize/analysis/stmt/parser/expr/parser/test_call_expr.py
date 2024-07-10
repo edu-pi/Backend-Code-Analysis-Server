@@ -1,21 +1,72 @@
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ConstantObj, NameObj, BinopObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
+    ExprObj,
+    ConstantObj,
+    NameObj,
+    BinopObj,
+    PrintObj,
+    RangeObj,
+)
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 
 
-@pytest.mark.parametrize("func_name, args, keyword_arg_dict, expected", [])
-@pytest.mark.skip
-def test_parse(func_name, args, keyword_arg_dict, expected):
-    pass
+@pytest.mark.parametrize(
+    "func_name, mock_value, mock_expressions",
+    [
+        pytest.param("print", "abc\n", ("abc",), id="print('abc'): success case"),
+        pytest.param("print", "****\n", ("'*' * 4", "'****'"), id="print('*' * 4): success case"),
+        pytest.param("print", "abc ", ("abc",), id="print('abc', end=' '): success case"),
+        pytest.param("print", "abc def\n", ("abc def",), id="print('abc', 'def'): success case"),
+        pytest.param("print", "abc-def\n", ("abc-def",), id="print('abc', 'def', sep='-'): success case"),
+        pytest.param(
+            "range",
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            (RangeExpression(start="0", end="10", step="1")),
+            id="range(10): success case",
+        ),
+        pytest.param(
+            "range",
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            (RangeExpression(start="0", end="a", step="1"), RangeExpression(start="0", end="10", step="1")),
+            id="range(a): success case",
+        ),
+        pytest.param(
+            "range",
+            [2, 3, 4, 5, 6, 7, 8, 9],
+            (RangeExpression(start="2", end="10", step="1")),
+            id="range(2, 10): success case",
+        ),
+        pytest.param(
+            "range",
+            [2, 4, 6, 8],
+            (RangeExpression(start="2", end="10", step="2")),
+            id="range(2, 10, 2): success case",
+        ),
+    ],
+)
+def test_parse(mocker, func_name: str, mock_value, mock_expressions):
+    mocker.patch(
+        "app.visualize.analysis.stmt.parser.expr.parser.call_expr.CallExpr._print_parse",
+        return_value=(mock_value, mock_expressions),
+    )
+    mocker.patch(
+        "app.visualize.analysis.stmt.parser.expr.parser.call_expr.CallExpr._range_parse",
+        return_value=(mock_value, mock_expressions),
+    )
+    result = CallExpr.parse(func_name, [mocker.MagicMock(spec=ExprObj)], {})
+
+    assert isinstance(result, PrintObj) or isinstance(result, RangeObj)
+    assert result.value == mock_value
+    assert result.expressions == mock_expressions
 
 
 @pytest.mark.parametrize(
     "args, keyword_arg_dict, expected",
     [
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",))], {}, ("\n", ("abc",)), id="print('abc'): success case"
+            [ConstantObj(value="abc", expressions=("abc",))], {}, ("abc\n", ("abc",)), id="print('abc'): success case"
         ),
         pytest.param(
             [
@@ -23,7 +74,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
                 ConstantObj(value=1, expressions=("1",)),
             ],
             {},
-            ("\n", ("abc 1",)),
+            ("abc 1\n", ("abc 1",)),
             id="print(abc, 1): success case",
         ),
         pytest.param(
@@ -33,7 +84,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
             ],
             {},
             (
-                "\n",
+                "abc 3\n",
                 (
                     "abc a",
                     "abc 3",
@@ -47,7 +98,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
                 BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
             ],
             {},
-            ("\n", ("abc a + 1", "abc 2 + 1", "abc 3")),
+            ("abc 3\n", ("abc a + 1", "abc 2 + 1", "abc 3")),
             id="print(abc,a + 1): success case",
         ),
         pytest.param(
@@ -57,7 +108,7 @@ def test_parse(func_name, args, keyword_arg_dict, expected):
             ],
             {"sep": "-"},
             (
-                "\n",
+                "abc-3\n",
                 (
                     "abc-a",
                     "abc-3",
