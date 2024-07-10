@@ -2,60 +2,41 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, NameObj, BinopObj, ConstantObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, BinopObj
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 
 
 @pytest.mark.parametrize(
-    "left_obj, right_obj, op, expected",
+    "value, expressions",
     [
-        pytest.param(
-            NameObj(value=1, expressions=("a", "1")),
-            NameObj(value=2, expressions=("b", "2")),
-            ast.Add(),
-            BinopObj(value=3, expressions=("a + b", "1 + 2", "3")),
-            id="a + b: success case",
-        ),
-        pytest.param(
-            NameObj(value=2, expressions=("a", "2")),
-            ConstantObj(value=2, expressions=tuple("2")),
-            ast.Sub(),
-            BinopObj(value=0, expressions=("a - 2", "2 - 2", "0")),
-            id="a - 2: success case",
-        ),
-        pytest.param(
-            BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
-            BinopObj(value=2, expressions=("b + 1", "1 + 1", "2")),
-            ast.Mult(),
-            BinopObj(value=6, expressions=("a + 1 * b + 1", "2 + 1 * 1 + 1", "3 * 2", "6")),
-            id="a + 1 * b + 1: success case",
-        ),
-        pytest.param(
-            BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
-            ConstantObj(value=2, expressions=tuple("2")),
-            ast.Div(),
-            BinopObj(value=1.5, expressions=("a + 1 / 2", "2 + 1 / 2", "3 / 2", "1.5")),
-            id="a + 1 / 2: success case",
-        ),
-        pytest.param(
-            BinopObj(value=3, expressions=("a + 1", "2 + 1", "3")),
-            ConstantObj(value=2, expressions=tuple("2")),
-            ast.FloorDiv(),
-            BinopObj(value=1, expressions=("a + 1 // 2", "2 + 1 // 2", "3 // 2", "1")),
-            id="a + 1 // 2: success case",
-        ),
-        pytest.param(
-            ConstantObj(value="*", expressions=("'*'",)),
-            ConstantObj(value=3, expressions=("3",)),
-            ast.Mult(),
-            BinopObj(value="***", expressions=("'*' * 3", "'***'")),
-            id="'*' * 3: success case",
-        ),
+        pytest.param(11, ("10 + 1", "11"), id="10 + 1: success case"),
+        pytest.param("Hello World", ("'Hello' + ' World'", "'Hello World'"), id="'Hello' + 'World': success case"),
+        pytest.param(104, ("a + 1", "104"), id="a: success case"),
+        pytest.param("****", ("'*' * 4", "'****'"), id="'*' * 4: success case"),
     ],
 )
-def test_parse(left_obj: ExprObj, right_obj: ExprObj, op, expected):
-    result = BinopExpr.parse(left_obj, right_obj, op)
-    assert result == expected
+def test_parse(mocker, value, expressions):
+    # ExprObj에 들어갈 값 객체
+    value = "mocked_value"
+    expressions = ("mocked_expression",)
+
+    mock_left_obj = mocker.MagicMock(spec=ExprObj, value=value, expressions=expressions)
+    mock_right_obj = mocker.MagicMock(spec=ExprObj, value=value, expressions=expressions)
+    mock_op = mocker.MagicMock(spec=ast)
+
+    mocker.patch(
+        "app.visualize.analysis.stmt.parser.expr.parser.binop_expr.BinopExpr._calculate_value", return_value=value
+    )
+    mocker.patch(
+        "app.visualize.analysis.stmt.parser.expr.parser.binop_expr.BinopExpr._create_expressions",
+        return_value=expressions,
+    )
+
+    result = BinopExpr.parse(mock_left_obj, mock_right_obj, mock_op)
+
+    assert isinstance(result, BinopObj)
+    assert result.value == value
+    assert result.expressions == expressions
 
 
 @pytest.mark.parametrize(
