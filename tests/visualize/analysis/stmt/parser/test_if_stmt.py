@@ -70,14 +70,14 @@ def test_parse_if_condition(
     ],
 )
 def test_parse_elif_condition(
-    input_code, expected, travel_return_value, evaluate_test_value_return, create_ast, elem_manager
+    input_code, expected, travel_return_value, evaluate_test_value_return, create_ast, elem_container
 ):
     test_node = create_ast(input_code).value
     with (
         patch.object(ExprTraveler, "travel", return_value=travel_return_value),
         patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_value_return),
     ):
-        assert IfStmt.parse_elif_condition(test_node, elem_manager) == expected
+        assert IfStmt.parse_elif_condition(test_node, elem_container) == expected
 
 
 @pytest.mark.parametrize(
@@ -95,7 +95,7 @@ def test_parse_elif_condition(
         ),
     ],
 )
-def test_parse_if_condition(input_code, expected, create_ast, elem_manager):
+def test_parse_if_condition(input_code, expected, create_ast):
     else_body_node = create_ast(input_code).value
 
     assert IfStmt.parse_else_condition(else_body_node, True) == expected

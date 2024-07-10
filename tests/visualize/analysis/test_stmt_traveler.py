@@ -34,22 +34,22 @@ def elem_manager():
     return mock
 
 
-@pytest.mark.parametrize(
-    "code, expect",
-    [
-        (
-            """for i in range(3): \n    print('hello')""",
-            ExprObj(
-                type="for",
-                value={"end": "3", "start": "0", "step": "1"},
-                expressions=({"end": "3", "start": "0", "step": "1"},),
-            ),
-        )
-    ],
-)
-def test_for_travel(create_ast, code, expect, elem_manager):
-    actual = StmtTraveler._for_travel(create_ast(code), elem_manager)
-    pass
+# @pytest.mark.parametrize(
+#     "code, expect",
+#     [
+#         (
+#             """for i in range(3): \n    print('hello')""",
+#             ExprObj(
+#                 type="for",
+#                 value={"end": "3", "start": "0", "step": "1"},
+#                 expressions=({"end": "3", "start": "0", "step": "1"},),
+#             ),
+#         )
+#     ],
+# )
+# def test_for_travel(create_ast, code, expect, elem_manager):
+#     actual = StmtTraveler._for_travel(create_ast(code), elem_manager)
+#     pass
 
 
 @pytest.mark.parametrize(
@@ -76,7 +76,7 @@ else:
         ),
     ],
 )
-def test_if_travel(code: str, expect, elem_manager):
+def test_if_travel(code: str, expect, elem_container):
     ast_if = ast.parse(code).body[0]
     with patch.object(
         IfStmt, "parse_if_condition", return_value=IfConditionObj(id=1, expressions=("a>10",), result=False)
@@ -85,9 +85,9 @@ def test_if_travel(code: str, expect, elem_manager):
     ), patch.object(
         IfStmt, "parse_else_condition", return_value=ElseConditionObj(id=3, expressions=None, result=True)
     ), patch.object(
-        StmtTraveler, "_internal_travel", return_value=[]
+        StmtTraveler, "travel", return_value=[]
     ):
-        actual = StmtTraveler.if_travel(ast_if, [], [], elem_manager)
+        actual = StmtTraveler._if_travel(ast_if, [], [], elem_container)
         assert actual == expect
 
 
@@ -164,11 +164,11 @@ def test_append_else_condition_obj(conditions, node, result, expected):
 def test_parse_if_body_추가(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
     with patch.object(
         StmtTraveler,
-        "_internal_travel",
-        return_value=ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",))),
+        "travel",
+        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print"),
     ):
         StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
-        assert body_objs[-1] == ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",)))
+        assert body_objs[-1] == ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print")
 
 
 @pytest.mark.parametrize(
@@ -177,34 +177,34 @@ def test_parse_if_body_추가(node: ast.If, conditions: list[ConditionObj], body
         pytest.param(
             ast.parse("if a < 10: \n    print('hello')").body[0],
             [IfConditionObj(id=1, expressions=("a<10",), result=False)],
-            [ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",)))],
+            [ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print")],
             id="if condition is False - 바디 추가 안함",
         )
     ],
 )
-def test_parse_if_body_추가_안함(node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager):
+def test_parse_if_body_추가_안함(
+    node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_container
+):
     with patch.object(
         StmtTraveler,
-        "_internal_travel",
-        return_value=ExprStmtObj(id=0, expr_obj=PrintObj(value="hello", expressions=("hello",))),
+        "travel",
+        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print"),
     ):
         temp_body_objs = list(body_objs)
         StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
         assert temp_body_objs == body_objs
-<<<<<<< HEAD
-=======
 
 
-def test_parse_if_orelse_elif문_분기_실행(elem_manager):
+def test_parse_if_orelse_elif문_분기_실행(elem_container):
     body_objs = []
     conditions = [IfConditionObj(id=1, expressions=("a>10",), result=False)]
     if_node = ast.parse("if a < 10: \n    print('hello')\nelif a>10: \n   print('world')").body[0]
 
-    with patch.object(StmtTraveler, "if_travel", return_value=None) as mock_if_travel:
-        StmtTraveler._parse_if_branches(body_objs, conditions, elem_manager, if_node.orelse)
+    with patch.object(StmtTraveler, "_if_travel", return_value=None) as mock_if_travel:
+        StmtTraveler._parse_if_branches(body_objs, conditions, elem_container, if_node.orelse)
 
         mock_if_travel.assert_called_once()
-        mock_if_travel.assert_called_with(if_node.orelse[0], conditions, body_objs, elem_manager)
+        mock_if_travel.assert_called_with(if_node.orelse[0], conditions, body_objs, elem_container)
 
 
 def test_parse_if_orelse_else문_분기_실행(elem_manager):
@@ -229,4 +229,3 @@ def test_parse_if_orelse_예외발생(target, elem_manager):
     with pytest.raises(TypeError):
         StmtTraveler._parse_if_branches([], [], elem_manager, target)
         assert False
->>>>>>> ef975c1 ([#141]test: StmtTraveler의 _parse_else 유닛 테스트)

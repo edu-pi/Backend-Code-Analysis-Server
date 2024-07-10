@@ -59,7 +59,7 @@ class StmtTraveler:
 
     @staticmethod
     def _if_travel(
-        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
+        node: ast.stmt, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
     ) -> IfStmtObj:
         # parse 조건문 : if("test") or elfi("test") 부분
         StmtTraveler._append_condition_obj(conditions, elem_manager, node)
@@ -89,7 +89,7 @@ class StmtTraveler:
 
     @staticmethod
     def _parse_if_body(
-        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
+        node: ast.stmt, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
     ):
         if conditions[-1].result is True:  # 조건절의 결과 값이 True이면 해당 body 로직 추가
             for body in node.body:
@@ -99,7 +99,7 @@ class StmtTraveler:
     def _parse_if_branches(body_objs, conditions, elem_manager, orelse_node):
         # elif 처리
         if isinstance(orelse_node[0], ast.If):
-            StmtTraveler.if_travel(orelse_node[0], conditions, body_objs, elem_manager)
+            StmtTraveler._if_travel(orelse_node[0], conditions, body_objs, elem_manager)
 
         # else 처리
         elif isinstance(orelse_node[0], ast.stmt):
@@ -116,7 +116,7 @@ class StmtTraveler:
         if is_else_condition_true:
             # else 문의 body 추가
             for stmt_node in nodes:
-                body_objs.append(StmtTraveler._internal_travel(stmt_node, elem_manager))
+                body_objs.append(StmtTraveler.travel(stmt_node, elem_manager))
 
     @staticmethod
     def _append_else_condition_obj(conditions, node: ast.stmt, result: bool):

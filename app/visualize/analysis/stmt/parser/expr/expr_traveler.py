@@ -76,11 +76,7 @@ class ExprTraveler:
         return ListExpr.parse(elts)
 
     @staticmethod
-<<<<<<< HEAD:app/visualize/analysis/stmt/parser/expr/expr_traveler.py
     def _compare_travel(node: ast.Compare, elem_container: ElementContainer):
-=======
-    def _compare_travel(node: ast.expr, elem_manager: CodeElementManager):
->>>>>>> f36f418 ([#141]test: StmtTraveler의 if_travel 함수 유닛 테스트):app/visualize/analysis/stmt/expr/expr_traveler.py
         if isinstance(node, ast.Compare):
             left = ExprTraveler._compare_travel(node.left, elem_container)
             comparators = tuple(ExprTraveler._compare_travel(comparor, elem_container) for comparor in node.comparators)
