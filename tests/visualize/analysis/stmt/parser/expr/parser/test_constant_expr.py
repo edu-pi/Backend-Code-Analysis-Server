@@ -7,16 +7,19 @@ from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import Constan
 
 
 @pytest.mark.parametrize(
-    "node, expected",
+    "mock_value, expected",
     [
-        pytest.param(ast.Constant(value=10), ConstantObj(value=10, expressions=("10",)), id="10: success case"),
-        pytest.param(
-            ast.Constant(value="abc"), ConstantObj(value="abc", expressions=("'abc'",)), id="'abc': success case"
-        ),
+        pytest.param(10, ConstantObj(value=10, expressions=("10",)), id="10: success case"),
+        pytest.param("Hello", ConstantObj(value="Hello", expressions=("'Hello'",)), id="'Hello': success case"),
+        pytest.param("World", ConstantObj(value="World", expressions=("'World'",)), id="'World': success case"),
     ],
 )
-def test_parse(node: ast.Constant, expected):
-    result = ConstantExpr.parse(node)
+def test_parse(mocker, mock_value, expected):
+    mocker.patch(
+        "app.visualize.analysis.stmt.parser.expr.parser.constant_expr.ConstantExpr._get_literal",
+        return_value=mock_value,
+    )
+    result = ConstantExpr.parse(mocker.MagicMock(spec=ast.Constant))
 
     assert result == expected
 
@@ -24,8 +27,9 @@ def test_parse(node: ast.Constant, expected):
 @pytest.mark.parametrize(
     "node, expected",
     [
-        pytest.param(ast.Constant(value=10), 10),
-        pytest.param(ast.Constant(value="abc"), "abc", id="'abc': success case"),
+        pytest.param(ast.Constant(value=10), 10, id="10: success case"),
+        pytest.param(ast.Constant(value="Hello"), "Hello", id="'Hello': success case"),
+        pytest.param(ast.Constant(value="World"), "World", id="'World': success case"),
     ],
 )
 def test_get_literal(node: ast.Constant, expected):
@@ -36,7 +40,11 @@ def test_get_literal(node: ast.Constant, expected):
 
 @pytest.mark.parametrize(
     "value, expected",
-    [pytest.param(10, ("10",), id="10: success case"), pytest.param("abc", ("'abc'",), id="'abc': success case")],
+    [
+        pytest.param(10, ("10",), id="10: success case"),
+        pytest.param("Hello", ("'Hello'",), id="'Hello': success case"),
+        pytest.param("World", ("'World'",), id="'World': success case"),
+    ],
 )
 def test_create_expressions(value, expected):
     result = ConstantExpr._create_expressions(value)
