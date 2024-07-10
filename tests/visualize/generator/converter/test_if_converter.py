@@ -2,14 +2,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.visualize.analysis.stmt.model.if_stmt_obj import (
+from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ElifConditionObj,
-    ConditionObj,
     ElseConditionObj,
+    ConditionObj,
 )
 from app.visualize.generator.converter.if_converter import IfConverter
-from app.visualize.generator.model.if_viz import ConditionViz, IfElseChangeViz
+from app.visualize.generator.models.if_viz import ConditionViz, IfElseChangeViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
