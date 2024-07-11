@@ -18,30 +18,26 @@ def get_if_stmt_obj():
     return _get_if_stmt_obj
 
 
-@pytest.fixture
-def viz_manager():
-    mock = MagicMock(spec=VisualizationManager)
-    mock.get_depth.return_value = 1
-    return mock
-
-
-def test__if_convert(get_if_stmt_obj, viz_manager):
+def test__if_convert(get_if_stmt_obj, mock_viz_manager_with_custom_depth):
     if_stmt_obj = get_if_stmt_obj("if 9 == 10:\n    print('hello')\nelif 9 < 10:\n    print('world')\n")
     with (
         patch.object(IfConverter, "get_header_define_viz") as mock_get_header_define_viz,
         patch.object(IfConverter, "get_header_change_steps") as mock_get_header_change_steps,
         patch.object(ConverterTraveler, "_get_if_body_viz_list") as mock_get_if_body_viz_list,
     ):
-        ConverterTraveler._if_convert(if_stmt_obj, viz_manager)
+        mock_viz_manager = mock_viz_manager_with_custom_depth(1)
+        ConverterTraveler._if_convert(if_stmt_obj, mock_viz_manager)
 
         # 함수들이 호출 되었는지 확인
-        mock_get_header_define_viz.assert_called_once_with(if_stmt_obj.conditions, viz_manager)
-        mock_get_header_change_steps.assert_called_once_with(if_stmt_obj.conditions, viz_manager)
-        mock_get_if_body_viz_list.assert_called_once_with(if_stmt_obj.body, viz_manager)
+        mock_get_header_define_viz.assert_called_once_with(if_stmt_obj.conditions, mock_viz_manager)
+        mock_get_header_change_steps.assert_called_once_with(if_stmt_obj.conditions, mock_viz_manager)
+        mock_get_if_body_viz_list.assert_called_once_with(if_stmt_obj.body, mock_viz_manager)
 
 
-def test__get_if_body_viz_list(get_if_stmt_obj, viz_manager):
+def test__get_if_body_viz_list(get_if_stmt_obj):
     if_stmt_obj = get_if_stmt_obj("if 9 == 10:\n    print('hello')\nelif 9 < 10:\n    print('world')\n")
+    viz_manager = VisualizationManager()
+
     with patch.object(ConverterTraveler, "travel") as mock_travel:
         ConverterTraveler._get_if_body_viz_list(if_stmt_obj.body, viz_manager)
 

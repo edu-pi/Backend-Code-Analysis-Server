@@ -73,7 +73,8 @@ def test_get_header_define_viz(conditions: tuple[ConditionObj, ...], expected):
     ],
 )
 def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected, mock_viz_manager_with_custom_depth):
-    assert IfConverter.get_header_change_steps(conditions, mock_viz_manager_with_custom_depth(1)) == expected
+    actual = IfConverter.get_header_change_steps(conditions, mock_viz_manager_with_custom_depth(1))
+    assert actual == expected
 
 
 @pytest.mark.parametrize(

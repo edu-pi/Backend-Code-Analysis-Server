@@ -27,7 +27,11 @@ def set_element_return_value(elem_manager):
 def mock_viz_manager_with_custom_depth():
     def _mock_viz_manager_with_custom_depth(depth):
         viz_mockup = MagicMock(spec=VisualizationManager)
+
+        viz_mockup.increase_depth.return_value = depth + 1
         viz_mockup.get_depth.return_value = depth
+        viz_mockup.decrease_depth.return_value = depth - 1
+
         return viz_mockup
 
     return _mock_viz_manager_with_custom_depth
