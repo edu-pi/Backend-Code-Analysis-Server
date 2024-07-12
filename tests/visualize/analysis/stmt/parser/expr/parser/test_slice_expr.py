@@ -6,31 +6,28 @@ from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
 
 
 @pytest.mark.parametrize(
-    "lower, upper, step, max_length, expected",
+    "lower, upper, step, expected",
     [
         pytest.param(
             None,
             ConstantObj(value=10, expressions=("10",)),
             None,
-            13,
-            SliceObj(value=slice(0, 10, 1), expressions=(SliceExpression(upper="10"),)),
-            id="[10]: success case",
+            SliceObj(value=slice(None, 10, None), expressions=(SliceExpression(upper="10"),)),
+            id="[:10]: success case",
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
             ConstantObj(value=10, expressions=("10",)),
             None,
-            13,
-            SliceObj(value=slice(0, 10, 1), expressions=(SliceExpression(lower="0", upper="10"),)),
+            SliceObj(value=slice(0, 10, None), expressions=(SliceExpression(lower="0", upper="10"),)),
             id="[0:10]: success case",
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
             NameObj(value=10, expressions=("a", "10")),
             None,
-            13,
             SliceObj(
-                value=slice(0, 10, 1),
+                value=slice(0, 10, None),
                 expressions=(
                     SliceExpression(lower="0", upper="a"),
                     SliceExpression(lower="0", upper="10"),
@@ -42,54 +39,50 @@ from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
             ConstantObj(value=0, expressions=("0",)),
             ConstantObj(value=10, expressions=("10",)),
             ConstantObj(value=2, expressions=("2",)),
-            13,
             SliceObj(value=slice(0, 10, 2), expressions=(SliceExpression(lower="0", upper="10", step="2"),)),
             id="[0:10:2]: success case",
         ),
     ],
 )
-def test_parse(mocker, lower: ExprObj, upper: ExprObj, step: ExprObj, max_length, expected: SliceObj):
+def test_parse(mocker, lower: ExprObj, upper: ExprObj, step: ExprObj, expected: SliceObj):
     mock_get_value = mocker.patch.object(SliceExpr, "_get_value", return_value=expected.value)
     mock_create_expressions = mocker.patch.object(SliceExpr, "_create_expressions", return_value=expected.expressions)
 
-    result = SliceExpr.parse(lower, upper, step, max_length)
+    result = SliceExpr.parse(lower, upper, step)
 
     assert isinstance(result, SliceObj)
-    assert mock_get_value.called_once_with(lower, upper, step, max_length)
+    assert mock_get_value.called_once_with(lower, upper, step)
     assert mock_create_expressions.called_once_with(lower, upper, step)
 
 
 @pytest.mark.parametrize(
-    "lower, upper, step, max_length, expected",
+    "lower, upper, step, expected",
     [
         pytest.param(
             ConstantObj(value=2, expressions=("2",)),
             ConstantObj(value=10, expressions=("10",)),
             None,
-            10,
-            slice(2, 10, 1),
+            slice(2, 10, None),
             id="[2:10]: success case",
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
             ConstantObj(value=10, expressions=("10",)),
             None,
-            10,
-            slice(0, 10, 1),
+            slice(0, 10, None),
             id="[0:a]: success case",
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
             ConstantObj(value=10, expressions=("10",)),
             ConstantObj(value=2, expressions=("2",)),
-            10,
             slice(0, 10, 2),
             id="[0:10:2]: success case",
         ),
     ],
 )
-def test_get_value(lower: ExprObj, upper: ExprObj, step: ExprObj, max_length, expected):
-    result = SliceExpr._get_value(lower, upper, step, max_length)
+def test_get_value(lower: ExprObj, upper: ExprObj, step: ExprObj, expected):
+    result = SliceExpr._get_value(lower, upper, step)
 
     assert result == expected
 

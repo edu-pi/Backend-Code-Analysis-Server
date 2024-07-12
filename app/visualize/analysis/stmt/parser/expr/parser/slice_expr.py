@@ -6,21 +6,20 @@ from app.visualize.utils import utils
 class SliceExpr:
 
     @staticmethod
-    def parse(lower: ExprObj, upper: ExprObj, step: ExprObj, max_length):
-        if upper.value > max_length:
-            raise ValueError(f"[SliceExpr]: upper value가 max_length보다 큽니다.")
-
-        value = SliceExpr._get_value(lower, upper, step, max_length)
+    def parse(lower: ExprObj | None, upper: ExprObj | None, step: ExprObj | None):
+        value = SliceExpr._get_value(lower, upper, step)
         expressions = SliceExpr._create_expressions(lower, upper, step)
 
         return SliceObj(value=value, expressions=expressions)
 
     @staticmethod
-    def _get_value(lower: ExprObj, upper: ExprObj, step: ExprObj, max_length):
-        return slice(lower.value if lower else 0, upper.value if upper else max_length, step.value if step else 1)
+    def _get_value(lower: ExprObj | None, upper: ExprObj | None, step: ExprObj | None):
+        return slice(lower.value if lower else None, upper.value if upper else None, step.value if step else None)
 
     @staticmethod
-    def _create_expressions(lower: ExprObj, upper: ExprObj, step: ExprObj) -> tuple[SliceExpression, ...]:
+    def _create_expressions(
+        lower: ExprObj | None, upper: ExprObj | None, step: ExprObj | None
+    ) -> tuple[SliceExpression, ...]:
         slice_expressions = []
 
         max_length = max(
