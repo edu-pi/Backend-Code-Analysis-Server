@@ -11,43 +11,36 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 class IfConverter:
 
     @staticmethod
-    def get_header_define_viz(conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager):
+    def get_header_define_viz(
+        conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager
+    ) -> IfElseDefineViz:
         if_header_conditions = []
 
         for condition in conditions:
-            if isinstance(condition, IfConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "if"))
-
-            elif isinstance(condition, ElifConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "elif"))
-
-            elif isinstance(condition, ElseConditionObj):
-                if_header_conditions.append(IfConverter._create_condition_viz(condition, "else"))
+            if isinstance(condition, ConditionObj):
+                if_header_conditions.append(IfConverter._create_condition_viz(condition))
 
             else:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
-        return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=if_header_conditions)
+        return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
 
     @staticmethod
-    def get_header_change_steps(conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager):
+    def get_header_change_steps(
+        conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager
+    ) -> list[IfElseChangeViz]:
         steps = []
 
         for condition in conditions:
-            if isinstance(condition, ElseConditionObj):
-                steps.append(
-                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
-                )
+            if not isinstance(condition, ConditionObj):
+                raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
-            elif isinstance(condition, IfConditionObj) or isinstance(condition, ElifConditionObj):
+            if type(condition) in (IfConditionObj, ElifConditionObj):
                 for expression in condition.expressions:
                     steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=expression))
 
-                steps.append(
-                    IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result))
-                )
-            else:
-                raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
+            # 결과 처리 : condition의 결과 추가
+            steps.append(IfElseChangeViz(id=condition.id, depth=viz_manager.get_depth(), expr=str(condition.result)))
 
             if steps[-1].expr == "True":
                 return steps
@@ -55,6 +48,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_viz(condition, condition_type):
-        expr = condition.expressions[0] if condition_type != "else" else ""
-        return ConditionViz(id=condition.id, expr=expr, type=condition_type)
+    def _create_condition_viz(condition: ConditionObj) -> ConditionViz:
+        expr = condition.expressions[0] if condition.type != "else" else ""
+        return ConditionViz(id=condition.id, expr=expr, type=condition.type)

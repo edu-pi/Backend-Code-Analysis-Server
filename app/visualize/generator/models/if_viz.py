@@ -11,7 +11,7 @@ class ConditionViz:
 @dataclass(frozen=True)
 class IfElseDefineViz:
     depth: int
-    conditions: list[ConditionViz]
+    conditions: tuple[ConditionViz, ...]
     type: str = "ifElseDefine"
 
 
