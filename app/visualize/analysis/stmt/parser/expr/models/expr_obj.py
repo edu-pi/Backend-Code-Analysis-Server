@@ -2,12 +2,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
+from app.visualize.analysis.stmt.parser.expr.models.slice_expression import SliceExpression
 
 
 @dataclass(frozen=True)
 class ExprObj:
     value: Any
-    expressions: tuple[str, ...]
+    expressions: tuple
     type: str
 
 
@@ -54,3 +55,17 @@ class RangeObj(ExprObj):
 class PrintObj(ExprObj):
     value: str
     type: str = field(default="print", init=False)
+
+
+@dataclass(frozen=True)
+class SubscriptObj(ExprObj):
+    value: Any
+    expressions = tuple[str, ...]
+    type: str = field(default="subscript", init=False)
+
+
+@dataclass(frozen=True)
+class SliceObj(ExprObj):
+    value: slice
+    expressions = tuple[SliceExpression, ...]
+    type: str = field(default="slice", init=False)
