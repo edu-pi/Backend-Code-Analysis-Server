@@ -1,5 +1,7 @@
 import ast
 
+from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
+from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
@@ -31,6 +33,14 @@ class ExprTraveler:
         elif isinstance(node, ast.Compare):
             compare_obj = ExprTraveler._compare_travel(node, elem_container)
             return compare_obj
+
+        elif isinstance(node, ast.Subscript):
+            subscript_obj = ExprTraveler._subscript_travel(node, elem_container)
+            return subscript_obj
+
+        elif isinstance(node, ast.Slice):
+            slice_obj = ExprTraveler._slice_travel(node, elem_container)
+            return slice_obj
 
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -105,3 +115,19 @@ class ExprTraveler:
 
         else:
             raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
+
+    @staticmethod
+    def _subscript_travel(node: ast.Subscript, elem_container: ElementContainer):
+        target_obj = ExprTraveler.travel(node.value, elem_container)
+        slice_obj = ExprTraveler.travel(node.slice, elem_container)
+
+        subscript_obj = SubscriptExpr.parse(target_obj, slice_obj)
+        return subscript_obj
+
+    @staticmethod
+    def _slice_travel(node: ast.Slice, elem_container: ElementContainer):
+        lower = ExprTraveler.travel(node.lower, elem_container) if node.lower else None
+        upper = ExprTraveler.travel(node.upper, elem_container) if node.upper else None
+        step = ExprTraveler.travel(node.step, elem_container) if node.step else None
+
+        return SliceExpr.parse(lower, upper, step)
