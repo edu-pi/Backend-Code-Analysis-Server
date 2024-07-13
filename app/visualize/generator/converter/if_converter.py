@@ -51,3 +51,28 @@ class IfConverter:
     def _create_condition_viz(condition: ConditionObj) -> ConditionViz:
         expr = condition.expressions[0] if condition.type != "else" else ""
         return ConditionViz(id=condition.id, expr=expr, type=condition.type)
+    def _create_condition_evaluation_steps(condition, viz_manager):
+        # 중간 과정 생성 - 10 + 20 > 30, 30 > 30
+        highlights = ExprHighlight.get_highlight_indexes(condition.expressions)
+
+        return [
+            IfElseChangeViz(
+                id=condition.id,
+                depth=viz_manager.get_depth(),
+                expr=expression,
+                highlights=highlights[idx],
+            )
+            for idx, expression in enumerate(condition.expressions)
+        ]
+
+    @staticmethod
+    def _create_condition_result(condition, viz_manager):
+        # 결과 처리 : condition의 결과 추가
+        return [
+            IfElseChangeViz(
+                id=condition.id,
+                depth=viz_manager.get_depth(),
+                expr=str(condition.result),
+                highlights=list(range(len(str(condition.result)))),
+            )
+        ]

@@ -20,4 +20,5 @@ class IfElseChangeViz:
     id: int
     depth: int
     expr: str
+    highlights: []
     type: str = "ifElseChange"
