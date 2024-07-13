@@ -48,9 +48,6 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_viz(condition: ConditionObj) -> ConditionViz:
-        expr = condition.expressions[0] if condition.type != "else" else ""
-        return ConditionViz(id=condition.id, expr=expr, type=condition.type)
     def _create_condition_evaluation_steps(condition, viz_manager):
         # 중간 과정 생성 - 10 + 20 > 30, 30 > 30
         highlights = ExprHighlight.get_highlight_indexes(condition.expressions)

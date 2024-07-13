@@ -47,7 +47,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
     ],
 )
 def test_get_header_define_viz(conditions: tuple[ConditionObj, ...], expected):
-    actual = IfConverter.get_header_define_viz(conditions, VisualizationManager())
+    actual = IfConverter.convert_to_if_else_define_viz(conditions, VisualizationManager())
     assert actual.conditions == expected
 
 
@@ -73,7 +73,7 @@ def test_get_header_define_viz(conditions: tuple[ConditionObj, ...], expected):
     ],
 )
 def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected, mock_viz_manager_with_custom_depth):
-    actual = IfConverter.get_header_change_steps(conditions, mock_viz_manager_with_custom_depth(1))
+    actual = IfConverter.convert_to_if_else_change_viz(conditions, mock_viz_manager_with_custom_depth(1))
     assert actual == expected
 
 
@@ -119,4 +119,4 @@ def test_get_header_change_steps(conditions: tuple[ConditionObj, ...], expected,
     ],
 )
 def test__create_condition_viz(condition: ConditionObj, condition_type, expected):
-    assert IfConverter._create_condition_viz(condition) == expected
+    assert IfConverter._create__if_else_define_viz(condition) == expected
