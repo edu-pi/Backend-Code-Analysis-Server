@@ -15,10 +15,10 @@ def elem_container():
 
 
 @pytest.fixture
-def set_element_return_value(elem_manager):
+def set_element_return_value(elem_container):
     def _set_element_return_value(value):
-        elem_manager.get_element.return_value = value
-        return elem_manager
+        elem_container.get_element.return_value = value
+        return elem_container
 
     return _set_element_return_value
 

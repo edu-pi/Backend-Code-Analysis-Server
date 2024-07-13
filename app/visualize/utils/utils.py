@@ -24,7 +24,7 @@ def get_var_type(var_value, obj_type: str):
     if obj_type in ("binop", "constant"):
         return "variable"
 
-    elif obj_type == "name":
+    elif obj_type == "name" or obj_type == "subscript":
         if isinstance(var_value, list):
             return "list"
 
