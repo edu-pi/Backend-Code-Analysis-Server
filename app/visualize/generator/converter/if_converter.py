@@ -52,9 +52,14 @@ class IfConverter:
         return steps
 
     @staticmethod
-    def _create_condition_evaluation_steps(condition, viz_manager):
+    def _create_condition_evaluation_steps(
+        condition: ConditionObj, viz_manager: VisualizationManager
+    ) -> list[IfElseChangeViz]:
         # 중간 과정 생성 - 10 + 20 > 30, 30 > 30
         highlights = ExprHighlight.get_highlight_indexes(condition.expressions)
+
+        if condition.expressions[0] == "True" or condition.expressions[0] == "False":
+            return []
 
         return [
             IfElseChangeViz(
@@ -67,7 +72,7 @@ class IfConverter:
         ]
 
     @staticmethod
-    def _create_condition_result(condition, viz_manager):
+    def _create_condition_result(condition: ConditionObj, viz_manager: VisualizationManager) -> list[IfElseChangeViz]:
         # 결과 처리 : condition의 결과 추가
         return [
             IfElseChangeViz(
