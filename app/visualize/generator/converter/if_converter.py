@@ -18,11 +18,10 @@ class IfConverter:
         if_header_conditions = []
 
         for condition in conditions:
-            if isinstance(condition, ConditionObj):
-                if_header_conditions.append(IfConverter._create__if_else_define_viz(condition))
-
-            else:
+            if not isinstance(condition, ConditionObj):
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
+
+            if_header_conditions.append(IfConverter._create__if_else_define_viz(condition))
 
         return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
 
