@@ -69,3 +69,10 @@ class SliceObj(ExprObj):
     value: slice
     expressions = tuple[SliceExpression, ...]
     type: str = field(default="slice", init=False)
+
+
+@dataclass(frozen=True)
+class AttributeObj(ExprObj):
+    value: Any
+    expressions: tuple[str, ...]
+    type: str = field(default="attribute", init=False)
