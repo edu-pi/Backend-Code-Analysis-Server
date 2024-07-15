@@ -120,7 +120,8 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
     ],
 )
 def test__create_condition_viz(condition: ConditionObj, condition_type, expected):
-    assert IfConverter._create__if_else_define_viz(condition) == expected
+    actual = IfConverter._create__if_else_define_viz(condition)
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
