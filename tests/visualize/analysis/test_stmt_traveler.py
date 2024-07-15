@@ -26,6 +26,7 @@ from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 )
 def test_travel(code: str, called_func: str, create_ast, elem_container):
     stmt_node = create_ast(code)
+
     with patch.object(StmtTraveler, called_func) as mock_travel:
         StmtTraveler.travel(stmt_node, elem_container)
         mock_travel.assert_called_once()
