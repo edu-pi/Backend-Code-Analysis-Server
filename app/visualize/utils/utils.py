@@ -25,14 +25,22 @@ def get_var_type(var_value, obj_type: str):
         return "variable"
 
     elif obj_type == "name" or obj_type == "subscript":
-        if isinstance(var_value, list):
-            return "list"
-
-        else:
-            return "variable"
+        return check_list(var_value)
 
     elif obj_type == "list":
         return "list"
 
     else:
         return obj_type
+
+
+def check_list(var_value):
+    if isinstance(var_value, list) or is_list(var_value):
+        return "list"
+
+    else:
+        return "variable"
+
+
+def is_list(var_value):
+    return var_value.startswith("[") and var_value.endswith("]")
