@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
 class FlowControlViz:
-    id: str
+    id: int
     depth: int
     expr: str
     highlights: []

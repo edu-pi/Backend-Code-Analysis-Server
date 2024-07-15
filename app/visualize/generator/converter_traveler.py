@@ -3,9 +3,9 @@ from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
+from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.converter.if_converter import IfConverter
-from app.visualize.generator.models.flow_control_viz import FlowControlViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -29,7 +29,7 @@ class ConverterTraveler:
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
 
             elif analysis_obj.type == "flowControl":
-                viz_objs.append(ConverterTraveler._flow_control_convert(analysis_obj, viz_manager))
+                viz_objs.append(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -86,10 +86,12 @@ class ConverterTraveler:
         return ExprConverter.convert(expr_stmt_obj, viz_manager)
 
     @staticmethod
-    def _flow_control_convert(flow_control_obj, viz_manager: VisualizationManager):
-        return FlowControlViz(
-            id=flow_control_obj.id,
-            depth=viz_manager.get_depth(),
-            expr=flow_control_obj.expr,
-            highlights=list(range(len(flow_control_obj.expr))),
-        )
+    def _convert_to_flow_control_viz(flow_control_obj, viz_manager: VisualizationManager):
+        if flow_control_obj.expr == "pass":
+            return FlowControlConverter.convert_to_pass(flow_control_obj, viz_manager)
+
+        elif flow_control_obj.expr == "continue":
+            return FlowControlConverter.convert_to_continue(flow_control_obj, viz_manager)
+
+        elif flow_control_obj.expr == "break":
+            return FlowControlConverter.convert_to_break(flow_control_obj, viz_manager)
