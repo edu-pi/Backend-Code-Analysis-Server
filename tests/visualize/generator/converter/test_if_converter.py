@@ -55,6 +55,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 )
 def test_convert_to_if_else_define_viz(conditions: tuple[ConditionObj, ...], expected):
     actual = IfConverter.convert_to_if_else_define_viz(conditions, VisualizationManager())
+
     assert actual.conditions == expected
 
 
@@ -119,7 +120,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
         ),
     ],
 )
-def test__create_condition_viz(condition: ConditionObj, condition_type, expected):
+def test__create__if_else_define_viz(condition: ConditionObj, condition_type, expected):
     actual = IfConverter._create__if_else_define_viz(condition)
     assert actual == expected
 
@@ -215,4 +216,5 @@ def test__create_condition_evaluation_steps(condition, highlights, expected, moc
 )
 def test__create_condition_result(condition, expected, mock_viz_manager_with_custom_depth):
     actual = IfConverter._create_condition_result(condition, mock_viz_manager_with_custom_depth(1))
+
     assert actual == expected

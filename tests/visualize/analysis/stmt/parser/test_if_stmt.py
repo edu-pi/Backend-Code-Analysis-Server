@@ -1,5 +1,4 @@
-import ast
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -30,14 +29,15 @@ from app.visualize.container.element_container import ElementContainer
     ],
 )
 def test_parse_if_condition(
-    input_code, expected, travel_return_value, evaluate_test_value_return, create_ast, elem_manager
+    mocker, input_code, expected, travel_return_value, evaluate_test_value_return, create_ast, elem_manager
 ):
     test_node = create_ast(input_code).value
-    with (
-        patch.object(ExprTraveler, "travel", return_value=travel_return_value),
-        patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_value_return),
-    ):
-        assert IfStmt.parse_if_condition(test_node, elem_manager) == expected
+    mocker.patch.object(ExprTraveler, "travel", return_value=travel_return_value),
+    mocker.patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_value_return),
+
+    actual = IfStmt.parse_if_condition(test_node, elem_manager)
+
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -60,14 +60,15 @@ def test_parse_if_condition(
     ],
 )
 def test_parse_elif_condition(
-    input_code, expected, travel_return_value, evaluate_test_return_value, create_ast, elem_container
+    mocker, input_code, expected, travel_return_value, evaluate_test_return_value, create_ast, elem_container
 ):
     test_node = create_ast(input_code).value
-    with (
-        patch.object(ExprTraveler, "travel", return_value=travel_return_value),
-        patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_return_value),
-    ):
-        assert IfStmt.parse_elif_condition(test_node, elem_container) == expected
+    mocker.patch.object(ExprTraveler, "travel", return_value=travel_return_value)
+    mocker.patch.object(IfStmt, "_evaluate_test_value", return_value=evaluate_test_return_value)
+
+    actual = IfStmt.parse_elif_condition(test_node, elem_container)
+
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -88,7 +89,9 @@ def test_parse_elif_condition(
 def test_parse_if_condition(input_code, expected, create_ast):
     else_body_node = create_ast(input_code).value
 
-    assert IfStmt.parse_else_condition(else_body_node, True) == expected
+    actual = IfStmt.parse_else_condition(else_body_node, True)
+
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -121,4 +124,6 @@ def test__evaluate_test_value(input_code: str, expected, create_ast):
     elem_manager = MagicMock(spec=ElementContainer)
     elem_manager.get_element_dict.return_value = {"a": 10, "b": 12}
 
-    assert IfStmt._evaluate_test_value(test_node, elem_manager) == expected
+    actual = IfStmt._evaluate_test_value(test_node, elem_manager)
+
+    assert actual == expected
