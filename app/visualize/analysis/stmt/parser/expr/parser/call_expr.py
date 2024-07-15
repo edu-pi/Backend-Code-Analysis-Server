@@ -29,7 +29,7 @@ class CallExpr:
             return range_obj
 
         else:
-            raise TypeError(f"[CallParser]: {func_name} is not defined.")
+            raise NotImplementedError(f"[CallParser]: {func_name} 은 아직 지원하지 않습니다.")
 
     @staticmethod
     def _attribute_call_parse(attr_obj: AttributeObj, args: list[ExprObj], keyword_arg_dict: dict):
@@ -37,3 +37,6 @@ class CallExpr:
         if attr_obj.type == "append":
             append_obj = AppendExpr.parse(attr_obj, args, keyword_arg_dict)
             return append_obj
+
+        else:
+            raise NotImplementedError(f"[CallParser]: {attr_obj.type} 은 아직 지원하지 않습니다.")
