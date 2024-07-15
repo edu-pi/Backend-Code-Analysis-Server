@@ -3,27 +3,27 @@ import pytest
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj, ConstantObj, AttributeObj, ExprObj, ListObj
 from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
 
+target_list = [1, 2, 3, 4, 5]
+
 
 @pytest.mark.parametrize(
-    "target_obj, attr_name, arg_objs, expected",
+    "target_obj, attr_name, expected",
     [
         pytest.param(
-            NameObj(value=[1, 2, 3, 4, 5], expressions=("a", "[1, 2, 3, 4, 5]")),
+            NameObj(value=target_list, expressions=("a", "[1, 2, 3, 4, 5]")),
             "append",
-            [ConstantObj(value=10, expressions=("10",))],
-            AttributeObj(value=[1, 2, 3, 4, 5, 10], expressions=("[1, 2, 3, 4, 5]", "[1, 2, 3, 4, 5, 10]")),
+            AttributeObj(value=getattr(target_list, "append"), expressions=("a", "[1, 2, 3, 4, 5]"), type="append"),
             id="a.append(10): success case",
         ),
         pytest.param(
-            ListObj(value=[1, 2, 3, 4, 5], expressions=("[1, 2, 3, 4, 5]",)),
+            ListObj(value=target_list, expressions=("[1, 2, 3, 4, 5]",)),
             "append",
-            [ConstantObj(value=10, expressions=("10",))],
-            AttributeObj(value=[1, 2, 3, 4, 5, 10], expressions=("[1, 2, 3, 4, 5]", "[1, 2, 3, 4, 5, 10]")),
+            AttributeObj(value=getattr(target_list, "append"), expressions=("[1, 2, 3, 4, 5]",), type="append"),
             id="[1, 2, 3, 4, 5].append(10): success case",
         ),
     ],
 )
-def test_parse_append_case(target_obj: ExprObj, attr_name: str, arg_objs: list[ExprObj, ...], expected):
-    result = AttributeExpr.parse(target_obj, attr_name, arg_objs)
+def test_parse_append_case(target_obj: ExprObj, attr_name: str, expected):
+    result = AttributeExpr.parse(target_obj, attr_name)
 
     assert result == expected

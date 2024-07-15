@@ -1,5 +1,7 @@
 import ast
 
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
 from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
 from app.visualize.container.element_container import ElementContainer
@@ -14,7 +16,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 class ExprTraveler:
 
     @staticmethod
-    def travel(node: ast, elem_container: ElementContainer):
+    def travel(node: ast, elem_container: ElementContainer) -> ExprObj:
         if isinstance(node, ast.BinOp):
             return ExprTraveler._binop_travel(node, elem_container)
 
@@ -41,6 +43,10 @@ class ExprTraveler:
         elif isinstance(node, ast.Slice):
             slice_obj = ExprTraveler._slice_travel(node, elem_container)
             return slice_obj
+
+        elif isinstance(node, ast.Attribute):
+            attribute_obj = ExprTraveler._attribute_travel(node, elem_container)
+            return attribute_obj
 
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -72,7 +78,7 @@ class ExprTraveler:
 
     @staticmethod
     def _call_travel(node: ast.Call, elem_container: ElementContainer):
-        func_name = ExprTraveler._get_func_name(node.func)
+        func_name = ExprTraveler._get_func_name(node.func, elem_container)
         args = [ExprTraveler.travel(arg, elem_container) for arg in node.args]
         keyword_dict = {
             keyword.arg: ExprTraveler.travel(keyword.value, elem_container).value for keyword in node.keywords
@@ -106,12 +112,12 @@ class ExprTraveler:
             raise TypeError(f"[ExprTraveler - compare parsing 중  {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
-    def _get_func_name(node: ast):
+    def _get_func_name(node: ast, elem_container: ElementContainer):
         if isinstance(node, ast.Name):
             return node.id
 
         elif isinstance(node, ast.Attribute):
-            raise NotImplementedError(f"[call_travel] {type(node)}정의되지 않았습니다.")
+            return ExprTraveler._attribute_travel(node, elem_container)
 
         else:
             raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
@@ -131,3 +137,9 @@ class ExprTraveler:
         step = ExprTraveler.travel(node.step, elem_container) if node.step else None
 
         return SliceExpr.parse(lower, upper, step)
+
+    @staticmethod
+    def _attribute_travel(node: ast.Attribute, elem_container: ElementContainer):
+        target_obj = ExprTraveler.travel(node.value, elem_container)
+        attr_name = node.attr
+        return AttributeExpr.parse(target_obj, attr_name)

@@ -4,20 +4,18 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, Att
 class AttributeExpr:
 
     @staticmethod
-    def parse(target_obj: ExprObj, attr_name: str, arg_objs: list[ExprObj, ...]):
-        value = AttributeExpr._get_value(target_obj, attr_name, arg_objs)
-        expressions = AttributeExpr._create_expressions(target_obj, value)
+    def parse(target_obj: ExprObj, attr_name: str):
+        value = AttributeExpr._get_value(target_obj, attr_name)
+        expressions = AttributeExpr._create_expressions(target_obj)
 
-        return AttributeObj(value=value, expressions=expressions)
+        return AttributeObj(value=value, expressions=expressions, type=attr_name)
 
     @staticmethod
-    def _get_value(target_obj: ExprObj, attr_name: str, arg_objs: list[ExprObj, ...]):
+    def _get_value(target_obj: ExprObj, attr_name: str):
         target_value = target_obj.value
 
-        getattr(target_value, attr_name)(*[arg.value for arg in arg_objs])
-
-        return target_value
+        return getattr(target_value, attr_name)
 
     @staticmethod
-    def _create_expressions(target_obj: ExprObj, value):
-        return tuple([target_obj.expressions[-1], str(value)])
+    def _create_expressions(target_obj: ExprObj):
+        return target_obj.expressions
