@@ -59,9 +59,9 @@ class ConverterTraveler:
     def _if_convert(if_stmt: IfStmtObj, viz_manager: VisualizationManager):
         steps = list()
         # 1. if-else 구조 define
-        steps.append(IfConverter.get_header_define_viz(if_stmt.conditions, viz_manager))
+        steps.append(IfConverter.convert_to_if_else_define_viz(if_stmt.conditions, viz_manager))
         # 2. if header
-        steps.extend(IfConverter.get_header_change_steps(if_stmt.conditions, viz_manager))
+        steps.extend(IfConverter.convert_to_if_else_change_viz(if_stmt.conditions, viz_manager))
         # 3. if header 결과 값이 true인 if 문의 body obj의 viz 생성
         if not if_stmt.body:
             raise ValueError("[ConverterTraveler] if_stmt.body is None")
