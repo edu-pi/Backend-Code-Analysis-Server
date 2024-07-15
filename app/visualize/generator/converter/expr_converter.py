@@ -3,7 +3,6 @@ from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.append_viz import AppendViz
 from app.visualize.generator.models.expr_viz import ExprViz
 from app.visualize.generator.models.print_viz import PrintViz
-from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.models.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
 from app.visualize.utils import utils
@@ -34,17 +33,11 @@ class ExprConverter:
 
     @staticmethod
     def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, var_type, call_id, depth):
-        if var_type == "list":
-            highlights = ListHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
-        else:
-            highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
-
         expr_vizs = [
             ExprViz(
                 id=call_id,
                 depth=depth,
                 expr=expr_stmt_obj.expressions[idx],
-                highlights=highlights[idx],
                 type=var_type,
             )
             for idx in range(len(expr_stmt_obj.expressions))
