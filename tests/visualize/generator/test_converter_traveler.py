@@ -3,7 +3,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app.visualize.analysis.stmt.models.pass_stmt_obj import PassStmtObj
 from app.visualize.code_visualizer import CodeVisualizer
+from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.converter_traveler import ConverterTraveler
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -43,3 +45,13 @@ def test__get_if_body_viz_list(get_if_stmt_obj):
 
         # travel 함수가 호출 되었는지 확인
         mock_travel.assert_called_once_with(if_stmt_obj.body.body_steps, viz_manager)
+
+
+def test__convert_to_flow_control_viz_pass_호출(mock_viz_manager_with_custom_depth):
+    node = PassStmtObj(id=1, expr="pass")
+    viz_manager = mock_viz_manager_with_custom_depth(1)
+
+    with (patch.object(FlowControlConverter, "convert_to_pass") as mock_convert_to_pass,):
+        ConverterTraveler._convert_to_flow_control_viz(node, viz_manager)
+
+        mock_convert_to_pass.assert_called_once_with(node, viz_manager)

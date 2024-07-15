@@ -1,5 +1,5 @@
 import ast
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -7,13 +7,29 @@ from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
-    IfConditionObj,
     ElifConditionObj,
     ElseConditionObj,
+    IfConditionObj,
     ConditionObj,
 )
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
+
+
+@pytest.mark.parametrize(
+    "code, called_func",
+    [
+        pytest.param("a=b", "_assign_travel", id="assign"),
+        pytest.param("print('hello')", "_expr_travel", id="expr"),
+        pytest.param("pass", "_pass_travel", id="pass"),
+    ],
+)
+def test_travel(code: str, called_func: str, create_ast, elem_container):
+    stmt_node = create_ast(code)
+
+    with patch.object(StmtTraveler, called_func) as mock_travel:
+        StmtTraveler.travel(stmt_node, elem_container)
+        mock_travel.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -188,7 +204,6 @@ def test_parse_if_orelse_elif문_분기_실행(node: ast.If, conditions, elem_co
     ],
 )
 def test_parse_if_orelse_else문_분기_실행(node: ast.If, elem_container):
-
     with patch.object(StmtTraveler, "_parse_else", return_value=None) as mock_if_travel:
         StmtTraveler._parse_if_branches([], [], elem_container, node.orelse)
 
