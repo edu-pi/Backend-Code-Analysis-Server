@@ -1,5 +1,8 @@
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, RangeObj, PrintObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, RangeObj, PrintObj, AttributeObj
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.append_expr import AppendExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 
 from app.visualize.utils import utils
 
@@ -7,100 +10,30 @@ from app.visualize.utils import utils
 class CallExpr:
 
     @staticmethod
-    def parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
+    def parse(func_name: str | AttributeObj, args: list[ExprObj], keyword_arg_dict: dict):
 
+        if isinstance(func_name, str):
+            return CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict)
+
+        elif isinstance(func_name, AttributeObj):
+            return CallExpr._attribute_call_parse(func_name, args, keyword_arg_dict)
+
+    @staticmethod
+    def _built_in_call_parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
         if func_name == "print":
-            value, expressions = CallExpr._print_parse(args, keyword_arg_dict)
-            return PrintObj(value=value, expressions=expressions)
+            print_obj = PrintExpr.parse(args, keyword_arg_dict)
+            return print_obj
 
         elif func_name == "range":
-            value, expressions = CallExpr._range_parse(args)
-
-            return RangeObj(value=value, expressions=expressions)
+            range_obj = RangeExpr.parse(args)
+            return range_obj
 
         else:
             raise TypeError(f"[CallParser]: {func_name} is not defined.")
 
-    # ExprObj(type="print", value="abc 3\n", expressions=["abc a + 1\n", "abc 2 + 1\n", "abc 3\n"])
     @staticmethod
-    def _print_parse(args: list[ExprObj], keyword_arg_dict: dict) -> tuple:
-        default_keyword = {"sep": " ", "end": "\n"}
-        CallExpr._apply_keywords(default_keyword, keyword_arg_dict)
+    def _attribute_call_parse(attr_obj: AttributeObj, args: list[ExprObj], keyword_arg_dict: dict):
 
-        arg_expressions = [arg.expressions for arg in args]
-        transposed_expressions = utils.transpose_with_last_fill(arg_expressions)
-
-        print_expressions = []
-
-        for expressions in transposed_expressions:
-            str_expression = default_keyword["sep"].join(expressions)
-            print_expressions.append(str_expression)
-
-        value = print_expressions[-1] + default_keyword["end"]
-
-        return value, tuple(print_expressions)
-
-    # print 함수의 키워드 파싱 : end, sep만 지원 Todo. file, flush
-    @staticmethod
-    def _apply_keywords(default_keyword: dict, keyword_arg_dict: dict):
-        for key, value in keyword_arg_dict.items():
-            default_keyword[key] = keyword_arg_dict[key]
-        return default_keyword
-
-    @staticmethod
-    def _range_parse(args: list[ExprObj]) -> tuple:
-        # ex ) range(a, 10, 2)
-        # [
-        #   ExprObj(type:name, value:3, expressions:[a, 3]},
-        #   ExprObj(type:constant, value:10, expressions:[10]),
-        #   ExprObj(type:constant, value:2, expressions:[2])
-        # ]
-        #  ->  [{start: a, end: 10, step: 2},{start: 3, end: 10, step: 2}]를 반환
-
-        # range_iter를 만들어주는 함수
-        range_iter = CallExpr._create_range_iter([arg.value for arg in args])
-
-        # utils의 transpose_with_last_fill을 이용하여 값 배열 생성
-        # ['a', '10', '2'], ['3', '10', '2']
-        transposed_expressions = utils.transpose_with_last_fill([arg.expressions for arg in args])
-
-        # 배열을 range_obj로 만들기
-        range_expressions = [CallExpr._create_range_expression(range_list) for range_list in transposed_expressions]
-
-        return tuple(range_iter), tuple(range_expressions)
-
-    @staticmethod
-    def _create_range_expression(range_list: list):
-        if len(range_list) == 1:
-            return RangeExpression(start="0", end=range_list[0], step="1")
-
-        elif len(range_list) == 2:
-            return RangeExpression(start=range_list[0], end=range_list[1], step="1")
-
-        elif len(range_list) == 3:
-            return RangeExpression(start=range_list[0], end=range_list[1], step=range_list[2])
-
-        else:
-            raise TypeError(f"[CallParser]: {range_list} 인자의 개수가 잘못되었습니다.")
-
-    @staticmethod
-    def _create_range_iter(arg_value_list: list):
-        start = 0
-        step = 1
-
-        if len(arg_value_list) == 1:
-            end = arg_value_list[0]
-
-        elif len(arg_value_list) == 2:
-            start = arg_value_list[0]
-            end = arg_value_list[1]
-
-        elif len(arg_value_list) == 3:
-            start = arg_value_list[0]
-            end = arg_value_list[1]
-            step = arg_value_list[2]
-
-        else:
-            raise TypeError(f"[CallParser]: {arg_value_list} 인자의 개수가 잘못되었습니다.")
-
-        return range(int(start), int(end), int(step))
+        if attr_obj.type == "append":
+            append_obj = AppendExpr.parse(attr_obj, args, keyword_arg_dict)
+            return append_obj
