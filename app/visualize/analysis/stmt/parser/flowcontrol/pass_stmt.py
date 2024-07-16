@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.models.pass_stmt_obj import PassStmtObj
+from app.visualize.analysis.stmt.models.flowcontrolobj.pass_stmt_obj import PassStmtObj
 
 
 class PassStmt:
