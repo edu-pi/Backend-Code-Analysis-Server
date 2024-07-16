@@ -2,8 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.models.pass_stmt_obj import PassStmtObj
-from app.visualize.analysis.stmt.parser.pass_stmt import PassStmt
+from app.visualize.analysis.stmt.models.flowcontrolobj.pass_stmt_obj import PassStmtObj
+from app.visualize.analysis.stmt.parser.flowcontrol.pass_stmt import PassStmt
 
 
 @pytest.mark.parametrize(
