@@ -1,5 +1,7 @@
 import ast
 
+from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
@@ -34,3 +36,14 @@ class ForStmt:
 
         else:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
+
+    @staticmethod
+    def contains_break(body_steps):
+        for stmt in body_steps:
+            if isinstance(stmt, IfStmtObj):
+                return any(isinstance(step, BreakStmtObj) for step in stmt.body.body_steps)
+
+            elif isinstance(stmt, BreakStmtObj):
+                return True
+
+        return False

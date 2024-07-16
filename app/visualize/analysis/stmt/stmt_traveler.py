@@ -44,6 +44,7 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
+        break_encountered = False
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
@@ -52,6 +53,11 @@ class StmtTraveler:
             body_steps = []
             for body in node.body:
                 body_steps.append(StmtTraveler.travel(body, elem_manager))
+
+            # check there is a break in the for loop body
+            if ForStmt.contains_break(body_steps):
+                # TODO: break 이후의 로직 제외
+                pass
 
             body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
 
