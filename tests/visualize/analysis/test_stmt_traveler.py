@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
@@ -13,6 +14,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
+from app.visualize.analysis.stmt.parser.flowcontrol.break_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 
@@ -22,7 +24,8 @@ from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
     [
         pytest.param("a=b", "_assign_travel", id="assign"),
         pytest.param("print('hello')", "_expr_travel", id="expr"),
-        pytest.param("pass", "_pass_travel", id="pass"),
+        pytest.param("pass", "_flow_control_travel", id="pass"),
+        pytest.param("break", "_flow_control_travel", id="break"),
     ],
 )
 def test_travel(mocker, code: str, called_func: str, create_ast, elem_container):
@@ -218,3 +221,41 @@ def test_parse_if_orelse_예외발생(target, elem_container):
     # 예외가 터지면 통과, 안터지면 실패
     with pytest.raises(TypeError):
         StmtTraveler._parse_if_branches([], [], elem_container, target)
+
+        assert False
+
+
+@pytest.mark.parametrize(
+    "node, called_func",
+    [
+        pytest.param(ast.Pass(), "_pass_travel", id="_pass_travel 호출 success"),
+        pytest.param(ast.Break(), "_break_travel", id="_break_travel 호출 success"),
+    ],
+)
+def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue, called_func):
+    mock_func = mocker.patch.object(StmtTraveler, called_func)
+
+    StmtTraveler._flow_control_travel(node)
+
+    mock_func.assert_called_once_with(node)
+
+
+@pytest.mark.parametrize(
+    "node",
+    [
+        pytest.param(ast.If(), id="_flow_control_travel 호출 fail"),
+        pytest.param(ast.Assign(), id="_flow_control_travel 호출 fail"),
+    ],
+)
+def test__flow_control_travel(mocker, node: ast):
+    with pytest.raises(TypeError):
+        StmtTraveler._flow_control_travel(node)
+
+
+def test__break_travel(mocker):
+    node = ast.Break(lineno=1)
+    mock_break_stmt = mocker.patch.object(BreakStmt, "parse", return_value=BreakStmtObj(id=1, expr="break"))
+
+    StmtTraveler._break_travel(node)
+
+    mock_break_stmt.assert_called_once_with(node)

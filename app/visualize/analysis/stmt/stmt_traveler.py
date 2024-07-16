@@ -146,6 +146,9 @@ class StmtTraveler:
             # TODO: ContinueStmt.parse()
             pass
 
+        else:
+            raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
+
     @staticmethod
     def _pass_travel(node: ast.Pass):
         return PassStmt.parse(node)
