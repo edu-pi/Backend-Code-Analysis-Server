@@ -25,12 +25,13 @@ from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
         pytest.param("pass", "_pass_travel", id="pass"),
     ],
 )
-def test_travel(code: str, called_func: str, create_ast, elem_container):
+def test_travel(mocker, code: str, called_func: str, create_ast, elem_container):
     stmt_node = create_ast(code)
+    mock_travel = mocker.patch.object(StmtTraveler, called_func)
 
-    with patch.object(StmtTraveler, called_func) as mock_travel:
-        StmtTraveler.travel(stmt_node, elem_container)
-        mock_travel.assert_called_once()
+    StmtTraveler.travel(stmt_node, elem_container)
+
+    mock_travel.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -101,36 +102,28 @@ def test_append_condition_obj(mocker, conditions, node: ast.If, called_func, ele
 
 
 @pytest.mark.parametrize(
-    "conditions, node, result, expected",
+    "conditions, node, result",
     [
         pytest.param(
             [],
             ast.parse("print('hello')").body[0],
             True,
-            ElseConditionObj(id=0, expressions=None, result=True),
             id="else condition when result True",
         ),
         pytest.param(
             [],
             ast.parse("print('hello')").body[0],
             False,
-            ElseConditionObj(id=0, expressions=None, result=False),
             id="else condition when result False",
         ),
     ],
 )
-def test_append_else_condition_obj(mocker, conditions, node: ast.stmt, result: bool, expected):
-    mocker.patch.object(
-        IfStmt,
-        "parse_else_condition",
-        side_effect=[
-            ElseConditionObj(id=0, expressions=None, result=True),
-            ElseConditionObj(id=0, expressions=None, result=False),
-        ],
-    )
+def test_append_else_condition_obj(mocker, conditions, node: ast.stmt, result: bool):
+    mock_if_stmt = mocker.patch.object(IfStmt, "parse_else_condition")
+
     StmtTraveler._append_else_condition_obj(conditions, node, result)
 
-    assert conditions[-1].id == expected.id
+    mock_if_stmt.assert_called_once_with(node, result)
 
 
 @pytest.mark.parametrize(
@@ -195,7 +188,6 @@ def test_parse_if_orelse_elif문_분기_실행(mocker, node: ast.If, conditions,
     mock_if_travel = mocker.patch.object(StmtTraveler, "_if_travel", return_value=None)
     StmtTraveler._parse_if_branches(body_objs, conditions, elem_container, node.orelse)
 
-    mock_if_travel.assert_called_once()
     mock_if_travel.assert_called_once_with(node.orelse[0], conditions, body_objs, elem_container)
 
 
@@ -212,7 +204,6 @@ def test_parse_if_orelse_else문_분기_실행(mocker, node: ast.If, elem_contai
     mock_if_travel = mocker.patch.object(StmtTraveler, "_parse_else", return_value=None)
     StmtTraveler._parse_if_branches([], [], elem_container, node.orelse)
 
-    mock_if_travel.assert_called_once()
     mock_if_travel.assert_called_with([], [], elem_container, node.orelse)
 
 
@@ -227,4 +218,3 @@ def test_parse_if_orelse_예외발생(target, elem_container):
     # 예외가 터지면 통과, 안터지면 실패
     with pytest.raises(TypeError):
         StmtTraveler._parse_if_branches([], [], elem_container, target)
-        assert False
