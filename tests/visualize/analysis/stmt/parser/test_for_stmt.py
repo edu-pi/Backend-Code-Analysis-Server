@@ -1,6 +1,13 @@
 import ast
 import pytest
 
+
+from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
+from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 
 
@@ -28,3 +35,108 @@ def test__get_target_name_fail(elem_container, target):
     # 예외가 터지면 통과, 안터지면 실
     with pytest.raises(TypeError, match=r"\[ForParser\]:  .*는 잘못된 타입입니다."):
         ForStmt._get_target_name(target, elem_container)
+
+
+# TODO 함수마다 parser를 추가하는 방향 고민
+@pytest.mark.parametrize(
+    "code, expect",
+    [
+        (
+            """for i in range(3): \n    pass""",
+            ExprObj(
+                type="range",
+                value={"end": "3", "start": "0", "step": "1"},
+                expressions=[{"end": "3", "start": "0", "step": "1"}],
+            ),
+        )
+    ],
+)
+@pytest.mark.skip
+def test_get_condition_obj(create_ast, elem_container, code, expect):
+    # iter 노드를 받아서 range 함수의 파라미터를 반환하는지 테스트
+    iter_node = create_ast(code).iter
+
+    with patch.object(
+        ExprTraveler,
+        "call_travel",
+        return_value=ExprObj(
+            type="range",
+            value={"end": "3", "start": "0", "step": "1"},
+            expressions=[{"end": "3", "start": "0", "step": "1"}],
+        ),
+    ):
+        actual = ForStmt._get_condition_obj(iter_node, elem_container)
+        assert actual == expect
+
+
+@pytest.mark.parametrize(
+    "body_steps",
+    [
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            BreakStmtObj(id=0, expr="break"),
+                        ],
+                    ),
+                ),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            id="for문 안에 break 존재",
+        ),
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                BreakStmtObj(id=0, expr="break"),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            id="for문의 if문안에 break 존재",
+        ),
+    ],
+)
+def test_contains_break_success(body_steps):
+    # stmt list에서 break가 존재하는지 확인
+    actual = ForStmt.contains_break(body_steps)
+
+    assert actual is True
+
+
+@pytest.mark.parametrize(
+    "body_steps",
+    [
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            id="for문 안에 break 미존재",
+        ),
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            id="for문의 if문안에 break 미존재",
+        ),
+    ],
+)
+def test_contains_break_fail(body_steps):
+    # stmt list에서 break가 존재하는지 확인
+    actual = ForStmt.contains_break(body_steps)
+
+    assert actual is False
