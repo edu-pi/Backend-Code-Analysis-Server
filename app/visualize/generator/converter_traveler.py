@@ -87,11 +87,6 @@ class ConverterTraveler:
 
     @staticmethod
     def _convert_to_flow_control_viz(flow_control_obj, viz_manager: VisualizationManager):
-        if flow_control_obj.expr == "pass":
-            return FlowControlConverter.convert_to_pass(flow_control_obj, viz_manager)
+        flow_control_viz = FlowControlConverter.convert(flow_control_obj, viz_manager)
 
-        elif flow_control_obj.expr == "continue":
-            return FlowControlConverter.convert_to_continue(flow_control_obj, viz_manager)
-
-        elif flow_control_obj.expr == "break":
-            return FlowControlConverter.convert_to_break(flow_control_obj, viz_manager)
+        return flow_control_viz

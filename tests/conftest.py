@@ -24,6 +24,14 @@ def set_element_return_value(elem_container):
 
 
 @pytest.fixture
+def viz_manager():
+    viz_mockup = MagicMock(spec=VisualizationManager)
+    viz_mockup.get_depth.return_value = 1
+
+    return viz_mockup
+
+
+@pytest.fixture
 def mock_viz_manager_with_custom_depth():
     def _mock_viz_manager_with_custom_depth(depth):
         viz_mockup = MagicMock(spec=VisualizationManager)
