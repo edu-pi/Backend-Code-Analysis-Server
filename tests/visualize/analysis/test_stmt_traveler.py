@@ -76,33 +76,28 @@ def test_if_travel(mocker, code: str, expect, elem_container):
 
 
 @pytest.mark.parametrize(
-    "conditions, node, expected",
+    "conditions, node, called_func",
     [
         pytest.param(
             [],
             ast.If(test=ast.parse("a>10").body[0].value),
-            IfConditionObj(id=1, expressions=("a>10",), result=False),
+            "parse_if_condition",
             id="conditions is empty",
         ),
         pytest.param(
             [IfConditionObj(id=1, expressions=("a>10",), result=False)],
             ast.If(test=ast.parse("True").body[0].value),
-            ElifConditionObj(id=2, expressions=("a<10",), result=False),
+            "parse_elif_condition",
             id="conditions is not empty",
         ),
     ],
 )
-def test_append_condition_obj(mocker, conditions, node: ast.stmt, expected, elem_container, create_ast):
-    mocker.patch.object(
-        IfStmt, "parse_if_condition", return_value=IfConditionObj(id=1, expressions=("a>10",), result=False)
-    ),
-    mocker.patch.object(
-        IfStmt, "parse_elif_condition", return_value=ElifConditionObj(id=2, expressions=("a<10",), result=False)
-    )
+def test_append_condition_obj(mocker, conditions, node: ast.If, called_func, elem_container, create_ast):
+    mock_func = mocker.patch.object(IfStmt, called_func)
 
     StmtTraveler._append_condition_obj(conditions, elem_container, node)
 
-    assert conditions[-1] == expected
+    mock_func.assert_called_once_with(node.test, elem_container)
 
 
 @pytest.mark.parametrize(

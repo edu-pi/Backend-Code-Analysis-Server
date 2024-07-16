@@ -28,4 +28,3 @@ def test__get_target_name_fail(elem_container, target):
     # 예외가 터지면 통과, 안터지면 실
     with pytest.raises(TypeError, match=r"\[ForParser\]:  .*는 잘못된 타입입니다."):
         ForStmt._get_target_name(target, elem_container)
-        assert False
