@@ -23,4 +23,4 @@ class ListExpr:
         transposed_expression_lists = utils.transpose_with_last_fill(elts_expression_lists)
 
         # [("a + 1", "20"), ("10 + 1", "20"), ("11", "20")] -> ("[a + 1,20]", "[10 + 1,20]", "[11,20]")
-        return tuple(f"[{','.join(map(str, t))}]" for t in transposed_expression_lists)
+        return tuple(f"[{', '.join(map(str, t))}]" for t in transposed_expression_lists)

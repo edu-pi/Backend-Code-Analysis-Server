@@ -2,7 +2,6 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     ConditionObj,
     IfConditionObj,
     ElifConditionObj,
-    ElseConditionObj,
 )
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.if_viz import ConditionViz, IfElseDefineViz, IfElseChangeViz

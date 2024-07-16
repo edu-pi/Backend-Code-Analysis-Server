@@ -58,17 +58,17 @@ def test_get_value(mocker, value):
 @pytest.mark.parametrize(
     "expressions, transposed_expression_lists_result, expected",
     [
-        pytest.param([("10",), ("20",)], [("10", "20")], ("[10,20]",), id="[10, 20]: success case"),
+        pytest.param([("10",), ("20",)], [("10", "20")], ("[10, 20]",), id="[10, 20]: success case"),
         pytest.param(
             [("a", "10"), ("20",), ("30",)],
             [("a", "20", "30"), ("10", "20", "30")],
-            ("[a,20,30]", "[10,20,30]"),
+            ("[a, 20, 30]", "[10, 20, 30]"),
             id="[a, 20, 30]: success case",
         ),
         pytest.param(
             [("a + 1", "10 + 1", "11"), ("20",)],
             [("a + 1", "20"), ("10 + 1", "20"), ("11", "20")],
-            ("[a + 1,20]", "[10 + 1,20]", "[11,20]"),
+            ("[a + 1, 20]", "[10 + 1, 20]", "[11, 20]"),
             id="[a + 1, 20]: success case",
         ),
     ],

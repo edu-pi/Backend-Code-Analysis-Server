@@ -46,8 +46,8 @@ class ListObj(ExprObj):
 
 @dataclass(frozen=True)
 class RangeObj(ExprObj):
-    expressions: tuple[RangeExpression, ...]
     value: tuple
+    expressions: tuple[RangeExpression, ...]
     type: str = field(default="range", init=False)
 
 
@@ -69,3 +69,17 @@ class SliceObj(ExprObj):
     value: slice
     expressions = tuple[SliceExpression, ...]
     type: str = field(default="slice", init=False)
+
+
+@dataclass(frozen=True)
+class AttributeObj(ExprObj):
+    value: Any
+    expressions: tuple[str, ...]
+    type: str
+
+
+@dataclass(frozen=True)
+class AppendObj(ExprObj):
+    value: Any
+    expressions: tuple[str, ...]
+    type: str = field(default="append", init=False)

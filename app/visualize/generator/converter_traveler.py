@@ -40,7 +40,7 @@ class ConverterTraveler:
     def _convert_to_assign_vizs(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         steps = []
         steps.extend(ConverterTraveler._convert_to_expr_vizs(assign_obj.expr_stmt_obj, viz_manager))
-        steps.append(AssignConverter.convert(assign_obj, viz_manager))
+        steps.append(AssignConverter.convert(assign_obj))
 
         return steps
 

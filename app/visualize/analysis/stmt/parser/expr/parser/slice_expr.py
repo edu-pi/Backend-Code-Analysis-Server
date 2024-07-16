@@ -1,6 +1,5 @@
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, SliceObj
 from app.visualize.analysis.stmt.parser.expr.models.slice_expression import SliceExpression
-from app.visualize.utils import utils
 
 
 class SliceExpr:

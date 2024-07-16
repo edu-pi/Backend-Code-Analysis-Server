@@ -6,5 +6,4 @@ class ExprViz:
     id: int
     depth: int
     expr: str
-    highlights: []
     type: str
