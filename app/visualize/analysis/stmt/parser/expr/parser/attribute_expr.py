@@ -14,6 +14,7 @@ class AttributeExpr:
     def _get_value(target_obj: ExprObj, attr_name: str):
         target_value = target_obj.value
 
+        # getattr() 함수를 사용하여 target_value 객체의 attr_name 속성을 가져온다.
         return getattr(target_value, attr_name)
 
     @staticmethod

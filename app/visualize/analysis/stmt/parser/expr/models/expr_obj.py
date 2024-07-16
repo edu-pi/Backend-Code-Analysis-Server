@@ -76,3 +76,10 @@ class AttributeObj(ExprObj):
     value: Any
     expressions: tuple[str, ...]
     type: str
+
+
+@dataclass(frozen=True)
+class AppendObj(ExprObj):
+    value: Any
+    expressions: tuple[str, ...]
+    type: str = field(default="append", init=False)

@@ -92,7 +92,7 @@ class ExprTraveler:
         return ListExpr.parse(elts)
 
     @staticmethod
-    def _compare_travel(node: ast.Compare, elem_container: ElementContainer):
+    def _compare_travel(node: ast, elem_container: ElementContainer):
         if isinstance(node, ast.Compare):
             left = ExprTraveler._compare_travel(node.left, elem_container)
             comparators = tuple(ExprTraveler._compare_travel(comparor, elem_container) for comparor in node.comparators)
