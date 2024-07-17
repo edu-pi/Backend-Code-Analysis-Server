@@ -108,3 +108,130 @@ def test_contains_break_fail(body_steps):
     actual = ForStmt.contains_break(body_steps)
 
     assert actual is False
+
+
+@pytest.mark.parametrize(
+    "body_objs, expected",
+    [
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            BreakStmtObj(id=0, expr="break"),
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            BreakStmtObj(id=0, expr="break"),
+                        ],
+                    ),
+                ),
+            ],
+            id="break가 if문 내부에 존재할 때",
+        ),
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                BreakStmtObj(id=0, expr="break"),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                BreakStmtObj(id=0, expr="break"),
+            ],
+            id="break가 for문 내부에 존재할 때",
+        ),
+        pytest.param(
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            [
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+                IfStmtObj(
+                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
+                    body=BodyObj(
+                        cur_value=0,
+                        body_steps=[
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                            AssignStmtObj(
+                                targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
+                            ),
+                        ],
+                    ),
+                ),
+                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
+            ],
+            id="break가 존재하지 않을 때",
+        ),
+    ],
+)
+def test_get_pre_break_body_steps(body_objs, expected):
+    actual = ForStmt.get_pre_break_body_steps(body_objs)
+
+    assert actual == expected

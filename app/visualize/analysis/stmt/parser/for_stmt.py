@@ -4,7 +4,7 @@ from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import Bre
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
 
 
 class ForStmt:
@@ -38,8 +38,8 @@ class ForStmt:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
 
     @staticmethod
-    def contains_break(body_steps):
-        for stmt in body_steps:
+    def contains_break(body_objs):
+        for stmt in body_objs:
             if isinstance(stmt, IfStmtObj):
                 return any(isinstance(step, BreakStmtObj) for step in stmt.body.body_steps)
 
@@ -47,3 +47,26 @@ class ForStmt:
                 return True
 
         return False
+
+    @staticmethod
+    def get_pre_break_body_steps(body_objs) -> list:
+        result = []
+
+        for stmt_obj in body_objs:
+            # break 발견 후 중단
+            if isinstance(stmt_obj, BreakStmtObj):
+                result.append(stmt_obj)
+                break
+
+            if isinstance(stmt_obj, IfStmtObj):
+                # if문 안에 break 존재할 때
+                if ForStmt.contains_break(stmt_obj.body.body_steps):
+                    # break 이후를 제외한 스텝 생성
+                    new_body = ForStmt.get_pre_break_body_steps(stmt_obj.body.body_steps)
+                    # 새로운 if_stmt 객체 생성 후 삽입
+                    result.append(stmt_obj.create_if_stmt_with_new_body(new_body))
+                    break
+
+            result.append(stmt_obj)
+
+        return result

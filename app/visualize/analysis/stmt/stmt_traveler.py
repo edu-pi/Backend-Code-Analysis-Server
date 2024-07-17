@@ -44,23 +44,19 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
-        break_encountered = False
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
 
-            stmt_objs = StmtTraveler._parse_for_body(node.body, elem_manager)
+            body_steps = StmtTraveler._parse_for_body(node.body, elem_manager)
 
-            # check there is a break in the for loop body
-            if ForStmt.contains_break(stmt_objs):
-                # TODO: break 이후의 로직 제외
-                pass
+            if ForStmt.contains_break(body_steps):
+                body_steps = ForStmt.get_pre_break_body_steps(body_steps)
 
-            body_objs.append(BodyObj(cur_value=i, body_steps=stmt_objs))
+            body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
 
         for_stmt_obj.body_objs = body_objs
-
         return for_stmt_obj
 
     @staticmethod

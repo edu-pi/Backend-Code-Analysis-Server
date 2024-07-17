@@ -31,3 +31,6 @@ class IfStmtObj:
     conditions: tuple[ConditionObj, ...]  # 조건문들의 정보
     body: BodyObj  # 조건문이 true인 If문에서 실행되는 body 로직 정보
     type: str = "if"
+
+    def create_if_stmt_with_new_body(self, body):
+        return IfStmtObj(conditions=self.conditions, body=BodyObj(0, body))
