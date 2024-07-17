@@ -1,6 +1,4 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
-from app.visualize.generator.highlight.expr_highlight import ExprHighlight
-from app.visualize.generator.highlight.list_highlight import ListHighlight
 from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable
 from app.visualize.utils import utils
@@ -14,24 +12,48 @@ class AssignConverter:
 
         return AssignConverter._convert_to_assign_viz(expr_stmt_obj, assign_obj.targets, var_type)
 
-    @staticmethod
-    def _get_highlights(expr_stmt_obj, var_type):
-        if var_type == "variable":
-            return ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
-        elif var_type in ("list", "tuple"):
-            return ListHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
-
+    # Todo 함수 분리
     @staticmethod
     def _convert_to_assign_viz(expr_stmt_obj, targets, var_type):
-        variable_list = [
-            Variable(
-                id=expr_stmt_obj.id,
-                expr=expr_stmt_obj.expressions[-1],
-                name=target,
-                type=var_type,
-            )
-            for target in targets
-        ]
+        variable_list = []
+
+        for target in targets:
+            # target과 var_type이 모두 list나 tuple일 경우
+            if utils.is_array(target):
+                if not utils.is_array(var_type):
+                    variable_list.extend(
+                        [
+                            Variable(
+                                id=expr_stmt_obj.id,
+                                expr=expr_stmt_obj.expressions[-1],
+                                name=t,
+                                type=var_type,
+                            )
+                            for t in target
+                        ]
+                    )
+
+                if utils.is_array(var_type) and utils.is_same_len(target, expr_stmt_obj.value):
+                    variable_list.extend(
+                        [
+                            Variable(
+                                id=expr_stmt_obj.id,
+                                expr=str(expr_stmt_obj.value[idx]),
+                                name=target[idx],
+                                type="variable",
+                            )
+                            for idx in range(len(target))
+                        ]
+                    )
+            else:
+                variable_list.append(
+                    Variable(
+                        id=expr_stmt_obj.id,
+                        expr=expr_stmt_obj.expressions[-1],
+                        name=target,
+                        type=var_type,
+                    )
+                )
 
         return AssignViz(variables=variable_list)
 

@@ -27,9 +27,6 @@ def get_var_type(var_value, obj_type: str):
     elif obj_type == "name" or obj_type == "subscript":
         return check_list(var_value)
 
-    elif obj_type == "list":
-        return "list"
-
     else:
         return obj_type
 
@@ -44,3 +41,17 @@ def check_list(var_value):
 
 def is_list(var_value):
     return var_value.startswith("[") and var_value.endswith("]")
+
+
+def is_array(target):
+    if isinstance(target, (list, tuple)):
+        return True
+
+    if target in ("list", "tuple"):
+        return True
+
+    return False
+
+
+def is_same_len(array1, array2):
+    return len(array1) == len(array2)

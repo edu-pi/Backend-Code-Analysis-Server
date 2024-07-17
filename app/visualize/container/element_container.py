@@ -1,3 +1,6 @@
+from app.visualize.utils import utils
+
+
 class ElementContainer:
 
     def __init__(self):
@@ -10,7 +13,7 @@ class ElementContainer:
         raise NameError(f"변수 '{name}'가 정의되지 않았습니다. ")
 
     def set_element(self, name, value):
-        if isinstance(name, tuple) and isinstance(value, tuple):
+        if utils.is_array(name) and utils.is_array(value):
             for i in range(len(name)):
                 self.element_dict[name[i]] = value[i]
             return
