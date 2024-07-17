@@ -50,20 +50,27 @@ class StmtTraveler:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
 
-            body_steps = []
-            for body in node.body:
-                body_steps.append(StmtTraveler.travel(body, elem_manager))
+            stmt_objs = StmtTraveler._parse_for_body(node.body, elem_manager)
 
             # check there is a break in the for loop body
-            if ForStmt.contains_break(body_steps):
+            if ForStmt.contains_break(stmt_objs):
                 # TODO: break 이후의 로직 제외
                 pass
 
-            body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
+            body_objs.append(BodyObj(cur_value=i, body_steps=stmt_objs))
 
         for_stmt_obj.body_objs = body_objs
 
         return for_stmt_obj
+
+    @staticmethod
+    def _parse_for_body(bodies: list[ast.stmt], elem_manager: ElementContainer):
+        if not any(isinstance(body, ast.stmt) for body in bodies):
+            raise TypeError("[StmtTraveler] for문의 body가 ast.stmt 타입이 아닙니다.")
+
+        stmt_objs = [StmtTraveler.travel(body, elem_manager) for body in bodies]
+
+        return stmt_objs
 
     @staticmethod
     def _expr_travel(node: ast.Expr, elem_manager: ElementContainer):
