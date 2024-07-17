@@ -12,54 +12,52 @@ class AssignConverter:
 
         return AssignConverter._convert_to_assign_viz(expr_stmt_obj, assign_obj.targets, var_type)
 
-    # Todo 함수 분리
     @staticmethod
     def _convert_to_assign_viz(expr_stmt_obj, targets, var_type):
         variable_list = []
 
         for target in targets:
-            # target과 var_type이 모두 list나 tuple일 경우
-            if utils.is_array(target):
-                if not utils.is_array(var_type):
-                    variable_list.extend(
-                        [
-                            Variable(
-                                id=expr_stmt_obj.id,
-                                expr=expr_stmt_obj.expressions[-1],
-                                name=t,
-                                type=var_type,
-                            )
-                            for t in target
-                        ]
-                    )
-
-                if utils.is_array(var_type) and utils.is_same_len(target, expr_stmt_obj.value):
-                    variable_list.extend(
-                        [
-                            Variable(
-                                id=expr_stmt_obj.id,
-                                expr=str(expr_stmt_obj.value[idx]),
-                                name=target[idx],
-                                type="variable",
-                            )
-                            for idx in range(len(target))
-                        ]
-                    )
-            else:
-                variable_list.append(
-                    Variable(
-                        id=expr_stmt_obj.id,
-                        expr=expr_stmt_obj.expressions[-1],
-                        name=target,
-                        type=var_type,
-                    )
-                )
+            AssignConverter._create_variable_list(expr_stmt_obj, target, var_type, variable_list)
 
         return AssignViz(variables=variable_list)
 
     @staticmethod
+    def _create_variable_list(expr_stmt_obj, target, var_type, variable_list):
+        # target이 list나 tuple일 경우
+        if utils.is_array(target):
+            #  value가 list나 tuple이 아닌 경우 예외
+            if not utils.is_array(var_type):
+                raise ValueError("target과 value의 길이가 다릅니다.")
+
+            # target과 value의 길이가 다른 경우 예외
+            if not utils.is_same_len(target, expr_stmt_obj.value):
+                raise ValueError("target과 value의 길이가 다릅니다.")
+
+            variable_list.extend(
+                [
+                    Variable(
+                        id=expr_stmt_obj.id,
+                        expr=str(expr_stmt_obj.value[idx]),
+                        name=target[idx],
+                        type="variable",
+                    )
+                    for idx in range(len(target))
+                ]
+            )
+        # 이외의 모든 경우
+        else:
+            variable_list.append(
+                Variable(
+                    id=expr_stmt_obj.id,
+                    expr=expr_stmt_obj.expressions[-1],
+                    name=target,
+                    type=var_type,
+                )
+            )
+
+    @staticmethod
     def _get_var_type(var_type: str):
         if var_type in ("name", "constant", "binop"):
-            var_type = "variable"
+            return "variable"
 
         return var_type
