@@ -20,6 +20,11 @@ def test_parse(create_ast, elem_container, code):
     [
         pytest.param(ast.Name(id="a", ctx=ast.Store()), "a", id="a = 10: success case"),
         pytest.param(ast.Name(id="abc", ctx=ast.Store()), "abc", id="abc = 10: success case"),
+        pytest.param(
+            ast.Tuple(elts=[ast.Name(id="a", ctx=ast.Store()), ast.Name(id="b", ctx=ast.Store())]),
+            ("a", "b"),
+            id="a, b = 10: success case",
+        ),
     ],
 )
 def test_get_target_name(elem_container, node, expected):

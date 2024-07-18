@@ -30,6 +30,12 @@ class AssignStmt:
         if isinstance(node, ast.Name):
             expr_obj = ExprTraveler.travel(node, elem_container)
 
+        elif isinstance(node, ast.Tuple):
+            expr_obj = ExprTraveler.travel(node, elem_container)
+
+        elif isinstance(node, ast.List):
+            expr_obj = ExprTraveler.travel(node, elem_container)
+
         else:
             raise TypeError(f"[AssignParser]: {type(node)}는 잘못된 타입입니다.")
 
@@ -40,11 +46,14 @@ class AssignStmt:
         return ExprTraveler.travel(node, elem_container)
 
     @staticmethod
-    def _set_value_to_target(target_names: tuple[str, ...], expr_obj, elem_container: ElementContainer):
+    def _set_value_to_target(target_names: tuple, expr_obj, elem_container: ElementContainer):
         for target_name in target_names:
             value = expr_obj.value
 
             if expr_obj.type == "list":
                 value = list(expr_obj.value)
+
+            elif expr_obj.type == "tuple":
+                value = tuple(expr_obj.value)
 
             elem_container.set_element(target_name, value)
