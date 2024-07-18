@@ -33,8 +33,8 @@ def test_parse(mocker, elts: list[ExprObj], expected: ListObj):
     result = ListExpr.parse(elts)
 
     assert isinstance(result, ListObj)
-    assert mock_get_value.call_once_with(elts)
-    assert mock_concat_expressions.call_once_with(elts)
+    mock_get_value.assert_called_once_with(elts)
+    mock_concat_expressions.assert_called_once_with(elts)
 
 
 @pytest.mark.parametrize(

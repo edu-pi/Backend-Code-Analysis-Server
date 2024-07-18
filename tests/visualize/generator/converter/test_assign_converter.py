@@ -7,7 +7,6 @@ from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable
-from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 @pytest.fixture()

@@ -37,8 +37,8 @@ def test_parse(mocker, node: ast.Constant, expected: ConstantObj):
     result = ConstantExpr.parse(node)
 
     assert result == expected
-    assert mock_get_literal.called_once_with(node)
-    assert mock_create_expressions.called_once_with(expected.value)
+    mock_get_literal.assert_called_once_with(node)
+    mock_create_expressions.assert_called_once_with(expected.value)
 
 
 @pytest.mark.parametrize(

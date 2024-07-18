@@ -47,8 +47,8 @@ def test_parse(mocker, args: list[ExprObj], expected: RangeObj):
     result = RangeExpr.parse(args)
 
     assert isinstance(result, RangeObj)
-    assert mock_get_value.called_once_with([arg.value for arg in args])
-    assert mock_create_expressions.called_once_with([arg.expressions for arg in args])
+    mock_get_value.assert_called_once_with([arg.value for arg in args])
+    mock_create_expressions.assert_called_once_with([arg.expressions for arg in args])
 
 
 @pytest.mark.parametrize(
