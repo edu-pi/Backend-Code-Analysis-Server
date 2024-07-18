@@ -32,7 +32,7 @@ def test__if_convert(mocker, get_if_stmt_obj, mock_viz_manager_with_custom_depth
     # 함수들이 호출 되었는지 확인
     mock_get_header_define_viz.assert_called_once_with(if_stmt_obj.conditions, mock_viz_manager)
     mock_get_header_change_steps.assert_called_once_with(if_stmt_obj.conditions, mock_viz_manager)
-    mock_get_if_body_viz_list.assert_called_once_with(if_stmt_obj.body, mock_viz_manager)
+    mock_get_if_body_viz_list.assert_called_once_with(if_stmt_obj.body_steps, mock_viz_manager)
 
 
 def test__get_if_body_viz_list(mocker, get_if_stmt_obj):
@@ -40,10 +40,10 @@ def test__get_if_body_viz_list(mocker, get_if_stmt_obj):
     mock_travel = mocker.patch.object(ConverterTraveler, "travel")
     viz_manager = VisualizationManager()
 
-    ConverterTraveler._get_if_body_viz_list(if_stmt_obj.body, viz_manager)
+    ConverterTraveler._get_if_body_viz_list(if_stmt_obj.body_steps, viz_manager)
 
     # travel 함수가 호출 되었는지 확인
-    mock_travel.assert_called_once_with(if_stmt_obj.body.body_steps, viz_manager)
+    mock_travel.assert_called_once_with(if_stmt_obj.body_steps, viz_manager)
 
 
 def test__convert_to_flow_control_viz_pass_호출(mock_viz_manager_with_custom_depth):

@@ -39,11 +39,11 @@ class ForStmt:
 
     @staticmethod
     def contains_break(body_objs):
-        for stmt in body_objs:
-            if isinstance(stmt, IfStmtObj):
-                return any(isinstance(step, BreakStmtObj) for step in stmt.body.body_steps)
+        for stmt_obj in body_objs:
+            if isinstance(stmt_obj, IfStmtObj):
+                return any(isinstance(step, BreakStmtObj) for step in stmt_obj.body_steps)
 
-            elif isinstance(stmt, BreakStmtObj):
+            elif isinstance(stmt_obj, BreakStmtObj):
                 return True
 
         return False
@@ -60,9 +60,9 @@ class ForStmt:
 
             if isinstance(stmt_obj, IfStmtObj):
                 # if문 안에 break 존재할 때
-                if ForStmt.contains_break(stmt_obj.body.body_steps):
+                if ForStmt.contains_break(stmt_obj.body_steps):
                     # break 이후를 제외한 스텝 생성
-                    new_body = ForStmt.get_pre_break_body_steps(stmt_obj.body.body_steps)
+                    new_body = ForStmt.get_pre_break_body_steps(stmt_obj.body_steps)
                     # 새로운 if_stmt 객체 생성 후 삽입
                     result.append(stmt_obj.create_if_stmt_with_new_body(new_body))
                     break

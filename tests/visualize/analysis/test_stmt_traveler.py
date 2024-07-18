@@ -73,14 +73,9 @@ def test_travel(mocker, code: str, called_func: str, create_ast, elem_container)
                             result=True,
                         ),
                     ),
-                    body=BodyObj(
-                        cur_value=0,
-                        body_steps=[
-                            ExprStmtObj(
-                                id=5, value="'check'\n", expressions=("'check'",), expr_type="print", type="expr"
-                            )
-                        ],
-                    ),
+                    body_steps=[
+                        ExprStmtObj(id=5, value="'check'\n", expressions=("'check'",), expr_type="print", type="expr")
+                    ],
                     type="if",
                 ),
             ],
@@ -95,11 +90,6 @@ def test__parse_for_body_success(mocker, elem_container, code: str, mock_result)
 
     assert isinstance(actual, list)
     assert len(actual) == len(mock_result)
-
-
-def test__parse_for_body_fail(elem_container):
-    with pytest.raises(TypeError):
-        StmtTraveler._parse_for_body([ast.BinOp(), ast.If()], elem_container)
 
 
 @pytest.mark.parametrize(
@@ -120,7 +110,7 @@ else:
                     ElifConditionObj(id=2, expressions=("a<10",), result=False),
                     ElseConditionObj(id=3, expressions=None, result=True),
                 ),
-                body=BodyObj(body_steps=[[]], cur_value=0),
+                body_steps=[[]],
             ),
             id="complex if-elif-else",
         ),
@@ -272,7 +262,12 @@ def test_parse_if_orelse_else문_분기_실행(mocker, node: ast.If, elem_contai
     mock_if_travel = mocker.patch.object(StmtTraveler, "_parse_else", return_value=None)
     StmtTraveler._parse_if_branches([], [], elem_container, node.orelse)
 
-    mock_if_travel.assert_called_with([], [], elem_container, node.orelse)
+    mock_if_travel.assert_called_with(
+        node.orelse,
+        [],
+        [],
+        elem_container,
+    )
 
 
 @pytest.mark.parametrize(

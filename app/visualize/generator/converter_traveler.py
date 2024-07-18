@@ -67,16 +67,15 @@ class ConverterTraveler:
         # 2. if header
         steps.extend(IfConverter.convert_to_if_else_change_viz(if_stmt.conditions, viz_manager))
         # 3. if header 결과 값이 true인 if 문의 body obj의 viz 생성
-        if not if_stmt.body:
-            raise ValueError("[ConverterTraveler] if_stmt.body is None")
-        steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt.body, viz_manager))
+        if if_stmt.body_steps:
+            steps.extend(ConverterTraveler._get_if_body_viz_list(if_stmt.body_steps, viz_manager))
 
         return steps
 
     @staticmethod
-    def _get_if_body_viz_list(if_body: BodyObj, viz_manager):
+    def _get_if_body_viz_list(if_body_steps: list, viz_manager):
         viz_manager.increase_depth()
-        body_steps_viz = ConverterTraveler.travel(if_body.body_steps, viz_manager)
+        body_steps_viz = ConverterTraveler.travel(if_body_steps, viz_manager)
         viz_manager.decrease_depth()
 
         return body_steps_viz
