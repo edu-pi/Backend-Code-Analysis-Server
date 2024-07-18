@@ -40,14 +40,19 @@ from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr imp
     ],
 )
 def test_parse(mocker, args: list[ExprObj], keyword_arg_dict: dict, expected: PrintObj):
+    expected_key_word = {"sep": keyword_arg_dict.get("sep", " "), "end": keyword_arg_dict.get("end", "\n")}
+    print(expected_key_word)
+
+    mock_create_keywords = mocker.patch.object(PrintExpr, "_create_keywords", return_value=expected_key_word)
     mock_get_value = mocker.patch.object(PrintExpr, "_get_value", return_value=expected.value)
     mock_create_expressions = mocker.patch.object(PrintExpr, "_create_expressions", return_value=expected.expressions)
 
     result = PrintExpr.parse(args, keyword_arg_dict)
 
     assert isinstance(result, PrintObj)
-    assert mock_get_value.called_once_with(args, keyword_arg_dict)
-    assert mock_create_expressions.called_once_with(args, keyword_arg_dict)
+    mock_create_keywords.assert_called_once_with(keyword_arg_dict)
+    mock_get_value.assert_called_once_with(expected.expressions, expected_key_word)
+    mock_create_expressions.assert_called_once_with(args, expected_key_word)
 
 
 @pytest.mark.parametrize(

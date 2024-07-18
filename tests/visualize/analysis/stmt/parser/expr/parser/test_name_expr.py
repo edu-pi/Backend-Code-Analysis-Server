@@ -35,13 +35,15 @@ from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
     ],
 )
 def test_parse(set_element_return_value, mocker, node: ast.Name, elem_value, expected: NameObj):
+    mock_elem_container = set_element_return_value(elem_value)
     mock_get_identifier_value = mocker.patch.object(NameExpr, "_get_identifier_value", return_value=expected.value)
     mock_create_expressions = mocker.patch.object(NameExpr, "_create_expressions", return_value=expected.expressions)
-    result = NameExpr.parse(node, set_element_return_value(elem_value))
+    result = NameExpr.parse(node, mock_elem_container)
 
     assert isinstance(result, NameObj)
-    assert mock_get_identifier_value.call_once_with(node.id, set_element_return_value(elem_value))
-    assert mock_create_expressions.call_once_with(node.id, expected.value)
+    if isinstance(node.ctx, ast.Load):
+        mock_get_identifier_value.assert_called_once_with(node.id, mock_elem_container)
+        mock_create_expressions.assert_called_once_with(node.id, expected.value)
     assert result == expected
 
 

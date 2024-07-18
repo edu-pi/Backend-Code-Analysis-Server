@@ -38,7 +38,7 @@ def test_built_in_parse(mocker, func_name: str | AttributeObj, args: list[ExprOb
     result = CallExpr.parse(func_name, args, keyword_arg_dict)
 
     assert result == expected
-    assert mock_built_in_call_parse.called_once_with(func_name, args, keyword_arg_dict)
+    mock_built_in_call_parse.assert_called_once_with(func_name, args, keyword_arg_dict)
 
 
 @pytest.mark.parametrize(
@@ -59,7 +59,7 @@ def test_built_in_print_call_parse(mocker, func_name: str, args: list[ExprObj], 
     result = CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict)
 
     assert result == expected
-    assert mock_print_expr_class.called_once_with(args, keyword_arg_dict)
+    mock_print_expr_class.assert_called_once_with(args, keyword_arg_dict)
 
 
 @pytest.mark.parametrize(
@@ -80,7 +80,7 @@ def test_built_in_range_call_parse(mocker, func_name: str, args: list[ExprObj], 
     result = CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict)
 
     assert result == expected
-    assert mock_range_expr_class.called_once_with(args)
+    mock_range_expr_class.assert_called_once_with(args)
 
 
 # @pytest.mark.parametrize(

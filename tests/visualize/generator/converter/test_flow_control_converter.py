@@ -1,7 +1,3 @@
-import ast
-
-import pytest
-
 from app.visualize.analysis.stmt.models.pass_stmt_obj import PassStmtObj
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.models.flow_control_viz import FlowControlViz

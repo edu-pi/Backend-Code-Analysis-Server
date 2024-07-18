@@ -51,8 +51,8 @@ def test_parse(mocker, lower: ExprObj, upper: ExprObj, step: ExprObj, expected: 
     result = SliceExpr.parse(lower, upper, step)
 
     assert isinstance(result, SliceObj)
-    assert mock_get_value.called_once_with(lower, upper, step)
-    assert mock_create_expressions.called_once_with(lower, upper, step)
+    mock_get_value.assert_called_once_with(lower, upper, step)
+    mock_create_expressions.assert_called_once_with(lower, upper, step)
 
 
 @pytest.mark.parametrize(

@@ -72,8 +72,8 @@ def test_parse(mocker, target_obj: ExprObj, slice_obj: ExprObj, expected: Subscr
     result = SubscriptExpr.parse(target_obj, slice_obj)
 
     assert isinstance(result, SubscriptObj)
-    assert mock_get_value.called_once_with(target_obj.value, slice_obj.value)
-    assert mock_create_expressions.called_once_with(target_obj, slice_obj)
+    mock_get_value.assert_called_once_with(target_obj.value, slice_obj.value)
+    mock_create_expressions.assert_called_once_with(target_obj, slice_obj)
 
 
 @pytest.mark.parametrize(
