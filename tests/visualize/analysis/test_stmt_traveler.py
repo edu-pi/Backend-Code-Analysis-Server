@@ -18,6 +18,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
 from app.visualize.analysis.stmt.parser.flowcontrol.break_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
+from app.visualize.container.element_container import ElementContainer
 
 
 @pytest.mark.parametrize(
@@ -36,6 +37,30 @@ def test_travel(mocker, code: str, called_func: str, create_ast, elem_container)
     StmtTraveler.travel(stmt_node, elem_container)
 
     mock_travel.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        pytest.param(
+            """
+for i in range(10):
+    if a == 10:
+        break
+    print("break 탈출 전")
+""",
+            id="break 탈출 테스트",
+        )
+    ],
+)
+def test__for_travel(mocker, code, create_ast, elem_container):
+    for_node = create_ast(code)
+    elem_container = ElementContainer()
+    elem_container.set_element("a", 10)
+
+    actual = StmtTraveler._for_travel(for_node, elem_container)
+
+    assert actual.body_objs[-1].cur_value == 0
 
 
 @pytest.mark.parametrize(

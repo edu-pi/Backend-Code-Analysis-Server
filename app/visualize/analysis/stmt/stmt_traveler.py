@@ -44,6 +44,7 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
+        is_break = False
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
@@ -52,8 +53,12 @@ class StmtTraveler:
 
             if ForStmt.contains_break(body_steps):
                 body_steps = ForStmt.get_pre_break_body_steps(body_steps)
+                is_break = True
 
             body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
+
+            if is_break:
+                break
 
         for_stmt_obj.body_objs = body_objs
         return for_stmt_obj
