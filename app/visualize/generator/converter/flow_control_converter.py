@@ -1,5 +1,4 @@
-from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
-from app.visualize.analysis.stmt.models.flowcontrolobj.pass_stmt_obj import PassStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, PassStmtObj
 from app.visualize.generator.models.flow_control_viz import FlowControlViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 

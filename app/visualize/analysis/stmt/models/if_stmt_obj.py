@@ -33,5 +33,5 @@ class IfStmtObj:
     body_steps: list  # 조건문이 true인 If문에서 실행되는 body 로직 정보
     type: str = "if"
 
-    def create_if_stmt_with_new_body(self, new_body_steps):
+    def create_with_new_body(self, new_body_steps):
         return IfStmtObj(conditions=self.conditions, body_steps=new_body_steps)

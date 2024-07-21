@@ -4,7 +4,7 @@ import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
-from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj

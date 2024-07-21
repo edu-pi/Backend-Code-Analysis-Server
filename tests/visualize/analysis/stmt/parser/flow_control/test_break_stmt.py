@@ -1,7 +1,7 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
-from app.visualize.analysis.stmt.parser.flowcontrol.break_stmt import BreakStmt
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
+from app.visualize.analysis.stmt.parser.flow_control_stmt import BreakStmt
 
 
 def test_parse():

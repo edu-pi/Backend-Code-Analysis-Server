@@ -1,7 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.parser.flowcontrol.break_stmt import BreakStmt
-from app.visualize.analysis.stmt.parser.flowcontrol.pass_stmt import PassStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj

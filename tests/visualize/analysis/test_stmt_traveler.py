@@ -1,12 +1,12 @@
 import ast
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
-from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
@@ -15,7 +15,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
-from app.visualize.analysis.stmt.parser.flowcontrol.break_stmt import BreakStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 from app.visualize.container.element_container import ElementContainer

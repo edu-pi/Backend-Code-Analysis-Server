@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flowcontrolobj.break_stmt_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
@@ -64,7 +64,7 @@ class ForStmt:
                     # break 이후를 제외한 스텝 생성
                     new_body = ForStmt.get_pre_break_body_steps(stmt_obj.body_steps)
                     # 새로운 if_stmt 객체 생성 후 삽입
-                    result.append(stmt_obj.create_if_stmt_with_new_body(new_body))
+                    result.append(stmt_obj.create_with_new_body(new_body))
                     break
 
             result.append(stmt_obj)
