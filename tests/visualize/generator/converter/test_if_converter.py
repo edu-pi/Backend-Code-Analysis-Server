@@ -67,7 +67,9 @@ def test_convert_to_if_else_define_viz(conditions: tuple[ConditionObj, ...], exp
             (
                 IfStmtObj(
                     conditions=(IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=False),),
-                    body=BodyObj(cur_value=0, body_steps=(AssignStmtObj(targets="a", expr_stmt_obj="10"),)),
+                    body_steps=[
+                        AssignStmtObj(targets="a", expr_stmt_obj="10"),
+                    ],
                     type="if",
                 )
             )

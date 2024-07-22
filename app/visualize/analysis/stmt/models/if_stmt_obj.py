@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Any
 
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 
@@ -29,5 +30,8 @@ class ElseConditionObj(ConditionObj):
 @dataclass(frozen=True)
 class IfStmtObj:
     conditions: tuple[ConditionObj, ...]  # 조건문들의 정보
-    body: BodyObj  # 조건문이 true인 If문에서 실행되는 body 로직 정보
+    body_steps: list  # 조건문이 true인 If문에서 실행되는 body 로직 정보
     type: str = "if"
+
+    def create_with_new_body(self, new_body_steps):
+        return IfStmtObj(conditions=self.conditions, body_steps=new_body_steps)

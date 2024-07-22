@@ -1,10 +1,12 @@
 import ast
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
+from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
@@ -13,8 +15,10 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
+from app.visualize.analysis.stmt.parser.flow_control_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
+from app.visualize.container.element_container import ElementContainer
 
 
 @pytest.mark.parametrize(
@@ -22,7 +26,8 @@ from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
     [
         pytest.param("a=b", "_assign_travel", id="assign"),
         pytest.param("print('hello')", "_expr_travel", id="expr"),
-        pytest.param("pass", "_pass_travel", id="pass"),
+        pytest.param("pass", "_flow_control_travel", id="pass"),
+        pytest.param("break", "_flow_control_travel", id="break"),
     ],
 )
 def test_travel(mocker, code: str, called_func: str, create_ast, elem_container):
@@ -32,6 +37,84 @@ def test_travel(mocker, code: str, called_func: str, create_ast, elem_container)
     StmtTraveler.travel(stmt_node, elem_container)
 
     mock_travel.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        pytest.param(
+            """
+for i in range(10):
+    if a == 10:
+        break
+    print("break 탈출 전")
+""",
+            id="break 탈출 테스트",
+        )
+    ],
+)
+def test__for_travel(mocker, code, create_ast, elem_container):
+    for_node = create_ast(code)
+    elem_container = ElementContainer()
+    elem_container.set_element("a", 10)
+
+    actual = StmtTraveler._for_travel(for_node, elem_container)
+
+    assert actual.body_objs[-1].cur_value == 0
+
+
+@pytest.mark.parametrize(
+    "code, mock_result",
+    [
+        pytest.param(
+            """a = 10 \nprint('hello') \n""",
+            [
+                AssignStmtObj(
+                    targets=("a",),
+                    expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type="constant", type="expr"),
+                    type="assign",
+                ),
+                ExprStmtObj(id=2, value="'hello'\n", expressions=("'hello'",), expr_type="print", type="expr"),
+            ],
+        ),
+        pytest.param(
+            """left = 0 \nright = 10 \nif (left+right)/2 == 5: \n   print("check")""",
+            [
+                AssignStmtObj(
+                    targets=("left",),
+                    expr_stmt_obj=ExprStmtObj(id=2, value=0, expressions=("0",), expr_type="constant", type="expr"),
+                    type="assign",
+                ),
+                AssignStmtObj(
+                    targets=("right",),
+                    expr_stmt_obj=ExprStmtObj(id=3, value=10, expressions=("10",), expr_type="constant", type="expr"),
+                    type="assign",
+                ),
+                IfStmtObj(
+                    conditions=(
+                        IfConditionObj(
+                            id=4,
+                            expressions=("left + right / 2 == 5", "0 + 10 / 2 == 5", "10 / 2 == 5", "5.0 == 5"),
+                            result=True,
+                        ),
+                    ),
+                    body_steps=[
+                        ExprStmtObj(id=5, value="'check'\n", expressions=("'check'",), expr_type="print", type="expr")
+                    ],
+                    type="if",
+                ),
+            ],
+        ),
+    ],
+)
+def test__parse_for_body_success(mocker, elem_container, code: str, mock_result):
+    """리스트 형태와 body의 개수 만큼 obj를 생성하여 반환하는지 검증"""
+    mocker.patch.object(StmtTraveler, "travel", side_effect=mock_result)
+
+    actual = StmtTraveler._parse_for_body(ast.parse(code).body, elem_container)
+
+    assert isinstance(actual, list)
+    assert len(actual) == len(mock_result)
 
 
 @pytest.mark.parametrize(
@@ -52,7 +135,7 @@ else:
                     ElifConditionObj(id=2, expressions=("a<10",), result=False),
                     ElseConditionObj(id=3, expressions=None, result=True),
                 ),
-                body=BodyObj(body_steps=[[]], cur_value=0),
+                body_steps=[[]],
             ),
             id="complex if-elif-else",
         ),
@@ -204,7 +287,12 @@ def test_parse_if_orelse_else문_분기_실행(mocker, node: ast.If, elem_contai
     mock_if_travel = mocker.patch.object(StmtTraveler, "_parse_else", return_value=None)
     StmtTraveler._parse_if_branches([], [], elem_container, node.orelse)
 
-    mock_if_travel.assert_called_with([], [], elem_container, node.orelse)
+    mock_if_travel.assert_called_with(
+        node.orelse,
+        [],
+        [],
+        elem_container,
+    )
 
 
 @pytest.mark.parametrize(
@@ -218,3 +306,41 @@ def test_parse_if_orelse_예외발생(target, elem_container):
     # 예외가 터지면 통과, 안터지면 실패
     with pytest.raises(TypeError):
         StmtTraveler._parse_if_branches([], [], elem_container, target)
+
+        assert False
+
+
+@pytest.mark.parametrize(
+    "node, called_func",
+    [
+        pytest.param(ast.Pass(), "_pass_travel", id="_pass_travel 호출 success"),
+        pytest.param(ast.Break(), "_break_travel", id="_break_travel 호출 success"),
+    ],
+)
+def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue, called_func):
+    mock_func = mocker.patch.object(StmtTraveler, called_func)
+
+    StmtTraveler._flow_control_travel(node)
+
+    mock_func.assert_called_once_with(node)
+
+
+@pytest.mark.parametrize(
+    "node",
+    [
+        pytest.param(ast.If(), id="_flow_control_travel 호출 fail"),
+        pytest.param(ast.Assign(), id="_flow_control_travel 호출 fail"),
+    ],
+)
+def test__flow_control_travel(mocker, node: ast):
+    with pytest.raises(TypeError):
+        StmtTraveler._flow_control_travel(node)
+
+
+def test__break_travel(mocker):
+    node = ast.Break(lineno=1)
+    mock_break_stmt = mocker.patch.object(BreakStmt, "parse", return_value=BreakStmtObj(id=1, expr="break"))
+
+    StmtTraveler._break_travel(node)
+
+    mock_break_stmt.assert_called_once_with(node)

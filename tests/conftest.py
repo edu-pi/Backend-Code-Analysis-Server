@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.generator.visualization_manager import VisualizationManager
 
@@ -21,6 +22,14 @@ def set_element_return_value(elem_container):
         return elem_container
 
     return _set_element_return_value
+
+
+@pytest.fixture
+def viz_manager():
+    viz_mockup = MagicMock(spec=VisualizationManager)
+    viz_mockup.get_depth.return_value = 1
+
+    return viz_mockup
 
 
 @pytest.fixture
@@ -45,3 +54,8 @@ def create_ast():
         return ast.parse(code).body[0]
 
     return _create_ast_node
+
+
+@pytest.fixture
+def create_expr_stmt_obj():
+    return ExprStmtObj(id=1, value="", expressions=("",), expr_type="")

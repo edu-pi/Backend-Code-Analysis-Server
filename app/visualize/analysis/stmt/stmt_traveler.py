@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.parser.pass_stmt import PassStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
@@ -26,8 +26,8 @@ class StmtTraveler:
         elif isinstance(node, ast.If):
             return StmtTraveler._if_travel(node, [], [], elem_manager)
 
-        elif isinstance(node, ast.Pass):
-            return StmtTraveler._pass_travel(node)
+        elif isinstance(node, ast.Pass | ast.Break | ast.Continue):
+            return StmtTraveler._flow_control_travel(node)
 
         else:
             raise TypeError(f"[StmtTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -43,20 +43,33 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
+        is_break = False
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
+            body_steps = StmtTraveler._parse_for_body(node.body, elem_manager)
 
-            body_steps = []
-            for body in node.body:
-                body_steps.append(StmtTraveler.travel(body, elem_manager))
+            if ForStmt.contains_break(body_steps):
+                body_steps = ForStmt.get_pre_break_body_steps(body_steps)
+                is_break = True
 
             body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
 
-        for_stmt_obj.body_objs = body_objs
+            if is_break:
+                break
 
+        for_stmt_obj.body_objs = body_objs
         return for_stmt_obj
+
+    @staticmethod
+    def _parse_for_body(bodies: list[ast.stmt], elem_manager: ElementContainer):
+        if not any(isinstance(body, ast.stmt) for body in bodies):
+            raise TypeError("[StmtTraveler] for문의 body가 ast.stmt 타입이 아닙니다.")
+
+        stmt_objs = [StmtTraveler.travel(body, elem_manager) for body in bodies]
+
+        return stmt_objs
 
     @staticmethod
     def _expr_travel(node: ast.Expr, elem_manager: ElementContainer):
@@ -64,19 +77,19 @@ class StmtTraveler:
 
     @staticmethod
     def _if_travel(
-        node: ast.If, conditions: list[ConditionObj], body_objs: list[BodyObj], elem_manager: ElementContainer
+        node: ast.If, conditions: list[ConditionObj], body_steps: list, elem_manager: ElementContainer
     ) -> IfStmtObj:
         # parse 조건문 : if("test") or elfi("test") 부분
         StmtTraveler._append_condition_obj(conditions, elem_manager, node)
 
         # parse body
-        StmtTraveler._parse_if_body(node, conditions, body_objs, elem_manager)
+        StmtTraveler._parse_if_body(node, conditions, body_steps, elem_manager)
 
         # parse elif or else
         if isinstance(node, ast.If) and node.orelse:  # 빈 배열이면 탐색 안함
-            StmtTraveler._parse_if_branches(body_objs, conditions, elem_manager, node.orelse)
+            StmtTraveler._parse_if_branches(body_steps, conditions, elem_manager, node.orelse)
 
-        return IfStmtObj(conditions=tuple(conditions), body=BodyObj(body_steps=body_objs, cur_value=0))
+        return IfStmtObj(conditions=tuple(conditions), body_steps=body_steps)
 
     @staticmethod
     def _append_condition_obj(conditions, elem_manager, node: ast.If | ast.stmt):
@@ -101,27 +114,27 @@ class StmtTraveler:
                 body_objs.append(StmtTraveler.travel(body, elem_manager))
 
     @staticmethod
-    def _parse_if_branches(body_objs, conditions, elem_manager, orelse_node):
+    def _parse_if_branches(body_steps, conditions, elem_manager, orelse_node):
         # elif 처리
         if isinstance(orelse_node[0], ast.If):
-            StmtTraveler._if_travel(orelse_node[0], conditions, body_objs, elem_manager)
+            StmtTraveler._if_travel(orelse_node[0], conditions, body_steps, elem_manager)
 
         # else 처리
         elif isinstance(orelse_node[0], ast.stmt):
-            StmtTraveler._parse_else(body_objs, conditions, elem_manager, orelse_node)
+            StmtTraveler._parse_else(orelse_node, conditions, body_steps, elem_manager)
 
         else:
             raise TypeError(f"[IfTraveler] {type(orelse_node[0])}는 잘못된 타입입니다.")
 
     @staticmethod
-    def _parse_else(body_objs, conditions, elem_manager, nodes: list[ast.stmt]):
-        is_else_condition_true = True if len(body_objs) == 0 else False
+    def _parse_else(nodes: list[ast.stmt], conditions, body_steps, elem_manager):
+        is_else_condition_true = True if len(body_steps) == 0 else False
         StmtTraveler._append_else_condition_obj(conditions, nodes[0], is_else_condition_true)
 
         if is_else_condition_true:
             # else 문의 body 추가
             for stmt_node in nodes:
-                body_objs.append(StmtTraveler.travel(stmt_node, elem_manager))
+                body_steps.append(StmtTraveler.travel(stmt_node, elem_manager))
 
     @staticmethod
     def _append_else_condition_obj(conditions, node: ast.stmt, result: bool):
@@ -134,5 +147,24 @@ class StmtTraveler:
         conditions.append(condition)
 
     @staticmethod
+    def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue):
+        if isinstance(node, ast.Pass):
+            return StmtTraveler._pass_travel(node)
+
+        elif isinstance(node, ast.Break):
+            return StmtTraveler._break_travel(node)
+
+        elif isinstance(node, ast.Continue):
+            # TODO: ContinueStmt.parse()
+            pass
+
+        else:
+            raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
+
+    @staticmethod
     def _pass_travel(node: ast.Pass):
         return PassStmt.parse(node)
+
+    @staticmethod
+    def _break_travel(node: ast.Break):
+        return BreakStmt.parse(node)
