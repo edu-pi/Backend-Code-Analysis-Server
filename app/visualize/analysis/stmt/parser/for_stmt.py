@@ -41,7 +41,8 @@ class ForStmt:
     def contains_break(body_objs):
         for stmt_obj in body_objs:
             if isinstance(stmt_obj, IfStmtObj):
-                return any(isinstance(step, BreakStmtObj) for step in stmt_obj.body_steps)
+                if ForStmt.contains_break(stmt_obj.body_steps):
+                    return True
 
             elif isinstance(stmt_obj, BreakStmtObj):
                 return True

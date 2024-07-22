@@ -152,40 +152,6 @@ def test_contains_break_fail(body_steps):
                         ),
                     ],
                 ),
-                BreakStmtObj(id=0, expr="break"),
-                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
-            ],
-            [
-                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
-                IfStmtObj(
-                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
-                    body_steps=[
-                        AssignStmtObj(
-                            targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
-                        ),
-                        AssignStmtObj(
-                            targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
-                        ),
-                    ],
-                ),
-                BreakStmtObj(id=0, expr="break"),
-            ],
-            id="break가 for문 내부에 존재할 때",
-        ),
-        pytest.param(
-            [
-                AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
-                IfStmtObj(
-                    conditions=(ConditionObj(id=0, expressions=("",), result=True, type="if"),),
-                    body_steps=[
-                        AssignStmtObj(
-                            targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
-                        ),
-                        AssignStmtObj(
-                            targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")
-                        ),
-                    ],
-                ),
                 AssignStmtObj(targets=(), expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type="")),
             ],
             [
