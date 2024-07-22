@@ -4,6 +4,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
 from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
+from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
@@ -31,6 +32,9 @@ class ExprTraveler:
 
         elif isinstance(node, ast.List):
             return ExprTraveler._list_travel(node, elem_container)
+
+        elif isinstance(node, ast.Tuple):
+            return ExprTraveler._tuple_travel(node, elem_container)
 
         elif isinstance(node, ast.Compare):
             compare_obj = ExprTraveler._compare_travel(node, elem_container)
@@ -90,6 +94,11 @@ class ExprTraveler:
     def _list_travel(node: ast.List, elem_container: ElementContainer):
         elts = [ExprTraveler.travel(elt, elem_container) for elt in node.elts]
         return ListExpr.parse(elts)
+
+    @staticmethod
+    def _tuple_travel(node: ast.List, elem_container: ElementContainer):
+        elts = [ExprTraveler.travel(elt, elem_container) for elt in node.elts]
+        return TupleExpr.parse(elts)
 
     @staticmethod
     def _compare_travel(node: ast, elem_container: ElementContainer):
