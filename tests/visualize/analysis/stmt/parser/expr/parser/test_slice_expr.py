@@ -1,6 +1,7 @@
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import SliceObj, ConstantObj, NameObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.models.slice_expression import SliceExpression
 from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
 
@@ -24,7 +25,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
-            NameObj(value=10, expressions=("a", "10")),
+            NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
             None,
             SliceObj(
                 value=slice(0, 10, None),
@@ -99,7 +100,7 @@ def test_get_value(lower: ExprObj, upper: ExprObj, step: ExprObj, expected):
         ),
         pytest.param(
             ConstantObj(value=0, expressions=("0",)),
-            NameObj(value=10, expressions=("a", "10")),
+            NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
             None,
             (SliceExpression(lower="0", upper="a"), SliceExpression(lower="0", upper="10")),
             id="[0:a]: success case",

@@ -3,6 +3,7 @@ import ast
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import PrintObj, BinopObj, ConstantObj, NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 
 
@@ -11,7 +12,7 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
     [
         pytest.param(
             ast.Name("a", ast.Load()),
-            NameObj(value=10, expressions=("a", "10")),
+            NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
             id="a: success case",
         ),
         pytest.param(

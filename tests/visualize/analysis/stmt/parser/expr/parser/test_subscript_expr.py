@@ -7,6 +7,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     ExprObj,
     SubscriptObj,
 )
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.models.slice_expression import SliceExpression
 from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
 
@@ -15,19 +16,31 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
     "target_obj, slice_obj, expected",
     [
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             ConstantObj(value=0, expressions=("0",)),
             SubscriptObj(value=0, expressions=("a[0]", "0")),
             id="a[0] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(value=slice(2, 5), expressions=(SliceExpression(lower="2", upper="5"),)),
             SubscriptObj(value=[2, 3, 4], expressions=("a[2:5]", "[2, 3, 4]")),
             id="a[2:5] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(
                 value=slice(2, 5),
                 expressions=(SliceExpression(lower="2", upper="a"), SliceExpression(lower="2", upper="5")),
@@ -36,25 +49,41 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
             id="a[2:a] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(value=slice(2, 10, 2), expressions=(SliceExpression(lower="2", upper="10", step="2"),)),
             SubscriptObj(value=[2, 4, 6, 8], expressions=("a[2:10:2]", "[2, 4, 6, 8]")),
             id="a[2:10:2] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(value=slice(0, 5), expressions=(SliceExpression(lower="0", upper="5"),)),
             SubscriptObj(value=[0, 1, 2, 3, 4], expressions=("a[0:5]", "[0, 1, 2, 3, 4]")),
             id="a[:5] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(value=slice(3, 10), expressions=(SliceExpression(lower="3", upper="10"),)),
             SubscriptObj(value=[3, 4, 5, 6, 7, 8, 9], expressions=("a[3:10]", "[3, 4, 5, 6, 7, 8, 9]")),
             id="a[3:] success case",
         ),
         pytest.param(
-            NameObj(value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")),
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
             SliceObj(value=slice(0, 10), expressions=(SliceExpression(lower="0", upper="10"),)),
             SubscriptObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a[0:10]", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")
@@ -101,6 +130,7 @@ def test_get_value(slice_obj_value: int, expected):
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             ConstantObj(value=0, expressions=("0",)),
             ("a[0]", "0"),
@@ -110,8 +140,9 @@ def test_get_value(slice_obj_value: int, expected):
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
-            NameObj(value=0, expressions=("idx", "0")),
+            NameObj(value=0, expressions=("idx", "0"), type=ExprType.VARIABLE),
             ("a[idx]", "a[0]", "0"),
             id="a[idx] success case",
         ),
@@ -130,6 +161,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(value=slice(2, 5), expressions=(SliceExpression(lower="2", upper="5"),)),
             ("a[2:5]", "[2, 3, 4]"),
@@ -139,6 +171,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(
                 value=slice(2, 5),
@@ -151,6 +184,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(value=slice(2, 10, 2), expressions=(SliceExpression(lower="2", upper="10", step="2"),)),
             ("a[2:10:2]", "[2, 4, 6, 8]"),
@@ -160,6 +194,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(value=slice(0, 5), expressions=(SliceExpression(upper="5"),)),
             ("a[:5]", "[0, 1, 2, 3, 4]"),
@@ -169,6 +204,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(value=slice(3, 10), expressions=(SliceExpression(lower="3"),)),
             ("a[3:]", "[3, 4, 5, 6, 7, 8, 9]"),
@@ -178,6 +214,7 @@ def test_create_expressions_with_single_slice(target_obj: ExprObj, slice_obj: Ex
             NameObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
             ),
             SliceObj(value=slice(0, 10), expressions=(SliceExpression(),)),
             ("a[:]", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),

@@ -1,6 +1,7 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
+from app.visualize.analysis.stmt.models.stmt_type import StmtType
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
@@ -15,20 +16,20 @@ class ConverterTraveler:
     def travel(analysis_objs, viz_manager: VisualizationManager) -> list:
         viz_objs = []
         for analysis_obj in analysis_objs:
-            if analysis_obj.type == "assign":
+            if analysis_obj.type == StmtType.ASSIGN:
                 viz_objs.extend(ConverterTraveler._convert_to_assign_vizs(analysis_obj, viz_manager))
 
-            elif analysis_obj.type == "for":
+            elif analysis_obj.type == StmtType.FOR:
                 for_viz_list = ConverterTraveler._for_convert(analysis_obj, viz_manager)
                 viz_objs.extend(for_viz_list)
 
-            elif analysis_obj.type == "expr":
+            elif analysis_obj.type == StmtType.EXPR:
                 viz_objs.extend(ConverterTraveler._convert_to_expr_vizs(analysis_obj, viz_manager))
 
-            elif analysis_obj.type == "if":
+            elif analysis_obj.type == StmtType.IF:
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
 
-            elif analysis_obj.type == "flowControl":
+            elif analysis_obj.type == StmtType.FLOW_CONTROL:
                 viz_objs.append(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
 
             else:

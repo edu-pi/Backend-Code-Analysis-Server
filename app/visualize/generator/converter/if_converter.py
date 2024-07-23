@@ -27,7 +27,7 @@ class IfConverter:
     @staticmethod
     def _create__if_else_define_viz(condition: ConditionObj) -> ConditionViz:
         expr = condition.expressions[0] if condition.type != "else" else ""
-        return ConditionViz(id=condition.id, expr=expr, type=condition.type)
+        return ConditionViz(id=condition.id, expr=expr, type=condition.type.value)
 
     @staticmethod
     def convert_to_if_else_change_viz(

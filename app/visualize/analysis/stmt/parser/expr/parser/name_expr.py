@@ -1,5 +1,6 @@
 import ast
 
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
 
@@ -9,12 +10,12 @@ class NameExpr:
     @staticmethod
     def parse(node: ast.Name, elem_container: ElementContainer):
         if isinstance(node.ctx, ast.Store):
-            return NameObj(value=node.id, expressions=(node.id,))
+            return NameObj(value=node.id, expressions=(node.id,), type=ExprType.NAME)
 
         elif isinstance(node.ctx, ast.Load):
             value = NameExpr._get_identifier_value(node.id, elem_container)
             expressions = NameExpr._create_expressions(node.id, value)
-            return NameObj(value=value, expressions=expressions)
+            return NameObj(value=value, expressions=expressions, type=ExprType.get_type(value))
 
         elif isinstance(node.ctx, ast.Del):
             raise NotImplementedError(f"Unsupported node type: {type(node.ctx)}")

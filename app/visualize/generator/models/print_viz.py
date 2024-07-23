@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -8,7 +8,7 @@ class PrintViz:
     expr: str
     highlights: []
     console: str | None
-    type: str = "print"
+    type: str = field(default="print", init=False)
 
 
 """

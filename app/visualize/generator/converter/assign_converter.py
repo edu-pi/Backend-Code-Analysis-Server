@@ -8,12 +8,12 @@ class AssignConverter:
     @staticmethod
     def convert(assign_obj: AssignStmtObj):
         expr_stmt_obj = assign_obj.expr_stmt_obj
-        var_type = utils.get_var_type(expr_stmt_obj.value, expr_stmt_obj.expr_type)
+        var_type = expr_stmt_obj.expr_type.value
 
         return AssignConverter._convert_to_assign_viz(expr_stmt_obj, assign_obj.targets, var_type)
 
     @staticmethod
-    def _convert_to_assign_viz(expr_stmt_obj, targets, var_type):
+    def _convert_to_assign_viz(expr_stmt_obj, targets, var_type: str):
         variable_list = []
 
         for target in targets:
@@ -22,7 +22,8 @@ class AssignConverter:
         return AssignViz(variables=variable_list)
 
     @staticmethod
-    def _create_variable_list(expr_stmt_obj, target, var_type, variable_list):
+    def _create_variable_list(expr_stmt_obj, target, var_type: str, variable_list):
+
         # target이 list나 tuple일 경우
         if utils.is_array(target):
             #  value가 list나 tuple이 아닌 경우 예외
@@ -54,10 +55,3 @@ class AssignConverter:
                     type=var_type,
                 )
             )
-
-    @staticmethod
-    def _get_var_type(var_type: str):
-        if var_type in ("name", "constant", "binop"):
-            return "variable"
-
-        return var_type

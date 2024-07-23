@@ -2,9 +2,10 @@ import ast
 
 from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 
 
 class ForStmt:
@@ -26,13 +27,14 @@ class ForStmt:
             raise TypeError(f"[ForParser]:  {type(target)}는 잘못된 타입입니다.")
 
     @staticmethod
-    def _get_condition_obj(iter: ast, elem_container: ElementContainer):
-        if isinstance(iter, ast.Call):
-            range_obj = ExprTraveler.travel(iter, elem_container)
-            return range_obj
+    def _get_condition_obj(iter_node: ast, elem_container: ElementContainer) -> ExprObj:
+        if isinstance(iter_node, ast.Call):
+            call_obj = ExprTraveler.travel(iter_node, elem_container)
+            return call_obj
 
-        elif isinstance(iter, ast.List):
-            raise NotImplementedError(f"[ForParser]: {type(iter)}는 지원하지 않는 타입입니다.")
+        elif isinstance(iter_node, ast.List):
+            list_obj = ExprTraveler.travel(iter_node, elem_container)
+            return list_obj
 
         else:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")

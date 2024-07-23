@@ -3,6 +3,7 @@ import ast
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, BinopObj, ConstantObj, NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 
 
@@ -24,7 +25,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
             id="'Hello' + 'World': success case",
         ),
         pytest.param(
-            NameObj(value=10, expressions=("a", "10")),
+            NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
             ConstantObj(value=1, expressions=("1",)),
             ast.Add(),
             BinopObj(value=11, expressions=("a + 1", "10 + 1", "11")),

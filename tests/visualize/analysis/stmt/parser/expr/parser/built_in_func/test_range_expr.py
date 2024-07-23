@@ -1,6 +1,7 @@
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, RangeObj, ConstantObj, NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 
@@ -19,7 +20,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr imp
             id="range(1, 5): success case",
         ),
         pytest.param(
-            [ConstantObj(value=1, expressions=("1",)), NameObj(value=5, expressions=("a", "5"))],
+            [ConstantObj(value=1, expressions=("1",)), NameObj(value=5, expressions=("a", "5"), type=ExprType.NAME)],
             RangeObj(
                 value=tuple(range(1, 5, 1)),
                 expressions=(

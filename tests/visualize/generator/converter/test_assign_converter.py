@@ -4,6 +4,7 @@ import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable
@@ -26,7 +27,7 @@ def create_assign():
             ["a"],
             3,
             ["3"],
-            "constant",
+            ExprType.VARIABLE,
             AssignViz(variables=[Variable(id=1, name="a", expr="3", type="variable")]),
             id="a = 3: success case",
         ),
@@ -34,7 +35,7 @@ def create_assign():
             ["b"],
             4,
             ["a + 1", "3 + 1", "4"],
-            "binop",
+            ExprType.VARIABLE,
             AssignViz(variables=[Variable(id=1, name="b", expr="4", type="variable")]),
             id="b = a + 1: success case",
         ),
@@ -42,7 +43,7 @@ def create_assign():
             ["c", "d"],
             5,
             ["b + 1", "4 + 1", "5"],
-            "binop",
+            ExprType.VARIABLE,
             AssignViz(
                 variables=[
                     Variable(id=1, name="c", expr="5", type="variable"),
@@ -55,7 +56,7 @@ def create_assign():
             ["e"],
             [1, 2, 3],
             ["[1,2,3]"],
-            "list",
+            ExprType.LIST,
             AssignViz(
                 variables=[Variable(id=1, name="e", expr="[1,2,3]", type="list")],
             ),
@@ -65,7 +66,7 @@ def create_assign():
             ["f"],
             ["Hello", "World"],
             ["['Hello','World']"],
-            "list",
+            ExprType.LIST,
             AssignViz(
                 variables=[Variable(id=1, name="f", expr="['Hello','World']", type="list")],
             ),
@@ -75,7 +76,7 @@ def create_assign():
             ["g"],
             [11, "Hello"],
             ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
-            "list",
+            ExprType.LIST,
             AssignViz(
                 variables=[Variable(id=1, name="g", expr="[11,10]", type="list")],
             ),

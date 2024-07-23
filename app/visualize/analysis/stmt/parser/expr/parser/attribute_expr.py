@@ -1,4 +1,5 @@
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, AttributeObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 
 
 class AttributeExpr:
@@ -8,7 +9,7 @@ class AttributeExpr:
         value = AttributeExpr._get_value(target_obj, attr_name)
         expressions = AttributeExpr._create_expressions(target_obj)
 
-        return AttributeObj(value=value, expressions=expressions, type=attr_name)
+        return AttributeObj(value=value, expressions=expressions, type=ExprType(attr_name))
 
     @staticmethod
     def _get_value(target_obj: ExprObj, attr_name: str):

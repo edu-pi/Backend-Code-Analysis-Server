@@ -9,4 +9,4 @@ def test_parse():
 
     actual = BreakStmt.parse(node)
 
-    assert actual == BreakStmtObj(id=1, expr="break")
+    assert actual == BreakStmtObj(id=1)

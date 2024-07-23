@@ -1,6 +1,7 @@
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import TupleObj, ExprObj, ConstantObj, NameObj, BinopObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
 
 
@@ -18,7 +19,10 @@ from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
             id="(a + 1, 20): success case",
         ),
         pytest.param(
-            [NameObj(value="Hello", expressions=("a", "Hello")), ConstantObj(value="World", expressions=("World",))],
+            [
+                NameObj(value="Hello", expressions=("a", "Hello"), type=ExprType.VARIABLE),
+                ConstantObj(value="World", expressions=("World",)),
+            ],
             TupleObj(value=("Hello", "World"), expressions=("['a','World']", "['Hello','World']")),
             id='(a, "World"): success case',
         ),

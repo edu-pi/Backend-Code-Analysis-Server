@@ -47,10 +47,10 @@ def test__get_if_body_viz_list(mocker, get_if_stmt_obj):
 
 
 def test__convert_to_flow_control_viz_pass_호출(mock_viz_manager_with_custom_depth):
-    node = PassStmtObj(id=1, expr="pass")
-    viz_manager = mock_viz_manager_with_custom_depth(1)
+    node = PassStmtObj(id=1)
+    mock_viz_manager = mock_viz_manager_with_custom_depth(1)
 
     with (patch.object(FlowControlConverter, "convert") as mock_convert_to_pass,):
-        ConverterTraveler._convert_to_flow_control_viz(node, viz_manager)
+        ConverterTraveler._convert_to_flow_control_viz(node, mock_viz_manager)
 
-        mock_convert_to_pass.assert_called_once_with(node, viz_manager)
+        mock_convert_to_pass.assert_called_once_with(node, mock_viz_manager)

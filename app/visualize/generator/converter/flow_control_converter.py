@@ -10,6 +10,6 @@ class FlowControlConverter:
         return FlowControlViz(
             id=node.id,
             depth=viz_manager.get_depth(),
-            expr=node.expr,
-            highlights=list(range(len(node.expr))),
+            expr=node.flow_control_type.value,
+            highlights=list(range(len(node.flow_control_type.value))),
         )

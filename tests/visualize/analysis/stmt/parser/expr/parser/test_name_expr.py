@@ -2,6 +2,7 @@ import ast
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
 
 
@@ -11,25 +12,25 @@ from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
         pytest.param(
             ast.Name(ctx=ast.Store(), id="a"),
             None,
-            NameObj(value="a", expressions=("a",)),
+            NameObj(value="a", expressions=("a",), type=ExprType.NAME),
             id="a ast.Store(): success case",
         ),
         pytest.param(
             ast.Name(ctx=ast.Store(), id="abc"),
             None,
-            NameObj(value="abc", expressions=("abc",)),
+            NameObj(value="abc", expressions=("abc",), type=ExprType.NAME),
             id="abc ast.Store(): success case",
         ),
         pytest.param(
             ast.Name(ctx=ast.Load(), id="a"),
             10,
-            NameObj(value=10, expressions=("a", "10")),
+            NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
             id="a ast.Load(): success case",
         ),
         pytest.param(
             ast.Name(ctx=ast.Load(), id="a"),
             [0, 1, 2, 3, 4],
-            NameObj(value=[0, 1, 2, 3, 4], expressions=("a", "[0, 1, 2, 3, 4]")),
+            NameObj(value=[0, 1, 2, 3, 4], expressions=("a", "[0, 1, 2, 3, 4]"), type=ExprType.LIST),
             id="a ast.Load(): success case",
         ),
     ],

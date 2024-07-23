@@ -2,7 +2,8 @@ import ast
 
 import pytest
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj, ConstantObj, NameObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj, ConstantObj, NameObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareExpr
 
 
@@ -25,7 +26,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareE
                 expressions=("1",),
             ),
             (
-                NameObj(value=10, expressions=("a", "10")),
+                NameObj(value=10, expressions=("a", "10"), type=ExprType.VARIABLE),
                 ConstantObj(value=30, expressions=("30",)),
             ),
             (ast.Lt(), ast.Lt()),
@@ -34,7 +35,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareE
         ),
     ],
 )
-def test_parse(left_obj, comparators, ops, expected):
+def test_parse(left_obj: ExprObj, comparators, ops, expected: CompareObj):
     result = CompareExpr.parse(left_obj, comparators, ops)
     assert result.value == expected.value
     assert result.expressions == expected.expressions
@@ -55,7 +56,7 @@ def test_parse(left_obj, comparators, ops, expected):
         pytest.param("d", ["a", "b", "c"], ast.NotIn(), True, id="d not in ['a', 'b', 'c']"),
     ],
 )
-def test_calculate_value(left_value, right_value, op, expected):
+def test_calculate_value(left_value, right_value, op: ast.cmpop, expected):
     result = CompareExpr._calculate_value(left_value, right_value, op)
     assert result == expected
 
@@ -63,9 +64,10 @@ def test_calculate_value(left_value, right_value, op, expected):
 def test_calculate_value_Is():
     list1 = [1, 2, 3]
     list2 = list1
+    ast_is: ast.Is = ast.Is()
 
-    result = CompareExpr._calculate_value(list1, list2, ast.Is())
-    assert result == True
+    result = CompareExpr._calculate_value(list1, list2, ast_is)
+    assert result is True
 
 
 @pytest.mark.parametrize(
@@ -80,6 +82,6 @@ def test_calculate_value_Is():
         ("a", ["a", "b", "c"], ast.NotIn(), False),
     ],
 )
-def test_calculate_value_fail(left_value, right_value, op, expected):
+def test_calculate_value_fail(left_value, right_value, op: ast, expected):
     result = CompareExpr._calculate_value(left_value, right_value, op)
     assert result == expected

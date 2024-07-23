@@ -11,7 +11,7 @@ from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt
     [
         pytest.param(
             ast.Pass(lineno=1),
-            PassStmtObj(id=1, expr="pass"),
+            PassStmtObj(id=1),
             id="pass: success case",
         ),
     ],
@@ -19,4 +19,4 @@ from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt
 def test_parse(node: ast.Pass, expect):
     actual = PassStmt.parse(node)
 
-    assert actual == PassStmtObj(id=node.lineno, expr="pass")
+    assert actual == PassStmtObj(id=node.lineno)

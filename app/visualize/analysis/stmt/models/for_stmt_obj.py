@@ -1,7 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj
+from app.visualize.analysis.stmt.models.stmt_type import StmtType
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 
 
 @dataclass
@@ -14,6 +15,6 @@ class BodyObj:
 class ForStmtObj:
     id: int
     target_name: str
-    iter_obj: RangeObj
+    iter_obj: ExprObj
     body_objs: list[BodyObj] = None
-    type: str = "for"
+    type: StmtType = field(default_factory=lambda: StmtType.FOR, init=False)

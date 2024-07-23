@@ -15,6 +15,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.flow_control_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
@@ -71,10 +72,9 @@ def test__for_travel(mocker, code, create_ast, elem_container):
             [
                 AssignStmtObj(
                     targets=("a",),
-                    expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type="constant", type="expr"),
-                    type="assign",
+                    expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
                 ),
-                ExprStmtObj(id=2, value="'hello'\n", expressions=("'hello'",), expr_type="print", type="expr"),
+                ExprStmtObj(id=2, value="'hello'\n", expressions=("'hello'",), expr_type=ExprType.PRINT),
             ],
         ),
         pytest.param(
@@ -82,13 +82,11 @@ def test__for_travel(mocker, code, create_ast, elem_container):
             [
                 AssignStmtObj(
                     targets=("left",),
-                    expr_stmt_obj=ExprStmtObj(id=2, value=0, expressions=("0",), expr_type="constant", type="expr"),
-                    type="assign",
+                    expr_stmt_obj=ExprStmtObj(id=2, value=0, expressions=("0",), expr_type=ExprType.VARIABLE),
                 ),
                 AssignStmtObj(
                     targets=("right",),
-                    expr_stmt_obj=ExprStmtObj(id=3, value=10, expressions=("10",), expr_type="constant", type="expr"),
-                    type="assign",
+                    expr_stmt_obj=ExprStmtObj(id=3, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
                 ),
                 IfStmtObj(
                     conditions=(
@@ -99,9 +97,8 @@ def test__for_travel(mocker, code, create_ast, elem_container):
                         ),
                     ),
                     body_steps=[
-                        ExprStmtObj(id=5, value="'check'\n", expressions=("'check'",), expr_type="print", type="expr")
+                        ExprStmtObj(id=5, value="'check'\n", expressions=("'check'",), expr_type=ExprType.PRINT)
                     ],
-                    type="if",
                 ),
             ],
         ),
@@ -224,11 +221,11 @@ def test_parse_if_body_추가(mocker, node: ast.If, conditions: list[ConditionOb
     mocker.patch.object(
         StmtTraveler,
         "travel",
-        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print"),
+        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT),
     )
     StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
 
-    assert body_objs[-1] == ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print")
+    assert body_objs[-1] == ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)
 
 
 @pytest.mark.parametrize(
@@ -237,7 +234,7 @@ def test_parse_if_body_추가(mocker, node: ast.If, conditions: list[ConditionOb
         pytest.param(
             ast.parse("if a < 10: \n    print('hello')").body[0],
             [IfConditionObj(id=1, expressions=("a<10",), result=False)],
-            [ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print")],
+            [ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)],
             id="if condition is False - 바디 추가 안함",
         )
     ],
@@ -248,7 +245,7 @@ def test_parse_if_body_추가_안함(
     mocker.patch.object(
         StmtTraveler,
         "travel",
-        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type="print"),
+        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT),
     )
     temp_body_objs = list(body_objs)
     StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
@@ -339,7 +336,7 @@ def test__flow_control_travel(mocker, node: ast):
 
 def test__break_travel(mocker):
     node = ast.Break(lineno=1)
-    mock_break_stmt = mocker.patch.object(BreakStmt, "parse", return_value=BreakStmtObj(id=1, expr="break"))
+    mock_break_stmt = mocker.patch.object(BreakStmt, "parse", return_value=BreakStmtObj(id=1))
 
     StmtTraveler._break_travel(node)
 
