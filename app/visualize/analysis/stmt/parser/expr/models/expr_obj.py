@@ -15,28 +15,24 @@ class ExprObj:
 
 @dataclass(frozen=True)
 class BinopObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.VARIABLE, init=False)
 
 
 @dataclass(frozen=True)
 class CompareObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.COMPARE, init=False)
 
 
 @dataclass(frozen=True)
 class ConstantObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.VARIABLE, init=False)
 
 
 @dataclass(frozen=True)
 class NameObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType
 
@@ -57,7 +53,6 @@ class TupleObj(ExprObj):
 
 @dataclass(frozen=True)
 class CallObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.CALL, init=False)
 
@@ -77,7 +72,6 @@ class PrintObj(CallObj):
 
 @dataclass(frozen=True)
 class SubscriptObj(ExprObj):
-    value: Any
     expressions = tuple[str, ...]
     type: ExprType = field(default=ExprType.SUBSCRIPT, init=False)
 
@@ -91,7 +85,6 @@ class SliceObj(ExprObj):
 
 @dataclass(frozen=True)
 class AttributeObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
     type: ExprType
 
