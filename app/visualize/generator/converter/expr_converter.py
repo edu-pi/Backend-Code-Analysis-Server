@@ -50,7 +50,7 @@ class ExprConverter:
 
     @staticmethod
     def _convert_to_print_viz(expr_stmt_obj: ExprStmtObj, call_id, depth):
-        highlights = ExprHighlight.get_highlight_indexes(expr_stmt_obj.expressions)
+        highlights = ExprHighlight.get_highlight_indexes_exclusive_last(expr_stmt_obj.expressions)
 
         print_vizs = [
             PrintViz(
