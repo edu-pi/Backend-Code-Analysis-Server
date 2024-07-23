@@ -229,6 +229,6 @@ def test_contains_break_fail(body_steps):
     ],
 )
 def test_get_pre_break_body_steps(body_objs, expected):
-    actual = ForStmt.get_pre_break_body_steps(body_objs)
+    actual = ForStmt.get_pre_flow_control_body_steps(body_objs, BreakStmtObj)
 
     assert actual == expected
