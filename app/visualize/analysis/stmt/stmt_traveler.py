@@ -1,5 +1,6 @@
 import ast
 
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
@@ -50,7 +51,7 @@ class StmtTraveler:
             elem_manager.set_element(for_stmt_obj.target_name, i)
             body_steps = StmtTraveler._parse_for_body(node.body, elem_manager)
 
-            if ForStmt.contains_break(body_steps):
+            if ForStmt.contain_flow_control(body_steps, BreakStmtObj):
                 body_steps = ForStmt.get_pre_break_body_steps(body_steps)
                 is_break = True
 

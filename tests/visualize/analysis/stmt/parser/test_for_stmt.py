@@ -79,7 +79,7 @@ def test__get_target_name_fail(elem_container, target):
 )
 def test_contains_break_success(body_steps):
     # stmt list에서 break가 존재하는지 확인
-    actual = ForStmt.contains_break(body_steps)
+    actual = ForStmt.contain_flow_control(body_steps, BreakStmtObj)
 
     assert actual is True
 
@@ -126,7 +126,7 @@ def test_contains_break_success(body_steps):
 )
 def test_contains_break_fail(body_steps):
     # stmt list에서 break가 존재하는지 확인
-    actual = ForStmt.contains_break(body_steps)
+    actual = ForStmt.contain_flow_control(body_steps, BreakStmtObj)
 
     assert actual is False
 
