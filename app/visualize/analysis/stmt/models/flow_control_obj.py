@@ -15,3 +15,10 @@ class PassStmtObj:
     id: int
     flow_control_type: StmtType = field(default_factory=lambda: StmtType.PASS, init=False)
     type: StmtType = field(default_factory=lambda: StmtType.FLOW_CONTROL, init=False)
+
+
+@dataclass(frozen=True)
+class ContinueStmtObj:
+    id: int
+    flow_control_type: StmtType = field(default_factory=lambda: StmtType.CONTINUE, init=False)
+    type: StmtType = field(default_factory=lambda: StmtType.FLOW_CONTROL, init=False)
