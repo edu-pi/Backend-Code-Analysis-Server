@@ -30,7 +30,6 @@ class AssignStmt:
         target_names = []
 
         for target_node in target_nodes:
-
             if isinstance(target_node, ast.Name):
                 expr_obj = ExprTraveler.travel(target_node, elem_container)
 
