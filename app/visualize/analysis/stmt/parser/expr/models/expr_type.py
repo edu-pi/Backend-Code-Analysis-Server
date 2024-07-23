@@ -24,7 +24,7 @@ class ExprType(Enum):
     APPEND = "append"
 
     @staticmethod
-    def get_type(value):
+    def judge_value_type(value):
         if isinstance(value, list):
             return ExprType.LIST
 

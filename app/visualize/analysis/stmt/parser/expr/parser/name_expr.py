@@ -15,7 +15,7 @@ class NameExpr:
         elif isinstance(node.ctx, ast.Load):
             value = NameExpr._get_identifier_value(node.id, elem_container)
             expressions = NameExpr._create_expressions(node.id, value)
-            return NameObj(value=value, expressions=expressions, type=ExprType.get_type(value))
+            return NameObj(value=value, expressions=expressions, type=ExprType.judge_value_type(value))
 
         elif isinstance(node.ctx, ast.Del):
             raise NotImplementedError(f"Unsupported node type: {type(node.ctx)}")
