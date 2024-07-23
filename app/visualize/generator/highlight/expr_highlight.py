@@ -1,7 +1,7 @@
 class ExprHighlight:
 
     @staticmethod
-    def get_highlight_indexes(parsed_exprs):
+    def get_highlight_indexes_exclusive_last(parsed_exprs):
         highlights = []
         pre_expr = parsed_exprs[0]
 
@@ -13,6 +13,19 @@ class ExprHighlight:
 
         # 마지막 요소는 전체 인덱스 반환
         highlights.append(list(range(len(parsed_exprs[-1]))))
+
+        return highlights
+
+    @staticmethod
+    def get_highlight_indexes(parsed_exprs):
+        highlights = []
+        pre_expr = parsed_exprs[0]
+
+        highlights.append(list(range(len(parsed_exprs[0]))))
+
+        for cur_expr in parsed_exprs[1:]:
+            highlights.append(ExprHighlight._immediate_expression_indices(pre_expr, cur_expr))
+            pre_expr = cur_expr
 
         return highlights
 
