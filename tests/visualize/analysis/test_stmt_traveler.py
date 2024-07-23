@@ -29,6 +29,7 @@ from app.visualize.container.element_container import ElementContainer
         pytest.param("print('hello')", "_expr_travel", id="expr"),
         pytest.param("pass", "_flow_control_travel", id="pass"),
         pytest.param("break", "_flow_control_travel", id="break"),
+        pytest.param("continue", "_flow_control_travel", id="continue"),
     ],
 )
 def test_travel(mocker, code: str, called_func: str, create_ast, elem_container):
@@ -308,14 +309,15 @@ def test_parse_if_orelse_예외발생(target, elem_container):
 
 
 @pytest.mark.parametrize(
-    "node, called_func",
+    "node, called_class, called_func",
     [
-        pytest.param(ast.Pass(), "_pass_travel", id="_pass_travel 호출 success"),
-        pytest.param(ast.Break(), "_break_travel", id="_break_travel 호출 success"),
+        pytest.param(ast.Pass(), "PassStmt", "parse", id="BreakStmt.parse 호출 success"),
+        pytest.param(ast.Break(), "BreakStmt", "parse", id="BreakStmt.parse 호출 success"),
+        pytest.param(ast.Break(), "ContinueStmt", "parse", id="ContinueStmt.parse 호출 success"),
     ],
 )
-def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue, called_func):
-    mock_func = mocker.patch.object(StmtTraveler, called_func)
+def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue, called_class, called_func):
+    mock_func = mocker.patch.object(called_class, called_func)
 
     StmtTraveler._flow_control_travel(node)
 
@@ -332,12 +334,3 @@ def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue,
 def test__flow_control_travel(mocker, node: ast):
     with pytest.raises(TypeError):
         StmtTraveler._flow_control_travel(node)
-
-
-def test__break_travel(mocker):
-    node = ast.Break(lineno=1)
-    mock_break_stmt = mocker.patch.object(BreakStmt, "parse", return_value=BreakStmtObj(id=1))
-
-    StmtTraveler._break_travel(node)
-
-    mock_break_stmt.assert_called_once_with(node)

@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
@@ -149,22 +149,13 @@ class StmtTraveler:
     @staticmethod
     def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue):
         if isinstance(node, ast.Pass):
-            return StmtTraveler._pass_travel(node)
+            return PassStmt.parse(node)
 
         elif isinstance(node, ast.Break):
-            return StmtTraveler._break_travel(node)
+            return BreakStmt.parse(node)
 
         elif isinstance(node, ast.Continue):
-            # TODO: ContinueStmt.parse()
-            pass
+            return ContinueStmt.parse(node)
 
         else:
             raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
-
-    @staticmethod
-    def _pass_travel(node: ast.Pass):
-        return PassStmt.parse(node)
-
-    @staticmethod
-    def _break_travel(node: ast.Break):
-        return BreakStmt.parse(node)
