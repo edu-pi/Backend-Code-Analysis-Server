@@ -1,10 +1,10 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
 class AssignViz:
     variables: list
-    type: str = "assignViz"
+    type: str = field(default="assign", init=False)
 
 
 """

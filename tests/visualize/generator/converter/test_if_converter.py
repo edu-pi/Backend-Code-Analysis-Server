@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
-from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ElifConditionObj,
@@ -12,6 +12,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
 )
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import PrintObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.if_viz import ConditionViz, IfElseChangeViz
@@ -68,9 +69,11 @@ def test_convert_to_if_else_define_viz(conditions: tuple[ConditionObj, ...], exp
                 IfStmtObj(
                     conditions=(IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=False),),
                     body_steps=[
-                        AssignStmtObj(targets="a", expr_stmt_obj="10"),
+                        AssignStmtObj(
+                            targets=("a",),
+                            expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                        ),
                     ],
-                    type="if",
                 )
             )
         ),
@@ -82,7 +85,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
 
 
 @pytest.mark.parametrize(
-    "condition, condition_type, expected",
+    "condition, expected",
     [
         pytest.param(
             IfConditionObj(
@@ -93,7 +96,6 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 ),
                 result=True,
             ),
-            "if",
             ConditionViz(id=1, expr="a > b", type="if"),
             id="if문 Condition viz 생성",
         ),
@@ -106,7 +108,6 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 ),
                 result=False,
             ),
-            "elif",
             ConditionViz(id=1, expr="a < b", type="elif"),
             id="elif문 Condition viz 생성",
         ),
@@ -116,13 +117,12 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 expressions=None,
                 result=False,
             ),
-            "else",
             ConditionViz(id=1, expr="", type="else"),
             id="else Condition viz 생성",
         ),
     ],
 )
-def test__create__if_else_define_viz(condition: ConditionObj, condition_type, expected):
+def test__create__if_else_define_viz(condition: ConditionObj, expected):
     actual = IfConverter._create__if_else_define_viz(condition)
     assert actual == expected
 
@@ -191,7 +191,9 @@ def test_convert_to_if_else_change_viz(
         ),
     ],
 )
-def test__create_condition_evaluation_steps(condition, highlights, expected, mock_viz_manager_with_custom_depth):
+def test__create_condition_evaluation_steps(
+    condition: ConditionObj, highlights, expected, mock_viz_manager_with_custom_depth
+):
     with patch.object(ExprHighlight, "get_highlight_indexes", side_effect=[highlights]):
         actual = IfConverter._create_condition_evaluation_steps(condition, mock_viz_manager_with_custom_depth(1))
         assert actual == expected
@@ -216,7 +218,7 @@ def test__create_condition_evaluation_steps(condition, highlights, expected, moc
         ),
     ],
 )
-def test__create_condition_result(condition, expected, mock_viz_manager_with_custom_depth):
+def test__create_condition_result(condition: ConditionObj, expected, mock_viz_manager_with_custom_depth):
     actual = IfConverter._create_condition_result(condition, mock_viz_manager_with_custom_depth(1))
 
     assert actual == expected

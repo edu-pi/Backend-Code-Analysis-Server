@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -12,7 +12,7 @@ class ConditionViz:
 class IfElseDefineViz:
     depth: int
     conditions: tuple[ConditionViz, ...]
-    type: str = "ifElseDefine"
+    type: str = field(default="ifElseDefine", init=False)
 
 
 @dataclass(frozen=True)
@@ -21,4 +21,4 @@ class IfElseChangeViz:
     depth: int
     expr: str
     highlights: []
-    type: str = "ifElseChange"
+    type: str = field(default="ifElseChange", init=False)

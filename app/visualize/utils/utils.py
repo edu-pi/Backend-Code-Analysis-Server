@@ -20,29 +20,6 @@ def list_to_str(list_: list):
     return " ".join(list_)
 
 
-def get_var_type(var_value, obj_type: str):
-    if obj_type in ("binop", "constant"):
-        return "variable"
-
-    elif obj_type == "name" or obj_type == "subscript":
-        return check_list(var_value)
-
-    else:
-        return obj_type
-
-
-def check_list(var_value):
-    if isinstance(var_value, list) or is_list(var_value):
-        return "list"
-
-    else:
-        return "variable"
-
-
-def is_list(var_value):
-    return var_value.startswith("[") and var_value.endswith("]")
-
-
 def is_array(target):
     if isinstance(target, (list, tuple)):
         return True

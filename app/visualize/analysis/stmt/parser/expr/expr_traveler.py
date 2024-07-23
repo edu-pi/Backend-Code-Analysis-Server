@@ -96,7 +96,7 @@ class ExprTraveler:
         return ListExpr.parse(elts)
 
     @staticmethod
-    def _tuple_travel(node: ast.List, elem_container: ElementContainer):
+    def _tuple_travel(node: ast.Tuple, elem_container: ElementContainer):
         elts = [ExprTraveler.travel(elt, elem_container) for elt in node.elts]
         return TupleExpr.parse(elts)
 

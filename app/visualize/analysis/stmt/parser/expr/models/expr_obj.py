@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.models.slice_expression import SliceExpression
 
@@ -9,84 +10,87 @@ from app.visualize.analysis.stmt.parser.expr.models.slice_expression import Slic
 class ExprObj:
     value: Any
     expressions: tuple
-    type: str
+    type: ExprType
 
 
 @dataclass(frozen=True)
 class BinopObj(ExprObj):
-    type: str = field(default="binop", init=False)
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.VARIABLE, init=False)
 
 
 @dataclass(frozen=True)
 class CompareObj(ExprObj):
-    type: str = field(default="compare", init=False)
-
-
-@dataclass(frozen=True)
-class CallObj(ExprObj):
-    type: str = field(default="call", init=False)
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.COMPARE, init=False)
 
 
 @dataclass(frozen=True)
 class ConstantObj(ExprObj):
-    type: str = field(default="constant", init=False)
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.VARIABLE, init=False)
 
 
 @dataclass(frozen=True)
 class NameObj(ExprObj):
-    type: str = field(default="name", init=False)
+    expressions: tuple[str, ...]
+    type: ExprType
 
 
 @dataclass(frozen=True)
 class ListObj(ExprObj):
     value: list
     expressions: tuple[str, ...]
-    type: str = field(default="list", init=False)
+    type: ExprType = field(default=ExprType.LIST, init=False)
 
 
 @dataclass(frozen=True)
 class TupleObj(ExprObj):
     value: tuple
     expressions = tuple[str, ...]
-    type: str = field(default="tuple", init=False)
+    type: ExprType = field(default=ExprType.TUPLE, init=False)
 
 
 @dataclass(frozen=True)
-class RangeObj(ExprObj):
+class CallObj(ExprObj):
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.CALL, init=False)
+
+
+@dataclass(frozen=True)
+class RangeObj(CallObj):
     value: tuple
     expressions: tuple[RangeExpression, ...]
-    type: str = field(default="range", init=False)
+    type: ExprType = field(default=ExprType.RANGE, init=False)
 
 
 @dataclass(frozen=True)
-class PrintObj(ExprObj):
+class PrintObj(CallObj):
     value: str
-    type: str = field(default="print", init=False)
+    type: ExprType = field(default=ExprType.PRINT, init=False)
 
 
 @dataclass(frozen=True)
 class SubscriptObj(ExprObj):
-    value: Any
     expressions = tuple[str, ...]
-    type: str = field(default="subscript", init=False)
+    type: ExprType = field(default=ExprType.SUBSCRIPT, init=False)
 
 
 @dataclass(frozen=True)
 class SliceObj(ExprObj):
     value: slice
     expressions = tuple[SliceExpression, ...]
-    type: str = field(default="slice", init=False)
+    type: ExprType = field(default=ExprType.SLICE, init=False)
 
 
 @dataclass(frozen=True)
 class AttributeObj(ExprObj):
-    value: Any
     expressions: tuple[str, ...]
-    type: str
+    type: ExprType
 
 
 @dataclass(frozen=True)
-class AppendObj(ExprObj):
-    value: Any
+class AppendObj(AttributeObj):
+    value: str
     expressions: tuple[str, ...]
-    type: str = field(default="append", init=False)
+    type: ExprType = field(default=ExprType.APPEND, init=False)

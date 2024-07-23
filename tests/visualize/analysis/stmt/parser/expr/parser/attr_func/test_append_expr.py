@@ -9,6 +9,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     NameObj,
     AppendObj,
 )
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.append_expr import AppendExpr
 
 
@@ -38,7 +39,7 @@ def test_parse(mocker, elem_container_dict: dict, expressions: tuple, args: list
     attr_obj = AttributeObj(
         value=getattr(elem_container_dict["a"], "append"),
         expressions=expressions,
-        type="append",
+        type=ExprType.APPEND,
     )
 
     result = AppendExpr.parse(attr_obj, args)
@@ -68,7 +69,7 @@ def test_parse_wrong_arguments():
         pytest.param(
             {"a": [1, 2, 3, 4, 5]},
             ("a", "[1, 2, 3, 4, 5]"),
-            NameObj(value=11, expressions=("b + 1", "10 + 1", "11")),
+            NameObj(value=11, expressions=("b + 1", "10 + 1", "11"), type=ExprType.VARIABLE),
             id="a.append(b + 1): success case",
         ),
     ],
@@ -77,7 +78,7 @@ def test_append_value(elem_container_dict: dict, expressions: tuple, arg: ExprOb
     attr_obj = AttributeObj(
         value=getattr(elem_container_dict["a"], "append"),
         expressions=expressions,
-        type="append",
+        type=ExprType.APPEND,
     )
     AppendExpr._append_value(attr_obj, arg)
 
@@ -99,7 +100,7 @@ def test_get_value(elem_container_dict: dict, expressions: tuple, expected: str)
     attr_obj = AttributeObj(
         value=getattr(elem_container_dict["a"], "append"),
         expressions=expressions,
-        type="append",
+        type=ExprType.APPEND,
     )
     result = AppendExpr._get_value(attr_obj)
 
@@ -115,7 +116,7 @@ def test_get_value(elem_container_dict: dict, expressions: tuple, expected: str)
             id="a.append(10): success case",
         ),
         pytest.param(
-            NameObj(value=11, expressions=("b + 1", "10 + 1", "11")),
+            NameObj(value=11, expressions=("b + 1", "10 + 1", "11"), type=ExprType.VARIABLE),
             ("b + 1", "10 + 1", "11"),
             id="a.append(b + 1): success case",
         ),

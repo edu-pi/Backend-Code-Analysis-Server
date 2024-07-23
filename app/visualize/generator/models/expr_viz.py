@@ -1,9 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 
 
 @dataclass(frozen=True)
 class ExprViz:
     id: int
     depth: int
-    expr: str
-    type: str
+    expr: ExprType
+    type: str = field(default="expr", init=False)
