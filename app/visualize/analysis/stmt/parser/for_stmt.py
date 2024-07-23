@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj, PassStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.container.element_container import ElementContainer
@@ -40,32 +40,36 @@ class ForStmt:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
 
     @staticmethod
-    def contains_break(body_objs):
+    def contain_flow_control(body_objs, flow_control_obj):
+        """
+        find_flow_control: BreakStmtObj | ContinueStmtObj | PassStmtObj
+        Returns: body_objs에 find_flow_control가 존재 하는지 결과 값 리턴
+        """
         for stmt_obj in body_objs:
             if isinstance(stmt_obj, IfStmtObj):
-                if ForStmt.contains_break(stmt_obj.body_steps):
+                if ForStmt.contain_flow_control(stmt_obj.body_steps, flow_control_obj):
                     return True
 
-            elif isinstance(stmt_obj, BreakStmtObj):
+            elif isinstance(stmt_obj, flow_control_obj):
                 return True
 
         return False
 
     @staticmethod
-    def get_pre_break_body_steps(body_objs) -> list:
+    def get_pre_flow_control_body_steps(body_objs, flow_control_obj) -> list:
         result = []
 
         for stmt_obj in body_objs:
-            # break 발견 후 중단
-            if isinstance(stmt_obj, BreakStmtObj):
+            # flow_control 발견 후 중단
+            if isinstance(stmt_obj, flow_control_obj):
                 result.append(stmt_obj)
                 break
 
             if isinstance(stmt_obj, IfStmtObj):
-                # if문 안에 break 존재할 때
-                if ForStmt.contains_break(stmt_obj.body_steps):
-                    # break 이후를 제외한 스텝 생성
-                    new_body = ForStmt.get_pre_break_body_steps(stmt_obj.body_steps)
+                # if문 안에 flow_control 존재할 때
+                if ForStmt.contain_flow_control(stmt_obj.body_steps, flow_control_obj):
+                    # flow_control 이후를 제외한 스텝 생성
+                    new_body = ForStmt.get_pre_flow_control_body_steps(stmt_obj.body_steps, flow_control_obj)
                     # 새로운 if_stmt 객체 생성 후 삽입
                     result.append(stmt_obj.create_with_new_body(new_body))
                     break

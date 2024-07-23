@@ -1,6 +1,7 @@
 import ast
 
-from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
@@ -43,21 +44,26 @@ class StmtTraveler:
 
         # parse body
         body_objs = []
-        is_break = False
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
             elem_manager.set_element(for_stmt_obj.target_name, i)
+            # for문 안 body 로직을 stmt 리스트로 변환
             body_steps = StmtTraveler._parse_for_body(node.body, elem_manager)
 
-            if ForStmt.contains_break(body_steps):
-                body_steps = ForStmt.get_pre_break_body_steps(body_steps)
-                is_break = True
+            # break 존재할 때
+            if ForStmt.contain_flow_control(body_steps, BreakStmtObj):
+                body_steps = ForStmt.get_pre_flow_control_body_steps(body_steps, BreakStmtObj)
+                body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
+                break
+
+            # continue 존재할 때
+            if ForStmt.contain_flow_control(body_steps, ContinueStmtObj):
+                body_steps = ForStmt.get_pre_flow_control_body_steps(body_steps, ContinueStmtObj)
+                body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
+                continue
 
             body_objs.append(BodyObj(cur_value=i, body_steps=body_steps))
-
-            if is_break:
-                break
 
         for_stmt_obj.body_objs = body_objs
         return for_stmt_obj
@@ -149,22 +155,13 @@ class StmtTraveler:
     @staticmethod
     def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue):
         if isinstance(node, ast.Pass):
-            return StmtTraveler._pass_travel(node)
+            return PassStmt.parse(node)
 
         elif isinstance(node, ast.Break):
-            return StmtTraveler._break_travel(node)
+            return BreakStmt.parse(node)
 
         elif isinstance(node, ast.Continue):
-            # TODO: ContinueStmt.parse()
-            pass
+            return ContinueStmt.parse(node)
 
         else:
             raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
-
-    @staticmethod
-    def _pass_travel(node: ast.Pass):
-        return PassStmt.parse(node)
-
-    @staticmethod
-    def _break_travel(node: ast.Break):
-        return BreakStmt.parse(node)
