@@ -41,6 +41,7 @@ class ExprConverter:
                 id=call_id,
                 depth=depth,
                 expr=expr_stmt_obj.expressions[idx],
+                type=expr_stmt_obj.expr_type.value,
             )
             for idx in range(len(expr_stmt_obj.expressions))
         ]
