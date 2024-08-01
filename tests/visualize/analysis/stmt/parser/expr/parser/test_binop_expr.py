@@ -59,6 +59,7 @@ def test_parse(mocker, left_obj: ExprObj, right_obj: ExprObj, op: ast, expected:
         pytest.param(3, 2, ast.Mult(), 6, id="3 * 2: success case"),
         pytest.param(3, 2, ast.Div(), 1.5, id="3 / 2: success case"),
         pytest.param(3, 2, ast.FloorDiv(), 1, id="3 // 2: success case"),
+        pytest.param(3, 2, ast.Mod(), 1, id="3 % 2: success case"),
     ],
 )
 def test_calculate_value(left_value, right_value, op, expected):
@@ -110,6 +111,7 @@ def test_creat_expressions(left_obj, right_obj, op, value, expected):
         pytest.param("a", "b", ast.Mult(), "a * b", id="a * b: success case"),
         pytest.param("a", "b", ast.Div(), "a / b", id="a / b: success case"),
         pytest.param("a", "b", ast.FloorDiv(), "a // b", id="a // b: success case"),
+        pytest.param("a", "b", ast.Mod(), "a % b", id="a % b: success case"),
     ],
 )
 def test_concat_expression(left_expression, right_expression, op, expected):
