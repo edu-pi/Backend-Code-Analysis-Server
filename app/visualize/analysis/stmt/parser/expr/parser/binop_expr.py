@@ -31,6 +31,9 @@ class BinopExpr:
         elif isinstance(op, ast.FloorDiv):  # '//'
             return left_value // right_value  # 정수로 계산
 
+        elif isinstance(op, ast.Mod):
+            return left_value % right_value
+
         else:
             raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
 
@@ -69,6 +72,9 @@ class BinopExpr:
 
         elif isinstance(op, ast.FloorDiv):
             return f"{left_expression} // {right_expression}"
+
+        elif isinstance(op, ast.Mod):
+            return f"{left_expression} % {right_expression}"
 
         else:
             raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
