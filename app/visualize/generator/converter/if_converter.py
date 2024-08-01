@@ -3,7 +3,6 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ElifConditionObj,
 )
-from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.if_viz import ConditionViz, IfElseDefineViz, IfElseChangeViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 
@@ -53,7 +52,6 @@ class IfConverter:
         condition: ConditionObj, viz_manager: VisualizationManager
     ) -> list[IfElseChangeViz]:
         # 중간 과정 생성 - 10 + 20 > 30, 30 > 30
-        highlights = ExprHighlight.get_highlight_indexes(condition.expressions)
 
         if condition.expressions[0] == "True" or condition.expressions[0] == "False":
             return []
@@ -63,7 +61,6 @@ class IfConverter:
                 id=condition.id,
                 depth=viz_manager.get_depth(),
                 expr=expression,
-                highlights=highlights[idx],
             )
             for idx, expression in enumerate(condition.expressions)
         ]
@@ -76,6 +73,5 @@ class IfConverter:
                 id=condition.id,
                 depth=viz_manager.get_depth(),
                 expr=str(condition.result),
-                highlights=list(range(len(str(condition.result)))),
             )
         ]

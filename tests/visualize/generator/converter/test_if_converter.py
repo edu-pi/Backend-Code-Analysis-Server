@@ -133,18 +133,18 @@ def test__create__if_else_define_viz(condition: ConditionObj, expected):
         pytest.param(
             (IfConditionObj(id=1, expressions=("a > b", "10 > 20", "False"), result=False),),
             [
-                IfElseChangeViz(id=1, depth=1, expr="a > b", highlights=[0, 1, 2, 3, 4]),
-                IfElseChangeViz(id=1, depth=1, expr="10 > 20", highlights=[0, 1, 2, 3, 4, 5, 6]),
-                IfElseChangeViz(id=1, depth=1, expr="False", highlights=[0, 1, 2, 3, 4]),
+                IfElseChangeViz(id=1, depth=1, expr="a > b"),
+                IfElseChangeViz(id=1, depth=1, expr="10 > 20"),
+                IfElseChangeViz(id=1, depth=1, expr="False"),
             ],
             id="if문 False인 경우",
         ),
         pytest.param(
             (IfConditionObj(id=1, expressions=("a < b", "10 < 20", "True"), result=True),),
             [
-                IfElseChangeViz(id=1, depth=1, expr="a < b", highlights=[0, 1, 2, 3, 4]),
-                IfElseChangeViz(id=1, depth=1, expr="10 < 20", highlights=[0, 1, 2, 3, 4, 5, 6]),
-                IfElseChangeViz(id=1, depth=1, expr="True", highlights=[0, 1, 2, 3, 4]),
+                IfElseChangeViz(id=1, depth=1, expr="a < b"),
+                IfElseChangeViz(id=1, depth=1, expr="10 < 20"),
+                IfElseChangeViz(id=1, depth=1, expr="True"),
             ],
             id="elif문 True 경우",
         ),
@@ -161,7 +161,7 @@ def test_convert_to_if_else_change_viz(
         patch.object(
             IfConverter,
             "_create_condition_result",
-            return_value=[IfElseChangeViz(id=1, depth=1, expr="True", highlights=[0])],
+            return_value=[IfElseChangeViz(id=1, depth=1, expr="True")],
         ) as mock_create_condition_result,
     ):
         mock_viz_manager = mock_viz_manager_with_custom_depth(1)
@@ -177,8 +177,8 @@ def test_convert_to_if_else_change_viz(
             IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=False),
             [[0, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5, 6]],
             [
-                IfElseChangeViz(id=1, depth=1, expr="a > b", highlights=[0, 1, 2, 3, 4]),
-                IfElseChangeViz(id=1, depth=1, expr="10 > 20", highlights=[0, 1, 2, 3, 4, 5, 6]),
+                IfElseChangeViz(id=1, depth=1, expr="a > b"),
+                IfElseChangeViz(id=1, depth=1, expr="10 > 20"),
             ],
             id="a > 10 조건식 평가 과정 success",
         ),
@@ -204,14 +204,14 @@ def test__create_condition_evaluation_steps(
         pytest.param(
             IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=True),
             [
-                IfElseChangeViz(id=1, depth=1, expr="True", highlights=[0, 1, 2, 3]),
+                IfElseChangeViz(id=1, depth=1, expr="True"),
             ],
             id="최종 결과가 True 인 경우",
         ),
         pytest.param(
             IfConditionObj(id=1, expressions=("a < b", "20 < 10"), result=False),
             [
-                IfElseChangeViz(id=1, depth=1, expr="False", highlights=[0, 1, 2, 3, 4]),
+                IfElseChangeViz(id=1, depth=1, expr="False"),
             ],
             id="최종 결과가 False 인 경우",
         ),

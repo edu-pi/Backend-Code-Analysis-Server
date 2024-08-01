@@ -20,5 +20,4 @@ class IfElseChangeViz:
     id: int
     depth: int
     expr: str
-    highlights: []
     type: str = field(default="ifElseChange", init=False)

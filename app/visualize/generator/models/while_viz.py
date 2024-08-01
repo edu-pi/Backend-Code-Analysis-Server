@@ -16,5 +16,4 @@ class WhileChangeConditionViz:
     id: int
     depth: int
     expr: str
-    highlights: []
     type: str = "whileChangeCondition"
