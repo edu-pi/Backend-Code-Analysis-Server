@@ -11,14 +11,14 @@ from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
     [
         pytest.param(
             "a>10",
-            IfConditionObj(id=1, expressions=("a>10",), result=False),
-            CompareObj(expressions=("a>10",), value=False),
+            IfConditionObj(id=1, expressions=("a>10", "10>10", "False"), result=False),
+            CompareObj(expressions=("a>10", "10>10", "False"), value=False),
             id="a>10",
         ),
         pytest.param(
             "a>b",
-            IfConditionObj(id=1, expressions=("a>b", "10>9"), result=True),
-            CompareObj(expressions=("a>b", "10>9"), value=True),
+            IfConditionObj(id=1, expressions=("a>b", "10>9", "True"), result=True),
+            CompareObj(expressions=("a>b", "10>9", "True"), value=True),
             id="a>b",
         ),
     ],
@@ -38,13 +38,13 @@ def test_parse_if_condition(mocker, input_code, expected, travel_return_value, c
         pytest.param(
             "a>10",
             ElifConditionObj(id=1, expressions=("a>10", "10>10", "False"), result=False),
-            CompareObj(expressions=("a>10", "10>10"), value=False),
+            CompareObj(expressions=("a>10", "10>10", "False"), value=False),
             id="a>10",
         ),
         pytest.param(
             "a>b",
             ElifConditionObj(id=1, expressions=("a>b", "10>9", "True"), result=True),
-            CompareObj(expressions=("a>b", "10>9"), value=True),
+            CompareObj(expressions=("a>b", "10>9", "True"), value=True),
             id="a>b",
         ),
     ],
@@ -63,12 +63,12 @@ def test_parse_elif_condition(mocker, create_ast, elem_container, input_code, ex
     [
         pytest.param(
             "a=10",
-            ElseConditionObj(id=0, expressions=None, result=True),
+            ElseConditionObj(id=0, expressions=("True",), result=True),
             id="a>10",
         ),
         pytest.param(
             "a=b",
-            ElseConditionObj(id=0, expressions=None, result=True),
+            ElseConditionObj(id=0, expressions=("True",), result=True),
             id="a>b",
         ),
     ],
