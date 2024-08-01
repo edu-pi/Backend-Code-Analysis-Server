@@ -1,7 +1,5 @@
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     ConditionObj,
-    IfConditionObj,
-    ElifConditionObj,
 )
 from app.visualize.generator.models.if_viz import ConditionViz, IfElseDefineViz, IfElseChangeViz
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -39,8 +37,7 @@ class IfConverter:
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
             # 조건식 평가 과정 추가
-            if type(condition) in (IfConditionObj, ElifConditionObj):
-                steps.extend(IfConverter._create_condition_evaluation_steps(condition, viz_manager))
+            steps.extend(IfConverter._create_condition_evaluation_steps(condition, viz_manager))
 
             if condition.result:
                 break
@@ -52,9 +49,6 @@ class IfConverter:
         condition: ConditionObj, viz_manager: VisualizationManager
     ) -> list[IfElseChangeViz]:
         # 중간 과정 생성 - 10 + 20 > 30, 30 > 30
-
-        if condition.expressions[0] == "True" or condition.expressions[0] == "False":
-            return []
 
         return [
             IfElseChangeViz(

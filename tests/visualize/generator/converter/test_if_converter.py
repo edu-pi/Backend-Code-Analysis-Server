@@ -185,7 +185,9 @@ def test_convert_to_if_else_change_viz(
         pytest.param(
             IfConditionObj(id=1, expressions=("True",), result=False),
             [[0, 1, 2, 3]],
-            [],
+            [
+                IfElseChangeViz(id=1, depth=1, expr="True"),
+            ],
             id="True 조건식 평가 과정 success",
         ),
     ],
