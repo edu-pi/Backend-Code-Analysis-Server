@@ -42,11 +42,13 @@ class IfConverter:
             # 조건식 평가 과정 추가
             if type(condition) in (IfConditionObj, ElifConditionObj):
                 steps.extend(IfConverter._create_condition_evaluation_steps(condition, viz_manager))
-            # 조건식 평가 결과 추가
-            steps.extend(IfConverter._create_condition_result(condition, viz_manager))
 
-            if steps[-1].expr == "True":
-                return steps
+            if condition.result:
+                break
+
+        # 조건식 평가 결과 추가
+        if steps and steps[-1].expr == "False":
+            steps.extend(IfConverter._create_condition_result(conditions[-1], viz_manager))
 
         return steps
 

@@ -131,7 +131,7 @@ def test__create__if_else_define_viz(condition: ConditionObj, expected):
     "conditions,expected",
     [
         pytest.param(
-            (IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=False),),
+            (IfConditionObj(id=1, expressions=("a > b", "10 > 20", "False"), result=False),),
             [
                 IfElseChangeViz(id=1, depth=1, expr="a > b", highlights=[0, 1, 2, 3, 4]),
                 IfElseChangeViz(id=1, depth=1, expr="10 > 20", highlights=[0, 1, 2, 3, 4, 5, 6]),
@@ -140,7 +140,7 @@ def test__create__if_else_define_viz(condition: ConditionObj, expected):
             id="if문 False인 경우",
         ),
         pytest.param(
-            (IfConditionObj(id=1, expressions=("a < b", "10 < 20"), result=True),),
+            (IfConditionObj(id=1, expressions=("a < b", "10 < 20", "True"), result=True),),
             [
                 IfElseChangeViz(id=1, depth=1, expr="a < b", highlights=[0, 1, 2, 3, 4]),
                 IfElseChangeViz(id=1, depth=1, expr="10 < 20", highlights=[0, 1, 2, 3, 4, 5, 6]),
@@ -168,7 +168,6 @@ def test_convert_to_if_else_change_viz(
         actual = IfConverter.convert_to_if_else_change_viz(conditions, mock_viz_manager)
 
         mock_create_condition_evaluation_steps.assert_called_with(conditions[0], mock_viz_manager)
-        mock_create_condition_result.assert_called_with(conditions[0], mock_viz_manager)
 
 
 @pytest.mark.parametrize(
