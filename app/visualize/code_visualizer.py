@@ -9,7 +9,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 # TODO 이름 수정
 class CodeVisualizer:
 
-    def __init__(self, source_code):
+    def __init__(self, source_code: str):
         self._parsed_node = ast.parse(source_code)
         self._elem_container = ElementContainer()
         self._visualization_manager = VisualizationManager()
