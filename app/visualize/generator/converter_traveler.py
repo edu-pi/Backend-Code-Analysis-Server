@@ -1,12 +1,14 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj, BodyObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.analysis.stmt.models.stmt_type import StmtType
+from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.converter.if_converter import IfConverter
+from app.visualize.generator.converter.while_converter import WhileConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -31,6 +33,9 @@ class ConverterTraveler:
 
             elif analysis_obj.type == StmtType.FLOW_CONTROL:
                 viz_objs.append(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.WHILE:
+                viz_objs.extend(ConverterTraveler._convert_to_while_viz(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -90,3 +95,17 @@ class ConverterTraveler:
         flow_control_viz = FlowControlConverter.convert(flow_control_obj, viz_manager)
 
         return flow_control_viz
+
+    @staticmethod
+    def _convert_to_while_viz(while_obj: WhileStmtObj, viz_manager: VisualizationManager):
+        steps = []
+        depth = viz_manager.get_depth()
+
+        while_define_viz = WhileConverter.convert_to_while_define_viz(while_obj, depth)
+
+        for while_step in while_obj.while_steps:
+            steps.append(while_define_viz)
+            steps.extend(WhileConverter.convert_to_while_change_condition_viz(while_obj.id, while_step, depth))
+            steps.extend(ConverterTraveler.travel(while_step.body_steps, viz_manager))
+
+        return steps

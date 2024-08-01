@@ -30,6 +30,9 @@ class StmtTraveler:
         elif isinstance(node, ast.Pass | ast.Break | ast.Continue):
             return StmtTraveler._flow_control_travel(node)
 
+        elif isinstance(node, ast.While):
+            return StmtTraveler._while_travel(node, elem_container)
+
         else:
             raise TypeError(f"[StmtTraveler] {type(node)}는 잘못된 타입입니다.")
 
@@ -165,3 +168,24 @@ class StmtTraveler:
 
         else:
             raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
+
+    @staticmethod
+    def _while_travel(node: ast.While, elem_container: ElementContainer):
+        while_steps = []
+        condition = True
+
+        while condition:
+            body_objs = []
+            condition_obj = WhileStmt.parse_condition(node.test, elem_container)
+            condition = condition_obj.value
+
+            if condition:
+                for body in node.body:
+                    body_objs.append(StmtTraveler.travel(body, elem_container))
+
+            while_steps.append(WhileStep(condition_expr=condition_obj.expressions, body_steps=body_objs))
+
+        orelse_steps = [StmtTraveler.travel(else_node, elem_container) for else_node in node.orelse]
+        orelse_id = node.orelse[0].lineno - 1 if node.orelse else None
+
+        return WhileStmt.parse(node.lineno, while_steps, orelse_steps, orelse_id)
