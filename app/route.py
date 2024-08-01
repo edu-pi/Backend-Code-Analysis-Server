@@ -31,6 +31,6 @@ def read_root():
 @app.post("/v1/python")
 def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
-    code_analyzer = CodeVisualizer(request_code)
+    code_analyzer = CodeVisualizer(request_code.source_code)
 
     return code_analyzer.visualize_code()
