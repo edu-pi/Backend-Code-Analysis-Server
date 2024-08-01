@@ -37,13 +37,13 @@ def test_parse_if_condition(mocker, input_code, expected, travel_return_value, c
     [
         pytest.param(
             "a>10",
-            ElifConditionObj(id=1, expressions=("a>10",), result=False),
-            CompareObj(expressions=("a>10",), value=False),
+            ElifConditionObj(id=1, expressions=("a>10", "10>10", "False"), result=False),
+            CompareObj(expressions=("a>10", "10>10"), value=False),
             id="a>10",
         ),
         pytest.param(
             "a>b",
-            ElifConditionObj(id=1, expressions=("a>b", "10>9"), result=True),
+            ElifConditionObj(id=1, expressions=("a>b", "10>9", "True"), result=True),
             CompareObj(expressions=("a>b", "10>9"), value=True),
             id="a>b",
         ),

@@ -46,10 +46,6 @@ class IfConverter:
             if condition.result:
                 break
 
-        # 조건식 평가 결과 추가
-        if steps and steps[-1].expr == "False":
-            steps.extend(IfConverter._create_condition_result(conditions[-1], viz_manager))
-
         return steps
 
     @staticmethod
