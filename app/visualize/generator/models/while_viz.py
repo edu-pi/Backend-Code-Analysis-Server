@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class WhileDefineViz:
     id: int
+    expr: str
     depth: int
     orelse: bool
     orelseId: int
