@@ -39,6 +39,9 @@ class AssignStmt:
             elif isinstance(target_node, ast.List):
                 expr_obj = ExprTraveler.travel(target_node, elem_container)
 
+            elif isinstance(target_node, ast.Subscript):
+                expr_obj = ExprTraveler.travel(target_node, elem_container)
+
             else:
                 raise TypeError(f"[AssignParser]: {type(target_node)}는 잘못된 타입입니다.")
 

@@ -8,4 +8,4 @@ class ExprViz:
     id: int
     depth: int
     expr: ExprType
-    type: str = field(default="expr", init=False)
+    type: str
