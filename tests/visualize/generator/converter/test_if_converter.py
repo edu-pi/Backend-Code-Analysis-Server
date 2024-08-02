@@ -174,11 +174,12 @@ def test_convert_to_if_else_change_viz(
     "condition, highlights, expected",
     [
         pytest.param(
-            IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=False),
+            IfConditionObj(id=1, expressions=("a > b", "10 > 20", "False"), result=False),
             [[0, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5, 6]],
             [
                 IfElseChangeViz(id=1, depth=1, expr="a > b"),
                 IfElseChangeViz(id=1, depth=1, expr="10 > 20"),
+                IfElseChangeViz(id=1, depth=1, expr="False"),
             ],
             id="a > 10 조건식 평가 과정 success",
         ),
@@ -204,14 +205,14 @@ def test__create_condition_evaluation_steps(
     "condition,expected",
     [
         pytest.param(
-            IfConditionObj(id=1, expressions=("a > b", "10 > 20"), result=True),
+            IfConditionObj(id=1, expressions=("a > b", "20 > 10", "True"), result=True),
             [
                 IfElseChangeViz(id=1, depth=1, expr="True"),
             ],
             id="최종 결과가 True 인 경우",
         ),
         pytest.param(
-            IfConditionObj(id=1, expressions=("a < b", "20 < 10"), result=False),
+            IfConditionObj(id=1, expressions=("a < b", "20 < 10", "False"), result=False),
             [
                 IfElseChangeViz(id=1, depth=1, expr="False"),
             ],
