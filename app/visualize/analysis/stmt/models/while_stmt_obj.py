@@ -13,6 +13,4 @@ class WhileStep:
 class WhileStmtObj:
     id: int
     while_steps: list[WhileStep]
-    orelse_steps: list
-    orelse_id: int | None
     type: StmtType = field(default_factory=lambda: StmtType.WHILE, init=False)

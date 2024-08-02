@@ -13,10 +13,8 @@ class WhileStmt:
         return test_obj.add_bool_if_not_condition()
 
     @staticmethod
-    def parse(call_id, while_steps, orelse_steps, orelse_id):
+    def parse(call_id, while_steps):
         return WhileStmtObj(
             id=call_id,
             while_steps=while_steps,
-            orelse_steps=orelse_steps,
-            orelse_id=orelse_id,
         )

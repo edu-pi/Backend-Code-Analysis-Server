@@ -187,7 +187,4 @@ class StmtTraveler:
 
             while_steps.append(WhileStep(condition_expr=condition_obj.expressions, body_steps=body_objs))
 
-        orelse_steps = [StmtTraveler.travel(else_node, elem_container) for else_node in node.orelse]
-        orelse_id = node.orelse[0].lineno - 1 if node.orelse else None
-
-        return WhileStmt.parse(node.lineno, while_steps, orelse_steps, orelse_id)
+        return WhileStmt.parse(node.lineno, while_steps)

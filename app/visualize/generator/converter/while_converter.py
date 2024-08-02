@@ -10,8 +10,6 @@ class WhileConverter:
             id=while_obj.id,
             expr=while_obj.while_steps[0].condition_expr[0],
             depth=depth,
-            orelse=True if len(while_obj.orelse_steps) > 0 else False,
-            orelseId=while_obj.orelse_id,
         )
 
     @staticmethod
