@@ -3,7 +3,7 @@ import ast
 from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
-from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStep
+from app.visualize.analysis.stmt.models.while_stmt_obj import WhileCycle
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
@@ -188,7 +188,7 @@ class StmtTraveler:
                     body_objs.append(StmtTraveler.travel(body, elem_container))
 
             # 단계별로 while의 조건문 표현식과 body 로직을 저장
-            while_steps.append(WhileStep(condition_exprs=condition_obj.expressions, body_steps=body_objs))
+            while_steps.append(WhileCycle(condition_exprs=condition_obj.expressions, body_objs=body_objs))
 
         # id와 while의 결과를 저장한 객체 반환
         return WhileStmt.parse(node.lineno, while_steps)

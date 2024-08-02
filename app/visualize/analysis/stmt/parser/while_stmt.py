@@ -17,7 +17,7 @@ class WhileStmt:
     def parse(call_id, while_steps):
         return WhileStmtObj(
             id=call_id,
-            while_steps=while_steps,
+            while_cycles=while_steps,
         )
 
     # ast.if와 ast.while에서 조건절에 사용할 경우 마지막 표현식이 bool이 아니라면 bool 표현을 추가하는

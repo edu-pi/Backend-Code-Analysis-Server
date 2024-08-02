@@ -8,7 +8,7 @@ class WhileConverter:
     def convert_to_while_define_viz(while_obj: WhileStmtObj, depth):
         return WhileDefineViz(
             id=while_obj.id,
-            expr=while_obj.while_steps[0].condition_expr[0],
+            expr=while_obj.while_cycles[0].condition_expr[0],
             depth=depth,
         )
 
