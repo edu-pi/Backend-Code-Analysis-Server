@@ -174,14 +174,14 @@ class StmtTraveler:
     @staticmethod
     def _while_travel(node: ast.While, elem_container: ElementContainer):
         while_steps = []
-        condition = True
+        condition_value = True
 
-        while condition:
+        while condition_value:
             body_objs = []
             condition_obj = WhileStmt.parse_condition(node.test, elem_container)
-            condition = condition_obj.value
+            condition_value = condition_obj.value
 
-            if condition:
+            if condition_value:
                 for body in node.body:
                     body_objs.append(StmtTraveler.travel(body, elem_container))
 
