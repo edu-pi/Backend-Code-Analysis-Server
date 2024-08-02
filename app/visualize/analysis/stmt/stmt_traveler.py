@@ -178,13 +178,17 @@ class StmtTraveler:
 
         while condition_value:
             body_objs = []
+            # ast.While의 조건문 파싱
             condition_obj = WhileStmt.parse_condition(node.test, elem_container)
             condition_value = condition_obj.value
 
+            # 조건문이 False일 경우 body 로직을 탐색하지 않음
             if condition_value:
                 for body in node.body:
                     body_objs.append(StmtTraveler.travel(body, elem_container))
 
+            # while step을 추가
             while_steps.append(WhileStep(condition_expr=condition_obj.expressions, body_steps=body_objs))
 
+        # id와 while의 결과를 저장한 객체 반환
         return WhileStmt.parse(node.lineno, while_steps)
