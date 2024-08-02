@@ -11,7 +11,7 @@ class IfStmt:
     @staticmethod
     def parse_if_condition(test_node: ast.expr, elem_container: ElementContainer):
         test_obj = ExprTraveler.travel(test_node, elem_container)
-        IfStmt.add_bool_expression_when_use_condition(test_obj)
+        IfStmt.add_last_bool_expression(test_obj)
 
         return IfConditionObj(
             id=test_node.lineno,
@@ -22,7 +22,7 @@ class IfStmt:
     @staticmethod
     def parse_elif_condition(test_node: ast.expr, elem_container: ElementContainer):
         test_obj = ExprTraveler.travel(test_node, elem_container)
-        IfStmt.add_bool_expression_when_use_condition(test_obj)
+        IfStmt.add_last_bool_expression(test_obj)
 
         return ElifConditionObj(
             id=test_node.lineno,
@@ -37,7 +37,7 @@ class IfStmt:
     # ast.if와 ast.while에서 조건절에 사용할 경우 마지막 표현식이 bool이 아니라면 bool 표현을 추가하는
     # ex) "" -> False, "hello" -> True
     @staticmethod
-    def add_bool_expression_when_use_condition(test_obj):
+    def add_last_bool_expression(test_obj):
         # 마지막 표현식에 bool 표현이 이미 있는 경우
         if test_obj.expressions[-1] in ("True", "False"):
             return test_obj
