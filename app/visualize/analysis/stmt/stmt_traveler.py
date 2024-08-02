@@ -187,8 +187,8 @@ class StmtTraveler:
                 for body in node.body:
                     body_objs.append(StmtTraveler.travel(body, elem_container))
 
-            # while step을 추가
-            while_steps.append(WhileStep(condition_expr=condition_obj.expressions, body_steps=body_objs))
+            # 단계별로 while의 조건문 표현식과 body 로직을 저장
+            while_steps.append(WhileStep(condition_exprs=condition_obj.expressions, body_steps=body_objs))
 
         # id와 while의 결과를 저장한 객체 반환
         return WhileStmt.parse(node.lineno, while_steps)

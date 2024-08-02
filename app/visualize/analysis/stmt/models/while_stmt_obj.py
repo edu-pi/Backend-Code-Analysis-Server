@@ -5,7 +5,7 @@ from app.visualize.analysis.stmt.models.stmt_type import StmtType
 
 @dataclass
 class WhileStep:
-    condition_expr: tuple[str, ...]
+    condition_exprs: tuple[str, ...]
     body_steps: list
 
 
