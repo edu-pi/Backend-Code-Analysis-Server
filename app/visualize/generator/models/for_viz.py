@@ -4,13 +4,13 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True)
 class ForConditionViz:
     target: str
-    cur: int
-    start: int
-    end: int
-    step: int
+    cur: str
+    start: str
+    end: str
+    step: str
 
-    def copy_with_cur(self, new_cur):
-        return ForConditionViz(self.target, new_cur, self.start, self.end, self.step)
+    def copy_with_cur(self, new_cur: str):
+        return ForConditionViz(self.target, str(new_cur), self.start, self.end, self.step)
 
     def changed_attr(self):
         if str(self.cur) == self.start:
