@@ -2,7 +2,8 @@ import pytest
 
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfConditionObj, ElifConditionObj, ElseConditionObj
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj, ConstantObj, NameObj, ExprObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 
 
@@ -79,3 +80,29 @@ def test_parse_if_condition(input_code, expected, create_ast):
     actual = IfStmt.parse_else_condition(else_body_node, True)
 
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "test_obj, expected",
+    [
+        pytest.param(
+            CompareObj(expressions=("3 < 10", "True"), value=True),
+            CompareObj(expressions=("3 < 10", "True"), value=True),
+            id="last expression is True",
+        ),
+        pytest.param(
+            ConstantObj(expressions=("False",), value=False),
+            ConstantObj(expressions=("False",), value=False),
+            id="last expression is False",
+        ),
+        pytest.param(
+            NameObj(expressions=("a", "10"), value=10, type=ExprType.VARIABLE),
+            NameObj(expressions=("a", "10", "True"), value=10, type=ExprType.VARIABLE),
+            id="last expression is not bool",
+        ),
+    ],
+)
+def test__add_last_bool_expression(test_obj: ExprObj, expected):
+    result = IfStmt._add_last_bool_expression(test_obj)
+
+    assert result == expected
