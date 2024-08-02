@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from typing import Any
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
@@ -11,13 +11,6 @@ class ExprObj:
     value: Any
     expressions: tuple
     type: ExprType
-
-    def add_bool_if_not_condition(self):
-        if self.expressions[-1] in ("True", "False"):
-            return self
-
-        condition = "True" if self.value else "False"
-        return replace(self, expressions=self.expressions + (condition,))
 
 
 @dataclass(frozen=True)
