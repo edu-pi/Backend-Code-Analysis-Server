@@ -17,8 +17,19 @@ from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareE
             ),
             (ConstantObj(value=2, expressions=("2",)),),
             (ast.Eq(),),
-            CompareObj(value=False, expressions=("1 == 2",)),
+            CompareObj(value=False, expressions=("1 == 2", "False")),
             id="1==2",
+        ),
+        pytest.param(
+            NameObj(
+                value=10,
+                expressions=("a", "10"),
+                type=ExprType.VARIABLE,
+            ),
+            (ConstantObj(value=10, expressions=("10",)),),
+            (ast.Eq(),),
+            CompareObj(value=True, expressions=("a == 10", "10 == 10", "True")),
+            id="a==10",
         ),
         pytest.param(
             ConstantObj(
@@ -30,7 +41,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareE
                 ConstantObj(value=30, expressions=("30",)),
             ),
             (ast.Lt(), ast.Lt()),
-            CompareObj(value=True, expressions=("1 < a < 30",)),
+            CompareObj(value=True, expressions=("1 < a < 30", "True")),
             id="1 < a < 30",
         ),
     ],

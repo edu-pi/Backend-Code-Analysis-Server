@@ -8,6 +8,7 @@ class StmtType(Enum):
     IF = "if"
     ELIF = "elif"
     ELSE = "else"
+    WHILE = "while"
 
     FLOW_CONTROL = "flow_control"
     PASS = "pass"

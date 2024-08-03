@@ -9,7 +9,7 @@ class CompareExpr:
     @staticmethod
     def parse(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...]):
         value = CompareExpr._get_final_calculate_value(left_obj, comparators, ops)
-        expressions = CompareExpr._get_expressions(left_obj, comparators, ops)
+        expressions = CompareExpr._get_expressions(left_obj, comparators, ops, value)
 
         return CompareObj(value=value, expressions=expressions)
 
@@ -25,7 +25,7 @@ class CompareExpr:
         return True
 
     @staticmethod
-    def _get_expressions(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...]):
+    def _get_expressions(left_obj: ExprObj, comparators: tuple[ExprObj, ...], ops: tuple[ast.cmpop, ...], value):
         total_expressions = []
         # 피연자 값과 비교 연산자를 순차적으로 계산
         if len(comparators) <= 1:  # 비교 연산자가 1개 이하인 경우, 자세한 표현 과정 반환
@@ -33,6 +33,8 @@ class CompareExpr:
 
         else:  # 비교 연산자가 2개 이상인 경우, 생략된 표현 과정 반환
             total_expressions.append(CompareExpr._create_origin_expression(left_obj, comparators, ops))
+
+        total_expressions.append(str(value))
 
         return tuple(total_expressions)
 
