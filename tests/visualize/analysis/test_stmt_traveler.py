@@ -13,7 +13,7 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
-from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj, WhileStep
+from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj, WhileCycle
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
@@ -360,10 +360,10 @@ while a < 11:
             ],
             WhileStmtObj(
                 id=2,
-                while_steps=[
-                    WhileStep(
+                while_cycles=[
+                    WhileCycle(
                         condition_exprs=("a < 11", "10 < 11", "True"),
-                        body_steps=[
+                        body_objs=[
                             ExprStmtObj(id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT),
                             AssignStmtObj(
                                 targets=("a",),
@@ -373,9 +373,9 @@ while a < 11:
                             ),
                         ],
                     ),
-                    WhileStep(
+                    WhileCycle(
                         condition_exprs=("a < 11", "11 < 11", "False"),
-                        body_steps=[],
+                        body_objs=[],
                     ),
                 ],
             ),
