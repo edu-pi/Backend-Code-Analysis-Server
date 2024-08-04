@@ -11,7 +11,7 @@ class IfStmt:
     @staticmethod
     def parse_if_condition(test_node: ast.expr, elem_container: ElementContainer):
         test_obj = ExprTraveler.travel(test_node, elem_container)
-        IfStmt._add_last_bool_expression(test_obj)
+        test_obj = IfStmt._add_last_bool_expression(test_obj)
 
         return IfConditionObj(
             id=test_node.lineno,
