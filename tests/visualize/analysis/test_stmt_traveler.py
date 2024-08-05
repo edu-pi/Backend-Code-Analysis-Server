@@ -360,7 +360,7 @@ while a < 11:
             ],
             WhileStmtObj(
                 id=2,
-                orelse=False,
+                orelse=[],
                 while_cycles=[
                     WhileCycle(
                         condition_exprs=("a < 11", "10 < 11", "True"),
