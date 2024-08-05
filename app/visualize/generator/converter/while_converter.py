@@ -8,20 +8,20 @@ class WhileConverter:
     def convert_to_while_define_viz(while_obj: WhileStmtObj, depth):
         return WhileDefineViz(
             id=while_obj.id,
-            expr=while_obj.while_cycles[0].condition_expr[0],
+            expr=while_obj.while_cycles[0].condition_exprs[0],
             depth=depth,
         )
 
     @staticmethod
-    def convert_to_while_change_condition_viz(call_id, while_step, depth):
+    def convert_to_while_change_condition_viz(call_id, while_cycle, depth):
         change_condition_steps = []
 
-        for idx in range(len(while_step.condition_expr)):
+        for idx in range(len(while_cycle.condition_exprs)):
             change_condition_steps.append(
                 WhileChangeConditionViz(
                     id=call_id,
                     depth=depth,
-                    expr=while_step.condition_expr[idx],
+                    expr=while_cycle.condition_exprs[idx],
                 )
             )
 

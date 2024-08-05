@@ -1,12 +1,10 @@
 import ast
-
 from unittest.mock import MagicMock
 
 import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfStmtObj,
@@ -15,9 +13,11 @@ from app.visualize.analysis.stmt.models.if_stmt_obj import (
     IfConditionObj,
     ConditionObj,
 )
+from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj, WhileCycle
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import CompareObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
-from app.visualize.analysis.stmt.parser.flow_control_stmt import BreakStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
+from app.visualize.analysis.stmt.parser.while_stmt import WhileStmt
 from app.visualize.analysis.stmt.stmt_traveler import StmtTraveler
 from app.visualize.container.element_container import ElementContainer
 
@@ -334,3 +334,62 @@ def test__flow_control_travel(mocker, node: ast.Pass | ast.Break | ast.Continue,
 def test__flow_control_travel(mocker, node: ast):
     with pytest.raises(TypeError):
         StmtTraveler._flow_control_travel(node)
+
+
+@pytest.mark.parametrize(
+    "while_code, condition_objs, body_objs, expected",
+    [
+        pytest.param(
+            """
+while a < 11:
+    print(a)
+    a = a + 1
+            """,
+            [
+                CompareObj(value=True, expressions=("a < 11", "10 < 11", "True")),
+                CompareObj(value=False, expressions=("a < 11", "11 < 11", "False")),
+            ],
+            [
+                ExprStmtObj(id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT),
+                AssignStmtObj(
+                    targets=("a",),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
+                    ),
+                ),
+            ],
+            WhileStmtObj(
+                id=2,
+                while_cycles=[
+                    WhileCycle(
+                        condition_exprs=("a < 11", "10 < 11", "True"),
+                        body_objs=[
+                            ExprStmtObj(id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT),
+                            AssignStmtObj(
+                                targets=("a",),
+                                expr_stmt_obj=ExprStmtObj(
+                                    id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
+                                ),
+                            ),
+                        ],
+                    ),
+                    WhileCycle(
+                        condition_exprs=("a < 11", "11 < 11", "False"),
+                        body_objs=[],
+                    ),
+                ],
+            ),
+            id="simple while",
+        ),
+    ],
+)
+def test__while_travel(mocker, create_ast, elem_container, while_code, condition_objs, body_objs, expected):
+    ast_while = create_ast(while_code)
+    mock_while_stmt = mocker.patch.object(WhileStmt, "parse_condition", side_effect=condition_objs)
+    mock_stmt_traveler = mocker.patch.object(StmtTraveler, "travel", side_effect=body_objs)
+
+    result = StmtTraveler._while_travel(ast_while, elem_container)
+
+    assert mock_while_stmt.call_count == len(condition_objs)
+    assert mock_stmt_traveler.call_count == len(body_objs)
+    assert result == expected

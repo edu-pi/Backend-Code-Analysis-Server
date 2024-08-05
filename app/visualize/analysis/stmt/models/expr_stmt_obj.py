@@ -9,6 +9,6 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 class ExprStmtObj:
     id: int
     value: Any
-    expressions: tuple[str]
+    expressions: tuple[str, ...]
     expr_type: ExprType
     type: StmtType = field(default_factory=lambda: StmtType.EXPR, init=False)

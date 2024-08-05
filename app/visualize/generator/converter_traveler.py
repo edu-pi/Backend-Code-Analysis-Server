@@ -103,9 +103,9 @@ class ConverterTraveler:
 
         while_define_viz = WhileConverter.convert_to_while_define_viz(while_obj, depth)
 
-        for while_step in while_obj.while_cycles:
+        for while_cycle in while_obj.while_cycles:
             steps.append(while_define_viz)
-            steps.extend(WhileConverter.convert_to_while_change_condition_viz(while_obj.id, while_step, depth))
-            steps.extend(ConverterTraveler.travel(while_step.body_steps, viz_manager))
+            steps.extend(WhileConverter.convert_to_while_change_condition_viz(while_obj.id, while_cycle, depth))
+            steps.extend(ConverterTraveler.travel(while_cycle.body_objs, viz_manager))
 
         return steps
