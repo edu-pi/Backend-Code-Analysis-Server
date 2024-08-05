@@ -33,4 +33,4 @@ class VisualizationManager:
 
     def get_code_by_idx(self, idx):
         # idx에 해당하는 코드 라인 리턴
-        return self.processed_lines.pop(idx - 1)
+        return self.processed_lines[idx - 1]

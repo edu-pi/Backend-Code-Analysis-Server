@@ -17,31 +17,32 @@ class ExprConverter:
         var_type = expr_stmt_obj.expr_type
 
         if var_type is ExprType.VARIABLE:
-            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, call_id, depth)
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.LIST:
-            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, call_id, depth)
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.TUPLE:
-            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, call_id, depth)
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.PRINT:
-            return ExprConverter._convert_to_print_viz(expr_stmt_obj, call_id, depth)
+            return ExprConverter._convert_to_print_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.APPEND:
-            return ExprConverter._convert_to_append_viz(expr_stmt_obj, call_id, depth)
+            return ExprConverter._convert_to_append_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
 
     @staticmethod
-    def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, call_id, depth):
+    def _convert_to_expr_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
         expr_vizs = [
             ExprViz(
                 id=call_id,
                 depth=depth,
                 expr=expr_stmt_obj.expressions[idx],
                 type=expr_stmt_obj.expr_type.value,
+                code=viz_manager.get_code_by_idx(call_id),
             )
             for idx in range(len(expr_stmt_obj.expressions))
         ]
@@ -49,7 +50,7 @@ class ExprConverter:
         return expr_vizs
 
     @staticmethod
-    def _convert_to_print_viz(expr_stmt_obj: ExprStmtObj, call_id, depth):
+    def _convert_to_print_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
         highlights = ExprHighlight.get_highlight_indexes_exclusive_last(expr_stmt_obj.expressions)
 
         print_vizs = [
@@ -59,6 +60,7 @@ class ExprConverter:
                 expr=expr_stmt_obj.expressions[idx],
                 highlights=highlights[idx],
                 console=expr_stmt_obj.value if idx == len(expr_stmt_obj.expressions) - 1 else None,
+                code=viz_manager.get_code_by_idx(call_id),
             )
             for idx in range(len(expr_stmt_obj.expressions))
         ]
@@ -66,7 +68,7 @@ class ExprConverter:
         return print_vizs
 
     @staticmethod
-    def _convert_to_append_viz(expr_stmt_obj: ExprStmtObj, call_id, depth):
+    def _convert_to_append_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
         append_vizs = []
         expr_vizs = ExprConverter._convert_to_expr_viz(expr_stmt_obj, call_id, depth)
         append_vizs.extend(expr_vizs)

@@ -8,6 +8,7 @@ class PrintViz:
     expr: str
     highlights: []
     console: str | None
+    code: str
     type: str = field(default="print", init=False)
 
 
