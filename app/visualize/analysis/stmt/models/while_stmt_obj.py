@@ -12,5 +12,6 @@ class WhileCycle:
 @dataclass(frozen=True)
 class WhileStmtObj:
     id: int
+    orelse: bool
     while_cycles: list[WhileCycle]
     type: StmtType = field(default_factory=lambda: StmtType.WHILE, init=False)
