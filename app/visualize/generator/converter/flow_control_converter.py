@@ -14,4 +14,5 @@ class FlowControlConverter:
             depth=viz_manager.get_depth(),
             expr=node.flow_control_type.value,
             highlights=list(range(len(node.flow_control_type.value))),
+            code=viz_manager.get_code_by_idx(node.id),
         )

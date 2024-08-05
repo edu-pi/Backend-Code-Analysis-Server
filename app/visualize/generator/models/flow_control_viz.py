@@ -7,4 +7,5 @@ class FlowControlViz:
     depth: int
     expr: str
     highlights: []
+    code: str
     type: str = field(default="flowControl", init=False)
