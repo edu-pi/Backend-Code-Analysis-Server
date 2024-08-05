@@ -1,6 +1,6 @@
 # for_stmt_obj를 받아서 for_viz를 반환하는 클래스
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj
 from app.visualize.generator.highlight.for_highlight import ForHighlight
 from app.visualize.generator.models.for_viz import ForViz, ForConditionViz
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -29,7 +29,13 @@ class ForHeaderConvertor:
         condition = ForHeaderConvertor._get_condition(target_name, iter_obj)
         highlight = ForHighlight.get_highlight_attr(condition)
 
-        return ForViz(id=call_id, depth=depth, condition=condition, highlights=highlight)
+        return ForViz(
+            id=call_id,
+            depth=depth,
+            condition=condition,
+            highlights=highlight,
+            code=viz_manager.get_code_by_idx(call_id),
+        )
 
     @staticmethod
     def _get_condition(target_name: str, iter_obj: RangeObj):

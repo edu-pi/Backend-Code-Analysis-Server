@@ -25,10 +25,11 @@ class ForViz:
     depth: int
     condition: ForConditionViz
     highlights: []
+    code: str
     type: str = field(default="for", init=False)
 
     def update(self, new_condition, highlights):
-        return ForViz(self.id, self.depth, new_condition, highlights)
+        return ForViz(self.id, self.depth, new_condition, highlights, self.code)
 
 
 """
