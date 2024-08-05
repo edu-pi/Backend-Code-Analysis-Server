@@ -47,9 +47,9 @@ from app.visualize.generator.visualization_manager import VisualizationManager
                 ),
             ),
             (
-                ConditionViz(id=1, expr="a > b", type="if"),
-                ConditionViz(id=2, expr="a < b", type="elif"),
-                ConditionViz(id=3, expr="", type="else"),
+                ConditionViz(id=1, expr="a > b", type="if", code=""),
+                ConditionViz(id=2, expr="a < b", type="elif", code=""),
+                ConditionViz(id=3, expr="", type="else", code=""),
             ),
         )
     ],
@@ -85,7 +85,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
 
 
 @pytest.mark.parametrize(
-    "condition, expected",
+    "condition,  expected",
     [
         pytest.param(
             IfConditionObj(
@@ -96,7 +96,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 ),
                 result=True,
             ),
-            ConditionViz(id=1, expr="a > b", type="if"),
+            ConditionViz(id=1, expr="a > b", type="if", code=""),
             id="if문 Condition viz 생성",
         ),
         pytest.param(
@@ -108,7 +108,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 ),
                 result=False,
             ),
-            ConditionViz(id=1, expr="a < b", type="elif"),
+            ConditionViz(id=1, expr="a < b", type="elif", code=""),
             id="elif문 Condition viz 생성",
         ),
         pytest.param(
@@ -117,13 +117,13 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
                 expressions=None,
                 result=False,
             ),
-            ConditionViz(id=1, expr="", type="else"),
+            ConditionViz(id=1, expr="", type="else", code=""),
             id="else Condition viz 생성",
         ),
     ],
 )
-def test__create__if_else_define_viz(condition: ConditionObj, expected):
-    actual = IfConverter._create__if_else_define_viz(condition)
+def test__create__if_else_define_viz(mocker, condition: ConditionObj, expected):
+    actual = IfConverter._create__if_else_define_viz(condition, VisualizationManager())
     assert actual == expected
 
 

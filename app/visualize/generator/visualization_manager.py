@@ -32,5 +32,9 @@ class VisualizationManager:
         return self.depth
 
     def get_code_by_idx(self, idx):
-        # idx에 해당하는 코드 라인 리턴
-        return self.processed_lines[idx - 1]
+        try:
+            if self.processed_lines[idx - 1] is None:
+                return ""
+            return self.processed_lines[idx - 1]
+        except IndexError:
+            return ""
