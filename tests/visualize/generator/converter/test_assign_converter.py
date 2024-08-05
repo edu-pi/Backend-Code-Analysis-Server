@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
@@ -8,6 +6,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable
+from app.visualize.generator.visualization_manager import VisualizationManager
 
 
 @pytest.fixture()
@@ -28,7 +27,7 @@ def create_assign():
             3,
             ["3"],
             ExprType.VARIABLE,
-            AssignViz(variables=[Variable(id=1, name="a", expr="3", type="variable")]),
+            AssignViz(variables=[Variable(id=1, name="a", expr="3", type="variable", code="")]),
             id="a = 3: success case",
         ),
         pytest.param(
@@ -36,7 +35,7 @@ def create_assign():
             4,
             ["a + 1", "3 + 1", "4"],
             ExprType.VARIABLE,
-            AssignViz(variables=[Variable(id=1, name="b", expr="4", type="variable")]),
+            AssignViz(variables=[Variable(id=1, name="b", expr="4", type="variable", code="")]),
             id="b = a + 1: success case",
         ),
         pytest.param(
@@ -46,8 +45,8 @@ def create_assign():
             ExprType.VARIABLE,
             AssignViz(
                 variables=[
-                    Variable(id=1, name="c", expr="5", type="variable"),
-                    Variable(id=1, name="d", expr="5", type="variable"),
+                    Variable(id=1, name="c", expr="5", type="variable", code=""),
+                    Variable(id=1, name="d", expr="5", type="variable", code=""),
                 ],
             ),
             id="c, d = b + 1: success case",
@@ -58,7 +57,7 @@ def create_assign():
             ["[1,2,3]"],
             ExprType.LIST,
             AssignViz(
-                variables=[Variable(id=1, name="e", expr="[1,2,3]", type="list")],
+                variables=[Variable(id=1, name="e", expr="[1,2,3]", type="list", code="")],
             ),
             id="e = [1, 2, 3]: success case",
         ),
@@ -68,7 +67,7 @@ def create_assign():
             ["['Hello','World']"],
             ExprType.LIST,
             AssignViz(
-                variables=[Variable(id=1, name="f", expr="['Hello','World']", type="list")],
+                variables=[Variable(id=1, name="f", expr="['Hello','World']", type="list", code="")],
             ),
             id="f = ['Hello', 'World']: success case",
         ),
@@ -78,13 +77,13 @@ def create_assign():
             ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
             ExprType.LIST,
             AssignViz(
-                variables=[Variable(id=1, name="g", expr="[11,10]", type="list")],
+                variables=[Variable(id=1, name="g", expr="[11,10]", type="list", code="")],
             ),
             id="g = [a + 1, b]: success case",
         ),
     ],
 )
 def test_convert(create_assign, targets, value, expressions, var_type, expected):
-    result = AssignConverter.convert(create_assign(targets, value, expressions, var_type))
+    result = AssignConverter.convert(create_assign(targets, value, expressions, var_type), VisualizationManager())
 
     assert result == expected
