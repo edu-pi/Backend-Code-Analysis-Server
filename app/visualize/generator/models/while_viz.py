@@ -6,6 +6,7 @@ class WhileDefineViz:
     id: int
     expr: str
     depth: int
+    orelse: bool
     type: str = "whileDefine"
 
 

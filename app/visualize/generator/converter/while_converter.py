@@ -10,6 +10,7 @@ class WhileConverter:
             id=while_obj.id,
             expr=while_obj.while_cycles[0].condition_exprs[0],
             depth=depth,
+            orelse=True if while_obj.orelse else False,
         )
 
     @staticmethod
