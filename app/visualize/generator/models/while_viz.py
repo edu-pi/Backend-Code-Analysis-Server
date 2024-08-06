@@ -7,6 +7,7 @@ class WhileDefineViz:
     expr: str
     depth: int
     code: str
+    orelse: bool
     type: str = "whileDefine"
 
 

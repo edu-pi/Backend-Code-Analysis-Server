@@ -12,6 +12,7 @@ class WhileConverter:
             expr=while_obj.while_cycles[0].condition_exprs[0],
             depth=depth,
             code=viz_manager.get_code_by_idx(while_obj.id),
+            orelse=True if while_obj.orelse else False,
         )
 
     @staticmethod

@@ -184,14 +184,17 @@ class StmtTraveler:
 
             # 조건문이 False일 경우 body 로직을 탐색하지 않음
             if condition_value:
-                for body in node.body:
-                    body_objs.append(StmtTraveler.travel(body, elem_container))
+                body_objs = StmtTraveler._parse_for_body(node.body, elem_container)
 
             # 단계별로 while의 조건문 표현식과 body 로직을 저장
             while_cycles.append(WhileCycle(condition_exprs=condition_obj.expressions, body_objs=body_objs))
 
+        # while의 else 로직을 저장
+        while_else_objs = [StmtTraveler.travel(orelse, elem_container) for orelse in node.orelse]
+
         # id와 while의 결과를 저장한 객체 반환
         return WhileStmtObj(
             id=node.lineno,
+            orelse=while_else_objs,
             while_cycles=while_cycles,
         )
