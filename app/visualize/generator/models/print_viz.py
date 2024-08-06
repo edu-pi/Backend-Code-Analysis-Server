@@ -8,13 +8,5 @@ class PrintViz:
     expr: str
     highlights: []
     console: str | None
+    code: str
     type: str = field(default="print", init=False)
-
-
-"""
-    @ id: 식별값
-    @ depth: 깊이
-    @ name: 변수 이름
-    @ value: 변수 값
-
-"""

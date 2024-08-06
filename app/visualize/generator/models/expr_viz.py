@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 
@@ -8,4 +8,5 @@ class ExprViz:
     id: int
     depth: int
     expr: ExprType
+    code: str
     type: str

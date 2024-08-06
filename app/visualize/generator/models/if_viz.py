@@ -6,6 +6,7 @@ class ConditionViz:
     id: int
     expr: str
     type: str
+    code: str
 
 
 @dataclass(frozen=True)

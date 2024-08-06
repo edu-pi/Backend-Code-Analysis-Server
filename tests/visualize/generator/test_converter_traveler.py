@@ -1,4 +1,3 @@
-import ast
 from unittest.mock import patch
 
 import pytest
@@ -14,7 +13,7 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 @pytest.fixture
 def get_if_stmt_obj():
     def _get_if_stmt_obj(code):
-        code_analyzer = CodeVisualizer(ast.parse(code))
+        code_analyzer = CodeVisualizer(code)
         return code_analyzer.get_analyzed_stmt_nodes()[0]
 
     return _get_if_stmt_obj

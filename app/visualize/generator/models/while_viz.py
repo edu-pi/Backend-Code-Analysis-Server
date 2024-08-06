@@ -6,6 +6,7 @@ class WhileDefineViz:
     id: int
     expr: str
     depth: int
+    code: str
     orelse: bool
     type: str = "whileDefine"
 
@@ -15,4 +16,5 @@ class WhileChangeConditionViz:
     id: int
     depth: int
     expr: str
+    code: str
     type: str = "whileChangeCondition"

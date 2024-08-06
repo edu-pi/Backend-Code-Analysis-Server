@@ -17,14 +17,16 @@ class IfConverter:
             if not isinstance(condition, ConditionObj):
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
 
-            if_header_conditions.append(IfConverter._create__if_else_define_viz(condition))
+            if_header_conditions.append(IfConverter._create__if_else_define_viz(condition, viz_manager))
 
         return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
 
     @staticmethod
-    def _create__if_else_define_viz(condition: ConditionObj) -> ConditionViz:
+    def _create__if_else_define_viz(condition: ConditionObj, viz_manager: VisualizationManager) -> ConditionViz:
         expr = condition.expressions[0] if condition.type != "else" else ""
-        return ConditionViz(id=condition.id, expr=expr, type=condition.type.value)
+        return ConditionViz(
+            id=condition.id, expr=expr, type=condition.type.value, code=viz_manager.get_code_by_idx(condition.id)
+        )
 
     @staticmethod
     def convert_to_if_else_change_viz(
