@@ -122,7 +122,7 @@ def test_convert_to_if_else_define_viz_fail(conditions: tuple[ConditionObj, ...]
         ),
     ],
 )
-def test__create__if_else_define_viz(mocker, condition: ConditionObj, expected):
+def test__create__if_else_define_viz(condition: ConditionObj, expected):
     actual = IfConverter._create__if_else_define_viz(condition, VisualizationManager())
     assert actual == expected
 
@@ -133,18 +133,18 @@ def test__create__if_else_define_viz(mocker, condition: ConditionObj, expected):
         pytest.param(
             (IfConditionObj(id=1, expressions=("a > b", "10 > 20", "False"), result=False),),
             [
-                IfElseChangeViz(id=1, depth=1, expr="a > b"),
-                IfElseChangeViz(id=1, depth=1, expr="10 > 20"),
-                IfElseChangeViz(id=1, depth=1, expr="False"),
+                IfElseChangeViz(id=1, depth=1, expr="a > b", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="10 > 20", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="False", code=""),
             ],
             id="if문 False인 경우",
         ),
         pytest.param(
             (IfConditionObj(id=1, expressions=("a < b", "10 < 20", "True"), result=True),),
             [
-                IfElseChangeViz(id=1, depth=1, expr="a < b"),
-                IfElseChangeViz(id=1, depth=1, expr="10 < 20"),
-                IfElseChangeViz(id=1, depth=1, expr="True"),
+                IfElseChangeViz(id=1, depth=1, expr="a < b", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="10 < 20", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="True", code=""),
             ],
             id="elif문 True 경우",
         ),
@@ -161,12 +161,12 @@ def test_convert_to_if_else_change_viz(
         patch.object(
             IfConverter,
             "_create_condition_result",
-            return_value=[IfElseChangeViz(id=1, depth=1, expr="True")],
-        ) as mock_create_condition_result,
+            return_value=[IfElseChangeViz(id=1, depth=1, expr="True", code="")],
+        ),
     ):
         mock_viz_manager = mock_viz_manager_with_custom_depth(1)
-        actual = IfConverter.convert_to_if_else_change_viz(conditions, mock_viz_manager)
 
+        IfConverter.convert_to_if_else_change_viz(conditions, mock_viz_manager)
         mock_create_condition_evaluation_steps.assert_called_with(conditions[0], mock_viz_manager)
 
 
@@ -177,9 +177,9 @@ def test_convert_to_if_else_change_viz(
             IfConditionObj(id=1, expressions=("a > b", "10 > 20", "False"), result=False),
             [[0, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5, 6]],
             [
-                IfElseChangeViz(id=1, depth=1, expr="a > b"),
-                IfElseChangeViz(id=1, depth=1, expr="10 > 20"),
-                IfElseChangeViz(id=1, depth=1, expr="False"),
+                IfElseChangeViz(id=1, depth=1, expr="a > b", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="10 > 20", code=""),
+                IfElseChangeViz(id=1, depth=1, expr="False", code=""),
             ],
             id="a > 10 조건식 평가 과정 success",
         ),
@@ -187,7 +187,7 @@ def test_convert_to_if_else_change_viz(
             IfConditionObj(id=1, expressions=("True",), result=False),
             [[0, 1, 2, 3]],
             [
-                IfElseChangeViz(id=1, depth=1, expr="True"),
+                IfElseChangeViz(id=1, depth=1, expr="True", code=""),
             ],
             id="True 조건식 평가 과정 success",
         ),
@@ -207,14 +207,14 @@ def test__create_condition_evaluation_steps(
         pytest.param(
             IfConditionObj(id=1, expressions=("a > b", "20 > 10", "True"), result=True),
             [
-                IfElseChangeViz(id=1, depth=1, expr="True"),
+                IfElseChangeViz(id=1, depth=1, expr="True", code=""),
             ],
             id="최종 결과가 True 인 경우",
         ),
         pytest.param(
             IfConditionObj(id=1, expressions=("a < b", "20 < 10", "False"), result=False),
             [
-                IfElseChangeViz(id=1, depth=1, expr="False"),
+                IfElseChangeViz(id=1, depth=1, expr="False", code=""),
             ],
             id="최종 결과가 False 인 경우",
         ),

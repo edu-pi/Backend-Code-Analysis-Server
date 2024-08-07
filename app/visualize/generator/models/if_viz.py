@@ -13,6 +13,7 @@ class ConditionViz:
 class IfElseDefineViz:
     depth: int
     conditions: tuple[ConditionViz, ...]
+    code: str
     type: str = field(default="ifElseDefine", init=False)
 
 
@@ -21,4 +22,5 @@ class IfElseChangeViz:
     id: int
     depth: int
     expr: str
+    code: str
     type: str = field(default="ifElseChange", init=False)
