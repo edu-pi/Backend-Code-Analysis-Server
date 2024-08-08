@@ -6,10 +6,6 @@ from app.visualize.code_visualizer import CodeVisualizer
 
 app = FastAPI()
 
-origins = [
-    "*",
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,12 +19,12 @@ class RequestCode(BaseModel):
     source_code: str
 
 
-@app.get("/")
+@app.get("/edupi_visualize/v1/")
 def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/v1/python")
+@app.post("/edupi_visualize/v1/python")
 def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
     code_analyzer = CodeVisualizer(request_code.source_code)
