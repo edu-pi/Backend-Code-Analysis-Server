@@ -40,6 +40,7 @@ def mock_viz_manager_with_custom_depth():
         viz_mockup.increase_depth.return_value = depth + 1
         viz_mockup.get_depth.return_value = depth
         viz_mockup.decrease_depth.return_value = depth - 1
+        viz_mockup.get_code_by_idx.return_value = ""
 
         return viz_mockup
 

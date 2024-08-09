@@ -9,17 +9,22 @@ class IfConverter:
 
     @staticmethod
     def convert_to_if_else_define_viz(
-        conditions: tuple[ConditionObj, ...], viz_manager: VisualizationManager
+        condition_objs: tuple[ConditionObj, ...], viz_manager: VisualizationManager
     ) -> IfElseDefineViz:
-        if_header_conditions = []
+        if len(condition_objs) == 0:
+            raise IndexError(f"[IfConverter]: 조건문이 없습니다.")
 
-        for condition in conditions:
+        if_header_conditions = []
+        for condition in condition_objs:
             if not isinstance(condition, ConditionObj):
                 raise TypeError(f"[IfConverter]: 지원하지 않는 조건문 타입입니다.: {type(condition)}")
-
             if_header_conditions.append(IfConverter._create__if_else_define_viz(condition, viz_manager))
 
-        return IfElseDefineViz(depth=viz_manager.get_depth(), conditions=tuple(if_header_conditions))
+        return IfElseDefineViz(
+            depth=viz_manager.get_depth(),
+            conditions=tuple(if_header_conditions),
+            code=viz_manager.get_code_by_idx(if_header_conditions[0].id),
+        )
 
     @staticmethod
     def _create__if_else_define_viz(condition: ConditionObj, viz_manager: VisualizationManager) -> ConditionViz:
@@ -57,6 +62,7 @@ class IfConverter:
                 id=condition.id,
                 depth=viz_manager.get_depth(),
                 expr=expression,
+                code=viz_manager.get_code_by_idx(condition.id),
             )
             for idx, expression in enumerate(condition.expressions)
         ]
@@ -69,5 +75,6 @@ class IfConverter:
                 id=condition.id,
                 depth=viz_manager.get_depth(),
                 expr=str(condition.result),
+                code=viz_manager.get_code_by_idx(condition.id),
             )
         ]
