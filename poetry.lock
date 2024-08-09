@@ -422,17 +422,6 @@ files = [
 ]
 
 [[package]]
-name = "ifaddr"
-version = "0.2.0"
-description = "Cross-platform network interface and IP address enumeration library"
-optional = false
-python-versions = "*"
-files = [
-    {file = "ifaddr-0.2.0-py3-none-any.whl", hash = "sha256:085e0305cfe6f16ab12d72e2024030f5d52674afad6911bb1eee207177b8a748"},
-    {file = "ifaddr-0.2.0.tar.gz", hash = "sha256:cc0cbfcaabf765d44595825fb96a99bb12c79716b73b44330ea38ee2b0c4aed4"},
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -711,21 +700,6 @@ identify = ">=1.0.0"
 nodeenv = ">=0.11.1"
 pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
-
-[[package]]
-name = "py-eureka-client"
-version = "0.11.10"
-description = "A eureka client written in python. Support registering your python component to Eureka Server, as well as calling remote services by pulling the the Eureka registry."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "py_eureka_client-0.11.10-py3-none-any.whl", hash = "sha256:fbf3a1612c6b745d051ea0d1b58ac917298cbe903830ad6aa1c96015e2c654b1"},
-    {file = "py_eureka_client-0.11.10.tar.gz", hash = "sha256:034fbf07000d7013317ff2e036390b17e987a90efc9e72198002c56c33a6da92"},
-]
-
-[package.dependencies]
-dnspython = ">=2.4.2"
-ifaddr = ">=0.2.0"
 
 [[package]]
 name = "pydantic"
@@ -1436,4 +1410,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7217c819204eaec1236269ca655496c6425f417ead9ec761e8fa57e84ebccef8"
+content-hash = "622c8967f99bcad28771759859e5d893f70ee98eb79de02463fdec70fd7e31be"
