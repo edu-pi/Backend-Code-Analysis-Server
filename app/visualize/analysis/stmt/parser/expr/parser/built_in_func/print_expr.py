@@ -8,7 +8,7 @@ class PrintExpr:
     def parse(args: list[ExprObj], keyword_arg_dict: dict):
         key_word_dict = PrintExpr._create_keywords(keyword_arg_dict)
         expressions = PrintExpr._create_expressions(args, key_word_dict)
-        value = PrintExpr._get_value(expressions, key_word_dict)
+        value = PrintExpr._get_value(args, key_word_dict)
 
         return PrintObj(value=value, expressions=expressions)
 
@@ -37,5 +37,10 @@ class PrintExpr:
         return tuple(print_expressions)
 
     @staticmethod
-    def _get_value(print_expressions, key_word_dict: dict):
-        return print_expressions[-1] + key_word_dict["end"]
+    def _get_value(args: list[ExprObj], key_word_dict: dict):
+        print(args)
+        arg_values = [str(arg.value) for arg in args]
+
+        str_expression = key_word_dict["sep"].join(arg_values)
+
+        return str_expression + key_word_dict["end"]
