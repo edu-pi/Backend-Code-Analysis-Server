@@ -34,11 +34,10 @@ class PrintExpr:
             str_expression = key_word_dict["sep"].join(expressions)
             print_expressions.append(str_expression)
 
-        return tuple(print_expressions)
+        return tuple(print_expressions) if print_expressions else ("",)
 
     @staticmethod
     def _get_value(args: list[ExprObj], key_word_dict: dict):
-        print(args)
         arg_values = [str(arg.value) for arg in args]
 
         str_expression = key_word_dict["sep"].join(arg_values)

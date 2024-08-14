@@ -8,7 +8,7 @@ def transpose_with_last_fill(expressions):
     try:
         max_length = max(len(sublist) for sublist in expressions)
     except ValueError:
-        return [""]
+        return []
 
     transposed_values = []
     for i in range(max_length):
