@@ -3,6 +3,8 @@ class ExprHighlight:
     @staticmethod
     def get_highlight_indexes_exclusive_last(parsed_exprs):
         highlights = []
+        if len(parsed_exprs) == 0:
+            return highlights
         pre_expr = parsed_exprs[0]
 
         highlights.append(list(range(len(parsed_exprs[0]))))

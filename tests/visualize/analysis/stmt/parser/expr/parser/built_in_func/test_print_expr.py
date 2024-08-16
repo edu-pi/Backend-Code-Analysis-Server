@@ -8,9 +8,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr imp
     "args, keyword_arg_dict, expected",
     [
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",))],
+            [ConstantObj(value="abc", expressions=("'abc'",))],
             {},
-            PrintObj(value="abc\n", expressions=("abc",)),
+            PrintObj(value="abc\n", expressions=("'abc'",)),
             id="print('abc'): success case",
         ),
         pytest.param(
@@ -20,21 +20,21 @@ from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr imp
             id="print('*' * 4): success case",
         ),
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",))],
+            [ConstantObj(value="abc", expressions=("'abc'",))],
             {"end": " "},
-            PrintObj(value="abc ", expressions=("abc",)),
+            PrintObj(value="abc ", expressions=("'abc'",)),
             id="print('abc', end=' '): success case",
         ),
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",)), ConstantObj(value="def", expressions=("def",))],
+            [ConstantObj(value="abc", expressions=("'abc'",)), ConstantObj(value="def", expressions=("'def'",))],
             {},
-            PrintObj(value="abc def\n", expressions=("abc def",)),
+            PrintObj(value="abc def\n", expressions=("'abc' 'def'",)),
             id="print('abc', 'def'): success case",
         ),
         pytest.param(
-            [ConstantObj(value="abc", expressions=("abc",)), ConstantObj(value="def", expressions=("def",))],
+            [ConstantObj(value="abc", expressions=("'abc'",)), ConstantObj(value="def", expressions=("'def'",))],
             {"sep": "-"},
-            PrintObj(value="abc-def\n", expressions=("abc-def",)),
+            PrintObj(value="abc-def\n", expressions=("'abc'-'def'",)),
             id="print('abc', 'def', sep='-'): success case",
         ),
     ],
@@ -51,7 +51,7 @@ def test_parse(mocker, args: list[ExprObj], keyword_arg_dict: dict, expected: Pr
 
     assert isinstance(result, PrintObj)
     mock_create_keywords.assert_called_once_with(keyword_arg_dict)
-    mock_get_value.assert_called_once_with(expected.expressions, expected_key_word)
+    mock_get_value.assert_called_once_with(args, expected_key_word)
     mock_create_expressions.assert_called_once_with(args, expected_key_word)
 
 
@@ -129,39 +129,39 @@ def test_create_expressions(args: list[ExprObj], keyword_arg_dict: dict, expecte
 
 
 @pytest.mark.parametrize(
-    "print_expressions, keyword_arg_dict, expected",
+    "args, keyword_arg_dict, expected",
     [
         pytest.param(
-            ("abc",),
+            [ConstantObj(value="abc", expressions=("'abc'",))],
             {"sep": " ", "end": "\n"},
             "abc\n",
             id="print('abc'): success case",
         ),
         pytest.param(
-            ("'*' * 4", "'****'"),
+            [BinopObj(value="'****'", expressions=("'*' * 4", "'****'"))],
             {"sep": " ", "end": "\n"},
             "'****'\n",
             id="print('*' * 4): success case",
         ),
         pytest.param(
-            ("abc",),
+            [ConstantObj(value="abc", expressions=("'abc'",))],
             {"sep": " ", "end": " "},
             "abc ",
             id="print('abc', end=' '): success case",
         ),
         pytest.param(
-            ("abc def",),
+            [ConstantObj(value="abc", expressions=("'abc'",)), ConstantObj(value="def", expressions=("'def'",))],
             {"sep": " ", "end": "\n"},
             "abc def\n",
             id="print('abc', 'def'): success case",
         ),
         pytest.param(
-            ("abc-def",),
+            [ConstantObj(value="abc", expressions=("'abc'",)), ConstantObj(value="def", expressions=("'def'",))],
             {"sep": "-", "end": "\n"},
             "abc-def\n",
             id="print('abc', 'def', sep='-'): success case",
         ),
     ],
 )
-def test_get_value(print_expressions: tuple[str], keyword_arg_dict: dict, expected: PrintObj):
-    PrintExpr._get_value(print_expressions, keyword_arg_dict)
+def test_get_value(args: list[ExprObj], keyword_arg_dict: dict, expected: PrintObj):
+    PrintExpr._get_value(args, keyword_arg_dict)
