@@ -1,11 +1,10 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj, PassStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
+from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 
 
 class ForStmt:
@@ -35,6 +34,10 @@ class ForStmt:
         elif isinstance(iter_node, ast.List):
             list_obj = ExprTraveler.travel(iter_node, elem_container)
             return list_obj
+
+        elif isinstance(iter_node, ast.Name):
+            name_obj = ExprTraveler.travel(iter_node, elem_container)
+            return name_obj
 
         else:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
