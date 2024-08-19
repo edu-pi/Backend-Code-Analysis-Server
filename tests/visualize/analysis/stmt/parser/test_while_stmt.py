@@ -12,7 +12,7 @@ from app.visualize.analysis.stmt.parser.while_stmt import WhileStmt
     "test_node, test_obj",
     [
         pytest.param(
-            ast.Compare(left=ast.Num(n=3), ops=[ast.Lt()], comparators=[ast.Num(n=10)]),
+            ast.Compare(left=ast.Constant(3), ops=[ast.Lt()], comparators=[ast.Constant(10)]),
             CompareObj(expressions=("3 < 10", "True"), value=True),
             id="3 < 10: success case",
         ),
