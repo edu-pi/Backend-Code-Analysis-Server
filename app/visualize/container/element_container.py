@@ -21,6 +21,7 @@ class ElementContainer:
         # 할당해야 하는 target이 리스트 의 특정 인덱스인 경우
         if "[" in name and "]" in name:
             self._set_subscript_target(name, value)
+            return
 
         self.element_dict[name] = value
         return
