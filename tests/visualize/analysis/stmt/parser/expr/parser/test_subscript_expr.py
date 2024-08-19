@@ -1,3 +1,5 @@
+import ast
+
 import pytest
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
@@ -13,7 +15,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
 
 
 @pytest.mark.parametrize(
-    "target_obj, slice_obj, expected",
+    "target_obj, slice_obj, ctx, expected",
     [
         pytest.param(
             NameObj(
@@ -22,8 +24,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             ConstantObj(value=0, expressions=("0",)),
+            ast.Load(),
             SubscriptObj(value=0, expressions=("a[0]", "0")),
-            id="a[0] success case",
+            id="a[0] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -32,8 +35,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             SliceObj(value=slice(2, 5), expressions=(SliceExpression(lower="2", upper="5"),)),
+            ast.Load(),
             SubscriptObj(value=[2, 3, 4], expressions=("a[2:5]", "[2, 3, 4]")),
-            id="a[2:5] success case",
+            id="a[2:5] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -45,8 +49,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 value=slice(2, 5),
                 expressions=(SliceExpression(lower="2", upper="a"), SliceExpression(lower="2", upper="5")),
             ),
+            ast.Load(),
             SubscriptObj(value=[2, 3, 4], expressions=("a[2:a]", "a[2:5]", "[2, 3, 4]")),
-            id="a[2:a] success case",
+            id="a[2:a] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -55,8 +60,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             SliceObj(value=slice(2, 10, 2), expressions=(SliceExpression(lower="2", upper="10", step="2"),)),
+            ast.Load(),
             SubscriptObj(value=[2, 4, 6, 8], expressions=("a[2:10:2]", "[2, 4, 6, 8]")),
-            id="a[2:10:2] success case",
+            id="a[2:10:2] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -65,8 +71,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             SliceObj(value=slice(0, 5), expressions=(SliceExpression(lower="0", upper="5"),)),
+            ast.Load(),
             SubscriptObj(value=[0, 1, 2, 3, 4], expressions=("a[0:5]", "[0, 1, 2, 3, 4]")),
-            id="a[:5] success case",
+            id="a[:5] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -75,8 +82,9 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             SliceObj(value=slice(3, 10), expressions=(SliceExpression(lower="3", upper="10"),)),
+            ast.Load(),
             SubscriptObj(value=[3, 4, 5, 6, 7, 8, 9], expressions=("a[3:10]", "[3, 4, 5, 6, 7, 8, 9]")),
-            id="a[3:] success case",
+            id="a[3:] - ast.Load: success case",
         ),
         pytest.param(
             NameObj(
@@ -85,20 +93,43 @@ from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import Subscr
                 type=ExprType.LIST,
             ),
             SliceObj(value=slice(0, 10), expressions=(SliceExpression(lower="0", upper="10"),)),
+            ast.Load(),
             SubscriptObj(
                 value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], expressions=("a[0:10]", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")
             ),
-            id="a[:] success case",
+            id="a[:] - ast.Load: success case",
+        ),
+        pytest.param(
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
+            ConstantObj(value=0, expressions=("0",)),
+            ast.Store(),
+            SubscriptObj(value="a[0]", expressions=("a[0]", "0")),
+            id="a[0] - ast.Store: success case",
+        ),
+        pytest.param(
+            NameObj(
+                value=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                expressions=("a", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"),
+                type=ExprType.LIST,
+            ),
+            SliceObj(value=slice(2, 5), expressions=(SliceExpression(lower="2", upper="5"),)),
+            ast.Store(),
+            SubscriptObj(value="a[2:5]", expressions=("a[2:5]", "[2, 3, 4]")),
+            id="a[2:5] - ast.Store: success case",
         ),
     ],
 )
-def test_parse(mocker, target_obj: ExprObj, slice_obj: ExprObj, expected: SubscriptObj):
+def test_parse(mocker, target_obj: ExprObj, slice_obj: ExprObj, ctx, expected: SubscriptObj):
     mock_get_value = mocker.patch.object(SubscriptExpr, "_get_value", return_value=expected.value)
     mock_create_expressions = mocker.patch.object(
         SubscriptExpr, "_create_expressions", return_value=expected.expressions
     )
 
-    result = SubscriptExpr.parse(target_obj, slice_obj)
+    result = SubscriptExpr.parse(target_obj, slice_obj, ctx)
 
     assert isinstance(result, SubscriptObj)
     mock_get_value.assert_called_once_with(target_obj.value, slice_obj.value)

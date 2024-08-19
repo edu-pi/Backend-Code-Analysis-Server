@@ -1,3 +1,5 @@
+import ast
+
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     ExprObj,
     SliceObj,
@@ -8,9 +10,12 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
 class SubscriptExpr:
 
     @staticmethod
-    def parse(target_obj: ExprObj, slice_obj: ExprObj) -> SubscriptObj:
+    def parse(target_obj: ExprObj, slice_obj: ExprObj, ctx) -> SubscriptObj:
         value = SubscriptExpr._get_value(target_obj.value, slice_obj.value)
         expressions = SubscriptExpr._create_expressions(target_obj, slice_obj)
+
+        if isinstance(ctx, ast.Store):
+            value = expressions[0]
 
         return SubscriptObj(value=value, expressions=expressions)
 
