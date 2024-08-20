@@ -1,10 +1,13 @@
 import ast
 
+from jinja2.nodes import UnaryExpr
+
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
 from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
 from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
+from app.visualize.analysis.stmt.parser.expr.parser.unary_op_expr import UnaryOpExpr
 from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
@@ -51,6 +54,10 @@ class ExprTraveler:
         elif isinstance(node, ast.Attribute):
             attribute_obj = ExprTraveler._attribute_travel(node, elem_container)
             return attribute_obj
+
+        elif isinstance(node, ast.UnaryOp):
+            unary_op_obj = ExprTraveler._unary_op_travel(node, elem_container)
+            return unary_op_obj
 
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -152,3 +159,8 @@ class ExprTraveler:
         target_obj = ExprTraveler.travel(node.value, elem_container)
         attr_name = node.attr
         return AttributeExpr.parse(target_obj, attr_name)
+
+    @staticmethod
+    def _unary_op_travel(node: ast.UnaryOp, elem_container):
+        operand_obj = ExprTraveler.travel(node.operand, elem_container)
+        return UnaryOpExpr.parse(node.op, operand_obj)
