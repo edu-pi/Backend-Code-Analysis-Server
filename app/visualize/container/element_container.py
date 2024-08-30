@@ -33,9 +33,9 @@ class ElementContainer:
         # a[0:1]에서 a 추출
         list_name = name.split("[")[0]
         # a[0:1]에서 0:1 부분 추출
-        sliced_index = name.split("[")[1].split("]")[0]
+        sliced_index = name[name.index("[") + 1 : name.index("]")]
         # 0:1 -> [0, 1]
-        slice_list = [int(x) for x in sliced_index.split(":")]
+        slice_list = list(map(int, sliced_index.split(":")))
 
         # 해당 list를 찾아온다.
         find_list = self.element_dict[list_name]
