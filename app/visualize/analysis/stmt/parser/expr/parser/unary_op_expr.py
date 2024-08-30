@@ -4,7 +4,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, Con
 
 
 class UnaryOpExpr:
-    # Invert, Not, UAdd, USub
+    # Invert(~1), Not(not 1), UAdd(+1), USub(-1)
     @staticmethod
     def parse(op: ast, operand: ExprObj):
         value = UnaryOpExpr._get_value(op, operand)
