@@ -2,16 +2,18 @@ import ast
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
-from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
-from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
-from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
-from app.visualize.container.element_container import ElementContainer
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.parser.expr.parser.formatted_value_expr import FormattedValueExpr
+from app.visualize.analysis.stmt.parser.expr.parser.joined_str_expr import JoinedStrExpr
 from app.visualize.analysis.stmt.parser.expr.parser.list_expr import ListExpr
 from app.visualize.analysis.stmt.parser.expr.parser.name_expr import NameExpr
+from app.visualize.analysis.stmt.parser.expr.parser.slice_expr import SliceExpr
+from app.visualize.analysis.stmt.parser.expr.parser.subscript_expr import SubscriptExpr
+from app.visualize.analysis.stmt.parser.expr.parser.tuple_expr import TupleExpr
+from app.visualize.container.element_container import ElementContainer
 
 
 class ExprTraveler:
@@ -51,6 +53,14 @@ class ExprTraveler:
         elif isinstance(node, ast.Attribute):
             attribute_obj = ExprTraveler._attribute_travel(node, elem_container)
             return attribute_obj
+
+        elif isinstance(node, ast.FormattedValue):
+            formatted_value_obj = ExprTraveler._formatted_value_travel(node, elem_container)
+            return formatted_value_obj
+
+        elif isinstance(node, ast.JoinedStr):
+            joined_str_obj = ExprTraveler._joined_str_travel(node, elem_container)
+            return joined_str_obj
 
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -152,3 +162,18 @@ class ExprTraveler:
         target_obj = ExprTraveler.travel(node.value, elem_container)
         attr_name = node.attr
         return AttributeExpr.parse(target_obj, attr_name)
+
+    @staticmethod
+    def _formatted_value_travel(node: ast.FormattedValue, elem_container: ElementContainer):
+        value = ExprTraveler.travel(node.value, elem_container)
+        joined_str_obj = None
+        if node.format_spec:
+            joined_str_obj = ExprTraveler.travel(node.format_spec, elem_container)
+
+        return FormattedValueExpr.parse(value, node.conversion, joined_str_obj)
+
+    @staticmethod
+    def _joined_str_travel(node: ast.JoinedStr, elem_container: ElementContainer):
+        value_objs = [ExprTraveler.travel(value, elem_container) for value in node.values]
+
+        return JoinedStrExpr.parse(value_objs)

@@ -94,3 +94,10 @@ class AppendObj(AttributeObj):
     value: str
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.APPEND, init=False)
+
+
+@dataclass(frozen=True)
+class FormattedValueObj(ExprObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.VARIABLE, init=False)
