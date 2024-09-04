@@ -1,6 +1,6 @@
 # for_stmt_obj를 받아서 for_viz를 반환하는 클래스
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj, NameObj, SubscriptObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import RangeObj, NameObj, SubscriptObj, ListObj
 from app.visualize.generator.highlight.for_highlight import ForHighlight
 from app.visualize.generator.models.for_viz import ForViz, ForConditionViz
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -41,12 +41,12 @@ class ForHeaderConvertor:
 
     @staticmethod
     def _get_condition(target_name: str, iter_obj):
-        # range를 사용한 condition - for i in range(10)
+        # range를 사용한 condition - for i in 'range(10)'
         if isinstance(iter_obj, RangeObj):
             return ForHeaderConvertor._get_range_condition(target_name, iter_obj)
 
-        # 리스트 형태의 condition - for i in list
-        elif isinstance(iter_obj, NameObj | SubscriptObj):
+        # 리스트 형태의 condition - for i in 'List'
+        elif isinstance(iter_obj, NameObj | SubscriptObj | ListObj):
             return ForHeaderConvertor._get_list_condition(target_name, iter_obj)
 
         else:

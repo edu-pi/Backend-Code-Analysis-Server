@@ -31,13 +31,17 @@ class ForStmt:
             call_obj = ExprTraveler.travel(iter_node, elem_container)
             return call_obj
 
-        elif isinstance(iter_node, ast.Name):  # 리스트
+        elif isinstance(iter_node, ast.Name):  # 변수
             name_obj = ExprTraveler.travel(iter_node, elem_container)
             return name_obj
 
         elif isinstance(iter_node, ast.Subscript):  # [a:] 형태의 리스트
             subscript_obj = ExprTraveler.travel(iter_node, elem_container)
             return subscript_obj
+
+        elif isinstance(iter_node, ast.List):  # [1,2,3,4] 형태
+            list_obj = ExprTraveler.travel(iter_node, elem_container)
+            return list_obj
 
         else:
             raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
