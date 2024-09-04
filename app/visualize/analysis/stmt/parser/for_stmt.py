@@ -27,7 +27,20 @@ class ForStmt:
 
     @staticmethod
     def _get_condition_obj(iter_node: ast, elem_container: ElementContainer) -> ExprObj:
-        return ExprTraveler.travel(iter_node, elem_container)
+        if isinstance(iter_node, ast.Call):
+            call_obj = ExprTraveler.travel(iter_node, elem_container)
+            return call_obj
+
+        elif isinstance(iter_node, ast.Name):  # 리스트
+            name_obj = ExprTraveler.travel(iter_node, elem_container)
+            return name_obj
+
+        elif isinstance(iter_node, ast.Subscript):  # [a:] 형태의 리스트
+            subscript_obj = ExprTraveler.travel(iter_node, elem_container)
+            return subscript_obj
+
+        else:
+            raise TypeError(f"[ForParser]:  {type(iter)}는 잘못된 타입입니다.")
 
     @staticmethod
     def contain_flow_control(body_objs, flow_control_obj):
