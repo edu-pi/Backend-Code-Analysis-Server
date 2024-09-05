@@ -1,11 +1,10 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj, PassStmtObj
+from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
+from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
-from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
 
 
 class ForStmt:
@@ -32,7 +31,15 @@ class ForStmt:
             call_obj = ExprTraveler.travel(iter_node, elem_container)
             return call_obj
 
-        elif isinstance(iter_node, ast.List):
+        elif isinstance(iter_node, ast.Name):  # 변수
+            name_obj = ExprTraveler.travel(iter_node, elem_container)
+            return name_obj
+
+        elif isinstance(iter_node, ast.Subscript):  # [a:] 형태의 리스트
+            subscript_obj = ExprTraveler.travel(iter_node, elem_container)
+            return subscript_obj
+
+        elif isinstance(iter_node, ast.List):  # [1,2,3,4] 형태
             list_obj = ExprTraveler.travel(iter_node, elem_container)
             return list_obj
 
