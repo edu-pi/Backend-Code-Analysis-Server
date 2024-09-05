@@ -35,7 +35,6 @@
     "family": "edupi_visualize",
     "executionRoleArn": "arn:aws:iam::590184013289:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 12,
     "volumes": [],
     "placementConstraints": [],
     "requiresCompatibilities": [
