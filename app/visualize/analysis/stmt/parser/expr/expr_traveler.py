@@ -146,7 +146,7 @@ class ExprTraveler:
         target_obj = ExprTraveler.travel(node.value, elem_container)
         slice_obj = ExprTraveler.travel(node.slice, elem_container)
 
-        subscript_obj = SubscriptExpr.parse(target_obj, slice_obj)
+        subscript_obj = SubscriptExpr.parse(target_obj, slice_obj, node.ctx)
         return subscript_obj
 
     @staticmethod

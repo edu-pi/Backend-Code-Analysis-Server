@@ -18,8 +18,33 @@ class ElementContainer:
                 self.element_dict[name[i]] = value[i]
             return
 
+        # 할당해야 하는 target이 리스트 의 특정 인덱스인 경우
+        if "[" in name and "]" in name:
+            self._set_subscript_target(name, value)
+            return
+
         self.element_dict[name] = value
         return
 
     def get_element_dict(self):
         return self.element_dict
+
+    def _set_subscript_target(self, name, value):
+        # a[0:1]에서 a 추출
+        list_name = name.split("[")[0]
+        # a[0:1]에서 0:1 부분 추출
+        sliced_index = name[name.index("[") + 1 : name.index("]")]
+        # 0:1 -> [0, 1]
+        slice_list = list(map(int, sliced_index.split(":")))
+
+        # 해당 list를 찾아온다.
+        find_list = self.element_dict[list_name]
+
+        # start, end, step 인 경우
+        if len(slice_list) > 1:
+            find_list[slice(*slice_list)] = value
+            return
+
+        # 값 하나만 바꾸는 경우
+        find_list[int(slice_list[0])] = value
+        return
