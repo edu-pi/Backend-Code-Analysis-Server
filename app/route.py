@@ -19,7 +19,7 @@ class RequestCode(BaseModel):
     source_code: str
 
 
-@app.get("/edupi_visualize/v1/")
+@app.get("/edupi_visualize/")
 def read_root():
     return {"Hello": "World"}
 
