@@ -12,7 +12,7 @@ FastAPI를 사용한 파이썬 코드 분석 서버
 `pip install -r requirements.txt`
 
 3. 실행 <br>
-`uvicorn app.main:app --reload`
+`poetry run uvicorn app.route:app --reload`
 
 <br>
 
