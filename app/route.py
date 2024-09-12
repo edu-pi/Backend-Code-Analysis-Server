@@ -10,12 +10,12 @@ class RequestCode(BaseModel):
     source_code: str
 
 
-@app.get("/edupi_visualize/")
+@app.get("/edupi-visualize")
 def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/edupi_visualize/v1/python")
+@app.post("/edupi-visualize/v1/python")
 def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
     code_analyzer = CodeVisualizer(request_code.source_code)
