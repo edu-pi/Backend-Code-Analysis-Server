@@ -8,7 +8,7 @@ env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: edupi_visualize
   ECS_SERVICE: visualize
-  ECS_CLUSTER: BE
+  ECS_CLUSTER: BE-fargate
   ECS_TASK_DEFINITION: edupi_visualize.json
   CONTAINER_NAME: visualize
 
