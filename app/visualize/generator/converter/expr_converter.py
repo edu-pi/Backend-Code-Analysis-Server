@@ -70,7 +70,7 @@ class ExprConverter:
     @staticmethod
     def _convert_to_append_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
         append_vizs = []
-        expr_vizs = ExprConverter._convert_to_expr_viz(expr_stmt_obj, call_id, depth)
+        expr_vizs = ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
         append_vizs.extend(expr_vizs)
 
         append_vizs.append(
@@ -79,6 +79,7 @@ class ExprConverter:
                     id=call_id,
                     expr=expr_stmt_obj.expressions[-1],
                     name=expr_stmt_obj.value,
+                    code=viz_manager.get_code_by_idx(call_id),
                     type=expr_stmt_obj.expr_type.value,
                 ),
             )
