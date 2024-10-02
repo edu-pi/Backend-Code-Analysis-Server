@@ -6,6 +6,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.parser.expr.parser.dict_expr import DictExpr
 from app.visualize.analysis.stmt.parser.expr.parser.formatted_value_expr import FormattedValueExpr
 from app.visualize.analysis.stmt.parser.expr.parser.joined_str_expr import JoinedStrExpr
 from app.visualize.analysis.stmt.parser.expr.parser.list_expr import ListExpr
@@ -38,6 +39,9 @@ class ExprTraveler:
 
         elif isinstance(node, ast.Tuple):
             return ExprTraveler._tuple_travel(node, elem_container)
+
+        elif isinstance(node, ast.Dict):
+            return ExprTraveler._dict_travel(node, elem_container)
 
         elif isinstance(node, ast.Compare):
             compare_obj = ExprTraveler._compare_travel(node, elem_container)
@@ -114,6 +118,13 @@ class ExprTraveler:
     def _tuple_travel(node: ast.Tuple, elem_container: ElementContainer):
         elts = [ExprTraveler.travel(elt, elem_container) for elt in node.elts]
         return TupleExpr.parse(elts)
+
+    @staticmethod
+    def _dict_travel(node: ast.Dict, elem_container: ElementContainer):
+        keys = [ExprTraveler.travel(key, elem_container) for key in node.keys]
+        values = [ExprTraveler.travel(value, elem_container) for value in node.values]
+
+        return DictExpr.parse(keys, values)
 
     @staticmethod
     def _compare_travel(node: ast, elem_container: ElementContainer):

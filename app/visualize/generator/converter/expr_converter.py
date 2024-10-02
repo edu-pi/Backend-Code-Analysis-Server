@@ -25,6 +25,9 @@ class ExprConverter:
         elif var_type is ExprType.TUPLE:
             return ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
+        elif var_type is ExprType.DICT:
+            return ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
+
         elif var_type is ExprType.PRINT:
             return ExprConverter._convert_to_print_viz(expr_stmt_obj, viz_manager, call_id, depth)
 

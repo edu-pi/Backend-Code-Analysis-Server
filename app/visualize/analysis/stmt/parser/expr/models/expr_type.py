@@ -7,6 +7,7 @@ class ExprType(Enum):
     VARIABLE = "variable"
     LIST = "list"
     TUPLE = "tuple"
+    DICT = "dict"
 
     # compare
     COMPARE = "compare"
