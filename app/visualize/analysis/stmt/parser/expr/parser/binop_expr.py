@@ -35,7 +35,7 @@ class BinopExpr:
             return left_value % right_value
 
         else:
-            raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
+            raise TypeError(f"[BinopExpr] {type(op)}는 잘못된 타입입니다.")
 
     # 1 + 2
     # a + 2
@@ -77,4 +77,4 @@ class BinopExpr:
             return f"{left_expression} % {right_expression}"
 
         else:
-            raise TypeError(f"[call_travel] {type(op)}는 잘못된 타입입니다.")
+            raise TypeError(f"[BinopExpr] {type(op)}는 잘못된 타입입니다.")

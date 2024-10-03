@@ -1,8 +1,8 @@
 import ast
 
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import NameObj
 
 
 class NameExpr:
@@ -21,7 +21,7 @@ class NameExpr:
             raise NotImplementedError(f"Unsupported node type: {type(node.ctx)}")
 
         else:
-            raise TypeError(f"[call_travel] {type(node.ctx)}는 잘못된 타입입니다.")
+            raise TypeError(f"[NameExpr] {type(node.ctx)}는 잘못된 타입입니다.")
 
     # 변수의 값을 가져오는 함수
     @staticmethod

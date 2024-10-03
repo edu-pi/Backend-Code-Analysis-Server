@@ -155,7 +155,7 @@ class ExprTraveler:
             return ExprTraveler._attribute_travel(node, elem_container)
 
         else:
-            raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
+            raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
     def _subscript_travel(node: ast.Subscript, elem_container: ElementContainer):
