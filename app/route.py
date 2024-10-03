@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 from app.execute.executor import Executor
+from app.execute.models.execute_request import ExecuteRequest
 from app.visualize.code_visualizer import CodeVisualizer
 from app.web import exception_handler
 from app.web.models.success_reponse import SuccessResponse
@@ -31,13 +32,11 @@ def read_root(request_code: RequestCode):
     return code_analyzer.visualize_code()
 
 
-@app.post("/edupi-visualize/v1/run")
-def run(request_code: RequestCode):
+@app.post("/edupi-visualize/v1/execute")
+def run(run_request: ExecuteRequest):
     # 코드 분석 인스턴스 생성
-    executor = Executor(
-        request_code.source_code,
-    )
-    result = executor.run()
+    executor = Executor(run_request.source_code, run_request.input)
+    result = executor.execute_user_code()
 
     success_response = SuccessResponse(detail="success run", result={"output": result})
 
