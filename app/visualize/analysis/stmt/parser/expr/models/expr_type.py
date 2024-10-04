@@ -25,6 +25,7 @@ class ExprType(Enum):
     APPEND = "append"
     REMOVE = "remove"
     EXTEND = "extend"
+    POP = "pop"
 
     @staticmethod
     def judge_collection_type(value):

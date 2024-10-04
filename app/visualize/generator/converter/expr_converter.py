@@ -41,6 +41,9 @@ class ExprConverter:
         elif var_type is ExprType.EXTEND:
             return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
+        elif var_type is ExprType.POP:
+            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
+
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
 

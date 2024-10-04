@@ -39,6 +39,16 @@ def is_same_len(array1, array2):
 
 
 def getStringType(target):
+    if not isinstance(target, str):
+        if isinstance(target, tuple):
+            return "tuple"
+        elif isinstance(target, list):
+            return "list"
+        elif isinstance(target, dict):
+            return "dict"
+        else:
+            return "variable"
+
     try:
         evaluated_value = eval(target)
     except (SyntaxError, NameError):

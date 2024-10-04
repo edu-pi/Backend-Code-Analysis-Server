@@ -118,6 +118,13 @@ class ExtendObj(AttributeObj):
 
 
 @dataclass(frozen=True)
+class PopObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.REMOVE, init=False)
+
+
+@dataclass(frozen=True)
 class FormattedValueObj(ExprObj):
     value: str
     expressions: tuple[str, ...]
