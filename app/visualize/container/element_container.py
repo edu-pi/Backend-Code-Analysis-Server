@@ -35,16 +35,26 @@ class ElementContainer:
         # a[0:1]에서 0:1 부분 추출
         sliced_index = name[name.index("[") + 1 : name.index("]")]
         # 0:1 -> [0, 1]
-        slice_list = list(map(int, sliced_index.split(":")))
+        slice_list = list(sliced_index.split(":"))
 
         # 해당 list를 찾아온다.
         find_list = self.element_dict[list_name]
 
+        # 찾아온 list가 tuple이면 예외
+        if isinstance(find_list, tuple):
+            raise TypeError(f"[element container] {type(find_list)}은 수정할 수 없습니다.")
+
         # start, end, step 인 경우
         if len(slice_list) > 1:
+            slice_list = map(int, sliced_index.split(":"))
             find_list[slice(*slice_list)] = value
             return
 
         # 값 하나만 바꾸는 경우
-        find_list[int(slice_list[0])] = value
+        try:
+            change_idx = int(slice_list[0])  # 정수 또는 실수로 변환
+        except ValueError:
+            change_idx = slice_list[0]
+
+        find_list[change_idx] = value
         return

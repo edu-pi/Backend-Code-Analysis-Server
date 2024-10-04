@@ -1,10 +1,10 @@
 import ast
 
-from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
-from app.visualize.container.element_container import ElementContainer
-from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
+from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
+from app.visualize.container.element_container import ElementContainer
 
 
 class AssignStmt:
@@ -39,6 +39,9 @@ class AssignStmt:
             elif isinstance(target_node, ast.List):
                 expr_obj = ExprTraveler.travel(target_node, elem_container)
 
+            elif isinstance(target_node, ast.Dict):
+                expr_obj = ExprTraveler.travel(target_node, elem_container)
+
             elif isinstance(target_node, ast.Subscript):
                 expr_obj = ExprTraveler.travel(target_node, elem_container)
 
@@ -56,12 +59,17 @@ class AssignStmt:
     @staticmethod
     def _set_value_to_target(target_names: tuple, expr_obj, elem_container: ElementContainer):
         for target_name in target_names:
-            value = expr_obj.value
 
             if expr_obj.type is ExprType.LIST:
                 value = list(expr_obj.value)
 
             elif expr_obj.type is ExprType.TUPLE:
                 value = tuple(expr_obj.value)
+
+            elif expr_obj.type is ExprType.DICT:
+                value = dict(expr_obj.value)
+
+            else:
+                value = expr_obj.value
 
             elem_container.set_element(target_name, value)

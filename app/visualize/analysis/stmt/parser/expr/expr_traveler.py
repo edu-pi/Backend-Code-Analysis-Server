@@ -88,6 +88,9 @@ class ExprTraveler:
         elif isinstance(node, ast.Constant):
             return ExprTraveler._constant_travel(node)
 
+        elif isinstance(node, ast.Subscript):
+            return ExprTraveler._subscript_travel(node, elem_container)
+
         else:
             raise TypeError(f"[ExprTraveler - binop parsing 중  {type(node)}는 잘못된 타입입니다.")
 

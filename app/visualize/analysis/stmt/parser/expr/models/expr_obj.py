@@ -80,7 +80,7 @@ class PrintObj(CallObj):
 @dataclass(frozen=True)
 class SubscriptObj(ExprObj):
     expressions = tuple[str, ...]
-    type: ExprType = field(default=ExprType.SUBSCRIPT, init=False)
+    type: ExprType
 
 
 @dataclass(frozen=True)
