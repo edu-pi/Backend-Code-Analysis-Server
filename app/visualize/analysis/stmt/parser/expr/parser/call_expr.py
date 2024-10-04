@@ -2,6 +2,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, Att
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.append_expr import AppendExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.extend_expr import ExtendExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.insert_expr import InsertExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.pop_expr import PopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
@@ -51,6 +52,10 @@ class CallExpr:
         elif attr_obj.type == ExprType.POP:
             pop_obj = PopExpr.parse(attr_obj, args)
             return pop_obj
+
+        elif attr_obj.type == ExprType.INSERT:
+            insert_obj = InsertExpr.parse(attr_obj, args)
+            return insert_obj
 
         else:
             raise NotImplementedError(f"[CallParser]: {attr_obj.type} 은 아직 지원하지 않습니다.")
