@@ -1,6 +1,7 @@
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, AttributeObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.append_expr import AppendExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 
@@ -36,6 +37,10 @@ class CallExpr:
         if attr_obj.type == ExprType.APPEND:
             append_obj = AppendExpr.parse(attr_obj, args)
             return append_obj
+
+        if attr_obj.type == ExprType.REMOVE:
+            remove_obj = RemoveExpr.parse(attr_obj, args)
+            return remove_obj
 
         else:
             raise NotImplementedError(f"[CallParser]: {attr_obj.type} 은 아직 지원하지 않습니다.")

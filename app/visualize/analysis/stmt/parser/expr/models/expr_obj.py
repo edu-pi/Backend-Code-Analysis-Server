@@ -104,6 +104,13 @@ class AppendObj(AttributeObj):
 
 
 @dataclass(frozen=True)
+class RemoveObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.REMOVE, init=False)
+
+
+@dataclass(frozen=True)
 class FormattedValueObj(ExprObj):
     value: str
     expressions: tuple[str, ...]

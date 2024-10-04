@@ -23,6 +23,7 @@ class ExprType(Enum):
 
     # attribute
     APPEND = "append"
+    REMOVE = "remove"
 
     @staticmethod
     def judge_collection_type(value):

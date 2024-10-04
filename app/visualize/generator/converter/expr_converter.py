@@ -32,7 +32,10 @@ class ExprConverter:
             return ExprConverter._convert_to_print_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.APPEND:
-            return ExprConverter._convert_to_append_viz(expr_stmt_obj, viz_manager, call_id, depth)
+            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
+
+        elif var_type is ExprType.REMOVE:
+            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
@@ -71,7 +74,7 @@ class ExprConverter:
         return print_vizs
 
     @staticmethod
-    def _convert_to_append_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
+    def _convert_to_attribute_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
         append_vizs = []
         expr_vizs = ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
         append_vizs.extend(expr_vizs)
