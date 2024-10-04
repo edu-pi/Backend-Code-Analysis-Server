@@ -27,4 +27,4 @@ class PopExpr:
 
     @staticmethod
     def _create_expressions(return_value):
-        return (return_value,)
+        return (str(return_value),)
