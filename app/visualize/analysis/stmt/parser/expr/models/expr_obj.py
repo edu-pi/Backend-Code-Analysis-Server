@@ -111,6 +111,13 @@ class RemoveObj(AttributeObj):
 
 
 @dataclass(frozen=True)
+class ExtendObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.EXTEND, init=False)
+
+
+@dataclass(frozen=True)
 class FormattedValueObj(ExprObj):
     value: str
     expressions: tuple[str, ...]
