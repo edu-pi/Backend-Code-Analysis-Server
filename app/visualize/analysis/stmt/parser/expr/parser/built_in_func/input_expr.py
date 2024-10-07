@@ -23,7 +23,7 @@ class InputExpr:
     def _create_expressions(args: list[ExprObj], value):
         expressions = []
         if args:
-            expressions.append("input(" + args[0].value + ")")
+            expressions.append('input("' + args[0].value + '")')
         else:
             expressions.append("input()")
 

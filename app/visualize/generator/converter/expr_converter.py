@@ -1,3 +1,5 @@
+import re
+
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
@@ -120,3 +122,29 @@ class ExprConverter:
         ]
 
         return attr_vizs
+
+    @staticmethod
+    def _convert_to_input_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
+        result = re.search(r'input\("([^"]*)"\)', expr_stmt_obj.expressions[0])
+        console = result.group(1) if result else ""
+
+        input_vizs = []
+        input_vizs.append(
+            InputViz(
+                id=call_id,
+                depth=depth,
+                expr=expr_stmt_obj.expressions[0],
+                console=">> " + console,
+                code=viz_manager.get_code_by_idx(call_id),
+            )
+        )
+        input_vizs.append(
+            InputViz(
+                id=call_id,
+                depth=depth,
+                expr=expr_stmt_obj.expressions[1],
+                console=expr_stmt_obj.value + "\n",
+                code=viz_manager.get_code_by_idx(call_id),
+            )
+        )
+        return input_vizs
