@@ -95,16 +95,17 @@ def test_get_value(elem_container_dict: dict, expressions: tuple, expected: str)
 
 
 @pytest.mark.parametrize(
-    "return_value, expected",
+    "target, return_value, expected",
     [
         pytest.param(
+            "a",
             5,
-            ("5",),
+            ("a", "5"),
             id="a.pop(): success case",
         ),
     ],
 )
-def test_create_expressions(return_value, expected):
-    result = PopExpr._create_expressions(return_value)
+def test_create_expressions(target, return_value, expected):
+    result = PopExpr._create_expressions(target, return_value)
 
     assert result == expected

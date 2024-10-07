@@ -121,7 +121,7 @@ class ExtendObj(AttributeObj):
 class PopObj(AttributeObj):
     value: str
     expressions: tuple[str, ...]
-    type: ExprType = field(default=ExprType.REMOVE, init=False)
+    type: ExprType = field(default=ExprType.POP, init=False)
 
 
 @dataclass(frozen=True)

@@ -32,20 +32,16 @@ class ExprConverter:
         elif var_type is ExprType.PRINT:
             return ExprConverter._convert_to_print_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
-        elif var_type is ExprType.APPEND:
-            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
-
-        elif var_type is ExprType.REMOVE:
-            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
-
-        elif var_type is ExprType.EXTEND:
+        elif var_type in (
+            ExprType.APPEND,
+            ExprType.EXTEND,
+            ExprType.INSERT,
+            ExprType.REMOVE,
+        ):
             return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         elif var_type is ExprType.POP:
-            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
-
-        elif var_type is ExprType.INSERT:
-            return ExprConverter._convert_to_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
+            return ExprConverter._convert_to_pop_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
@@ -85,11 +81,11 @@ class ExprConverter:
 
     @staticmethod
     def _convert_to_attribute_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
-        append_vizs = []
+        attr_vizs = []
         expr_vizs = ExprConverter._convert_to_expr_viz(expr_stmt_obj, viz_manager, call_id, depth)
-        append_vizs.extend(expr_vizs)
+        attr_vizs.extend(expr_vizs)
 
-        append_vizs.append(
+        attr_vizs.append(
             AttributeViz(
                 variable=Variable(
                     id=call_id,
@@ -102,4 +98,21 @@ class ExprConverter:
             )
         )
 
-        return append_vizs
+        return attr_vizs
+
+    @staticmethod
+    def _convert_to_pop_attribute_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
+        attr_vizs = [
+            AttributeViz(
+                variable=Variable(
+                    id=call_id,
+                    expr=expr_stmt_obj.expressions[-1],
+                    name=expr_stmt_obj.expressions[0],
+                    code=viz_manager.get_code_by_idx(call_id),
+                    type=getStringType(expr_stmt_obj.expressions[-1]),
+                ),
+                type=expr_stmt_obj.expr_type.value,
+            )
+        ]
+
+        return attr_vizs

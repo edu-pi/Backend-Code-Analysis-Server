@@ -10,21 +10,24 @@ class PopExpr:
 
         return_value = PopExpr._pop_value(attr_obj)
 
-        value = PopExpr._get_value(attr_obj)
-        expressions = PopExpr._create_expressions(return_value)
+        target = PopExpr._get_value(attr_obj)
+        expressions = PopExpr._create_expressions(target, return_value)
 
-        return PopObj(value=value, expressions=expressions)
+        return PopObj(value=return_value, expressions=expressions)
 
     @staticmethod
     def _pop_value(attr_obj: AttributeObj):
-        remove_method = attr_obj.value
+        pop_method = attr_obj.value
 
-        return remove_method()
+        return pop_method()
 
     @staticmethod
     def _get_value(attr_obj: AttributeObj):
         return attr_obj.expressions[0]
 
     @staticmethod
-    def _create_expressions(return_value):
-        return (str(return_value),)
+    def _create_expressions(target, return_value):
+        return (
+            target,
+            str(return_value),
+        )
