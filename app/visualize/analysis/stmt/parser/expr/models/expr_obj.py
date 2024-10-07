@@ -52,6 +52,13 @@ class TupleObj(ExprObj):
 
 
 @dataclass(frozen=True)
+class DictObj(ExprObj):
+    value: dict
+    expressions = tuple[str, ...]
+    type: ExprType = field(default=ExprType.DICT, init=False)
+
+
+@dataclass(frozen=True)
 class CallObj(ExprObj):
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.CALL, init=False)
@@ -73,7 +80,7 @@ class PrintObj(CallObj):
 @dataclass(frozen=True)
 class SubscriptObj(ExprObj):
     expressions = tuple[str, ...]
-    type: ExprType = field(default=ExprType.SUBSCRIPT, init=False)
+    type: ExprType
 
 
 @dataclass(frozen=True)

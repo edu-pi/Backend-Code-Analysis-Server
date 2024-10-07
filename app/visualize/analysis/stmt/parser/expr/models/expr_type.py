@@ -7,6 +7,7 @@ class ExprType(Enum):
     VARIABLE = "variable"
     LIST = "list"
     TUPLE = "tuple"
+    DICT = "dict"
 
     # compare
     COMPARE = "compare"
@@ -25,10 +26,19 @@ class ExprType(Enum):
 
     @staticmethod
     def judge_collection_type(value):
+        if isinstance(value, str):
+            try:
+                value = eval(value)
+            except (SyntaxError, NameError):
+                return ExprType.VARIABLE
+
         if isinstance(value, list):
             return ExprType.LIST
 
         elif isinstance(value, tuple):
             return ExprType.TUPLE
+
+        elif isinstance(value, dict):
+            return ExprType.DICT
 
         return ExprType.VARIABLE

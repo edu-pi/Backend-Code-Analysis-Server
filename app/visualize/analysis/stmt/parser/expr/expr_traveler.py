@@ -6,6 +6,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
 from app.visualize.analysis.stmt.parser.expr.parser.compare_expr import CompareExpr
 from app.visualize.analysis.stmt.parser.expr.parser.constant_expr import ConstantExpr
+from app.visualize.analysis.stmt.parser.expr.parser.dict_expr import DictExpr
 from app.visualize.analysis.stmt.parser.expr.parser.formatted_value_expr import FormattedValueExpr
 from app.visualize.analysis.stmt.parser.expr.parser.joined_str_expr import JoinedStrExpr
 from app.visualize.analysis.stmt.parser.expr.parser.list_expr import ListExpr
@@ -38,6 +39,9 @@ class ExprTraveler:
 
         elif isinstance(node, ast.Tuple):
             return ExprTraveler._tuple_travel(node, elem_container)
+
+        elif isinstance(node, ast.Dict):
+            return ExprTraveler._dict_travel(node, elem_container)
 
         elif isinstance(node, ast.Compare):
             compare_obj = ExprTraveler._compare_travel(node, elem_container)
@@ -84,6 +88,9 @@ class ExprTraveler:
         elif isinstance(node, ast.Constant):
             return ExprTraveler._constant_travel(node)
 
+        elif isinstance(node, ast.Subscript):
+            return ExprTraveler._subscript_travel(node, elem_container)
+
         else:
             raise TypeError(f"[ExprTraveler - binop parsing 중  {type(node)}는 잘못된 타입입니다.")
 
@@ -116,6 +123,13 @@ class ExprTraveler:
         return TupleExpr.parse(elts)
 
     @staticmethod
+    def _dict_travel(node: ast.Dict, elem_container: ElementContainer):
+        keys = [ExprTraveler.travel(key, elem_container) for key in node.keys]
+        values = [ExprTraveler.travel(value, elem_container) for value in node.values]
+
+        return DictExpr.parse(keys, values)
+
+    @staticmethod
     def _compare_travel(node: ast, elem_container: ElementContainer):
         if isinstance(node, ast.Compare):
             left = ExprTraveler._compare_travel(node.left, elem_container)
@@ -144,7 +158,7 @@ class ExprTraveler:
             return ExprTraveler._attribute_travel(node, elem_container)
 
         else:
-            raise TypeError(f"[call_travel] {type(node)}는 잘못된 타입입니다.")
+            raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
 
     @staticmethod
     def _subscript_travel(node: ast.Subscript, elem_container: ElementContainer):
