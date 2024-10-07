@@ -52,7 +52,7 @@ class AssignConverter:
             variable_list.append(
                 Variable(
                     id=expr_stmt_obj.id,
-                    expr=expr_stmt_obj.expressions[-1],
+                    expr=expr_stmt_obj.expressions[-1] if expr_stmt_obj.expressions else None,
                     name=target,
                     code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
                     type=var_type,

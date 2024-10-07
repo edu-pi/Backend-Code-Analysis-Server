@@ -57,7 +57,7 @@ for i in range(10):
 )
 def test__for_travel(mocker, code, create_ast, elem_container):
     for_node = create_ast(code)
-    elem_container = ElementContainer()
+    elem_container = ElementContainer([])
     elem_container.set_element("a", 10)
 
     actual = StmtTraveler._for_travel(for_node, elem_container)

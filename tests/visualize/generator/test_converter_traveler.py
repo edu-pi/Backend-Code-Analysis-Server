@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
+from app.models.request_code import RequestCode
 from app.visualize.analysis.stmt.models.flow_control_obj import PassStmtObj
 from app.visualize.code_visualizer import CodeVisualizer
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
@@ -13,7 +14,8 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 @pytest.fixture
 def get_if_stmt_obj():
     def _get_if_stmt_obj(code):
-        code_analyzer = CodeVisualizer(code)
+        request_code = RequestCode(code, "")
+        code_analyzer = CodeVisualizer(request_code)
         return code_analyzer.get_analyzed_stmt_nodes()[0]
 
     return _get_if_stmt_obj

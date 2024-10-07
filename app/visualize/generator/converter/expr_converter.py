@@ -3,6 +3,7 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.append_viz import AttributeViz
 from app.visualize.generator.models.expr_viz import ExprViz
+from app.visualize.generator.models.input_viz import InputViz
 from app.visualize.generator.models.print_viz import PrintViz
 from app.visualize.generator.models.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -42,6 +43,9 @@ class ExprConverter:
 
         elif var_type is ExprType.POP:
             return ExprConverter._convert_to_pop_attribute_viz(expr_stmt_obj, viz_manager, call_id, depth)
+
+        elif var_type is ExprType.INPUT:
+            return ExprConverter._convert_to_input_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")

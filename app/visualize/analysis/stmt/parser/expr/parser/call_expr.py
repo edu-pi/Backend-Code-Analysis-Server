@@ -5,23 +5,29 @@ from app.visualize.analysis.stmt.parser.expr.parser.attr_func.extend_expr import
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.insert_expr import InsertExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.pop_expr import PopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.input_expr import InputExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
+from app.visualize.container.element_container import ElementContainer
 
 
 class CallExpr:
 
     @staticmethod
-    def parse(func_name: str | AttributeObj, args: list[ExprObj], keyword_arg_dict: dict):
+    def parse(
+        func_name: str | AttributeObj, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
+    ):
 
         if isinstance(func_name, str):
-            return CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict)
+            return CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict, elem_container)
 
         elif isinstance(func_name, AttributeObj):
             return CallExpr._attribute_call_parse(func_name, args)
 
     @staticmethod
-    def _built_in_call_parse(func_name: str, args: list[ExprObj], keyword_arg_dict: dict):
+    def _built_in_call_parse(
+        func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
+    ):
 
         if ExprType(func_name) is ExprType.PRINT:
             print_obj = PrintExpr.parse(args, keyword_arg_dict)
@@ -30,6 +36,10 @@ class CallExpr:
         elif ExprType(func_name) is ExprType.RANGE:
             range_obj = RangeExpr.parse(args)
             return range_obj
+
+        elif ExprType(func_name) is ExprType.INPUT:
+            input_obj = InputExpr.parse(args, elem_container)
+            return input_obj
 
         else:
             raise NotImplementedError(f"[CallParser]: {func_name} 은 아직 지원하지 않습니다.")
