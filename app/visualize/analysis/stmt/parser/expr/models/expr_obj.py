@@ -104,6 +104,34 @@ class AppendObj(AttributeObj):
 
 
 @dataclass(frozen=True)
+class RemoveObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.REMOVE, init=False)
+
+
+@dataclass(frozen=True)
+class ExtendObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.EXTEND, init=False)
+
+
+@dataclass(frozen=True)
+class PopObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.POP, init=False)
+
+
+@dataclass(frozen=True)
+class InsertObj(AttributeObj):
+    value: str
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.INSERT, init=False)
+
+
+@dataclass(frozen=True)
 class FormattedValueObj(ExprObj):
     value: str
     expressions: tuple[str, ...]

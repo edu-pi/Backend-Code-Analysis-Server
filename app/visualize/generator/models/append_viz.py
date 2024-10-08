@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from app.visualize.generator.models.variable_vlz import Variable
 
 
 @dataclass(frozen=True)
-class AppendViz:
+class AttributeViz:
     variable: Variable
-    type: str = field(default="append", init=False)
+    type: str

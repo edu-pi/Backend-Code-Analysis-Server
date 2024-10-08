@@ -1,6 +1,10 @@
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj, AttributeObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.append_expr import AppendExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.extend_expr import ExtendExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.insert_expr import InsertExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.pop_expr import PopExpr
+from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 
@@ -36,6 +40,22 @@ class CallExpr:
         if attr_obj.type == ExprType.APPEND:
             append_obj = AppendExpr.parse(attr_obj, args)
             return append_obj
+
+        elif attr_obj.type == ExprType.REMOVE:
+            remove_obj = RemoveExpr.parse(attr_obj, args)
+            return remove_obj
+
+        elif attr_obj.type == ExprType.EXTEND:
+            extend_obj = ExtendExpr.parse(attr_obj, args)
+            return extend_obj
+
+        elif attr_obj.type == ExprType.POP:
+            pop_obj = PopExpr.parse(attr_obj, args)
+            return pop_obj
+
+        elif attr_obj.type == ExprType.INSERT:
+            insert_obj = InsertExpr.parse(attr_obj, args)
+            return insert_obj
 
         else:
             raise NotImplementedError(f"[CallParser]: {attr_obj.type} 은 아직 지원하지 않습니다.")
