@@ -20,6 +20,7 @@ class ExprType(Enum):
     CALL = "call"
     RANGE = "range"
     PRINT = "print"
+    INPUT = "input"
 
     # attribute
     APPEND = "append"

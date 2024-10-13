@@ -1,13 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 
+from app.models.request_code import RequestCode
 from app.visualize.code_visualizer import CodeVisualizer
 
 app = FastAPI()
-
-
-class RequestCode(BaseModel):
-    source_code: str
 
 
 @app.get("/edupi-visualize")
@@ -18,6 +14,6 @@ def read_root():
 @app.post("/edupi-visualize/v1/python")
 def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
-    code_analyzer = CodeVisualizer(request_code.source_code)
+    code_analyzer = CodeVisualizer(request_code)
 
     return code_analyzer.visualize_code()

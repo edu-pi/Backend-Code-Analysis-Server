@@ -110,7 +110,7 @@ class ExprTraveler:
             keyword.arg: ExprTraveler.travel(keyword.value, elem_container).value for keyword in node.keywords
         }
 
-        return CallExpr.parse(func_name, args, keyword_dict)
+        return CallExpr.parse(func_name, args, keyword_dict, elem_container)
 
     @staticmethod
     def _list_travel(node: ast.List, elem_container: ElementContainer):
