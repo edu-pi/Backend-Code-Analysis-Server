@@ -1,5 +1,6 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.models.func_def_stmt_obj import FuncDefStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.analysis.stmt.models.stmt_type import StmtType
 from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj
@@ -7,6 +8,7 @@ from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
+from app.visualize.generator.converter.func_def_converter import FuncDefConverter
 from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.converter.while_converter import WhileConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -36,6 +38,9 @@ class ConverterTraveler:
 
             elif analysis_obj.type == StmtType.WHILE:
                 viz_objs.extend(ConverterTraveler._convert_to_while_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.FUNC_DEF:
+                viz_objs.append(ConverterTraveler._convert_to_func_def_viz(analysis_obj, viz_manager))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -115,3 +120,7 @@ class ConverterTraveler:
             viz_manager.decrease_depth()
 
         return steps
+
+    @staticmethod
+    def _convert_to_func_def_viz(assign_obj: FuncDefStmtObj, viz_manager: VisualizationManager):
+        return FuncDefConverter.convert(assign_obj, viz_manager)

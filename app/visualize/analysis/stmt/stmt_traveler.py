@@ -8,6 +8,7 @@ from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
+from app.visualize.analysis.stmt.parser.func_def_stmt import FuncDefStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
 from app.visualize.analysis.stmt.parser.while_stmt import WhileStmt
 from app.visualize.container.element_container import ElementContainer
@@ -34,6 +35,9 @@ class StmtTraveler:
 
         elif isinstance(node, ast.While):
             return StmtTraveler._while_travel(node, elem_container)
+
+        elif isinstance(node, ast.FunctionDef):
+            return StmtTraveler._func_def_travel(node, elem_container)
 
         else:
             raise TypeError(f"[StmtTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -198,3 +202,7 @@ class StmtTraveler:
             orelse=while_else_objs,
             while_cycles=while_cycles,
         )
+
+    @staticmethod
+    def _func_def_travel(node: ast.FunctionDef, elem_container: ElementContainer):
+        return FuncDefStmt.parse(node, elem_container)

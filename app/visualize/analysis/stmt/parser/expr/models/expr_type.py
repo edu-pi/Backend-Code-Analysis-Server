@@ -29,6 +29,9 @@ class ExprType(Enum):
     POP = "pop"
     INSERT = "insert"
 
+    # function
+    FUNC = "function"
+
     @staticmethod
     def judge_collection_type(value):
         if isinstance(value, str):

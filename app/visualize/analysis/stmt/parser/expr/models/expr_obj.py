@@ -143,3 +143,10 @@ class FormattedValueObj(ExprObj):
     value: str
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.VARIABLE, init=False)
+
+
+@dataclass(frozen=True)
+class ArgumentsObj(ExprObj):
+    value: tuple[str, ...]
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.VARIABLE, init=False)
