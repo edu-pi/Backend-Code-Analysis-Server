@@ -125,6 +125,7 @@ class ExprConverter:
 
     @staticmethod
     def _convert_to_input_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
+        # input("이름을 입력하세요") 에서 "이름을 입력하세요" 추출
         result = re.search(r'input\("([^"]*)"\)', expr_stmt_obj.expressions[0])
         console = result.group(1) if result else ""
 
