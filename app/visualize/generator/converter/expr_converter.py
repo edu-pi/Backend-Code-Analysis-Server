@@ -135,7 +135,7 @@ class ExprConverter:
                 id=call_id,
                 depth=depth,
                 expr=expr_stmt_obj.expressions[0],
-                console=">> " + console,
+                console=f">> {console}",
                 code=viz_manager.get_code_by_idx(call_id),
             )
         )
