@@ -15,8 +15,9 @@ class FuncDefStmt:
         arguments_obj = ExprTraveler.travel(node.args, elem_container)
         body = node.body
 
+        # Todo default 추가
         details = FuncDetails(args=arguments_obj.value, body=body)
-        elem_container.set_element(name, details)
+        elem_container.add_element(name, details)
 
         expr_stmt_obj = ExprStmtObj(
             id=node.lineno,
@@ -24,7 +25,9 @@ class FuncDefStmt:
             value=name,
             expr_type=ExprType.FUNC,
         )
-        return FuncDefStmtObj(target=name, expr_stmt_obj=expr_stmt_obj)
+        return FuncDefStmtObj(
+            target=name, expr_stmt_obj=expr_stmt_obj, call_stack_name=elem_container.get_call_stack_name()
+        )
 
     @staticmethod
     def makeExpressions(name, args) -> tuple:

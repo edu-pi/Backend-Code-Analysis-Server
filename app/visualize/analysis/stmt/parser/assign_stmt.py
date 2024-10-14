@@ -23,7 +23,11 @@ class AssignStmt:
             expr_type=expr_obj.type,
         )
 
-        return AssignStmtObj(targets=target_names, expr_stmt_obj=expr_stmt_obj)
+        return AssignStmtObj(
+            targets=target_names,
+            call_stack_name=elem_container.get_call_stack_name(),
+            expr_stmt_obj=expr_stmt_obj,
+        )
 
     @staticmethod
     def _get_target_names(target_nodes: list[ast], elem_container: ElementContainer):
@@ -72,4 +76,4 @@ class AssignStmt:
             else:
                 value = expr_obj.value
 
-            elem_container.set_element(target_name, value)
+            elem_container.add_element(target_name, value)

@@ -9,10 +9,10 @@ class FuncDefConverter:
     def convert(func_def_stmt_obj: FuncDefStmtObj, viz_manager: VisualizationManager):
         expr_stmt_obj = func_def_stmt_obj.expr_stmt_obj
 
-        return FuncDefConverter._convert_to_assign_viz(expr_stmt_obj, viz_manager)
+        return FuncDefConverter._convert_to_assign_viz(expr_stmt_obj, func_def_stmt_obj.call_stack_name, viz_manager)
 
     @staticmethod
-    def _convert_to_assign_viz(expr_stmt_obj, viz_manager: VisualizationManager):
+    def _convert_to_assign_viz(expr_stmt_obj, call_stack_name, viz_manager: VisualizationManager):
         return AssignViz(
             variables=[
                 Variable(
@@ -22,5 +22,6 @@ class FuncDefConverter:
                     code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
                     type="function",
                 )
-            ]
+            ],
+            callStackName=call_stack_name,
         )

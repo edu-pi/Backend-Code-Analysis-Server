@@ -10,17 +10,20 @@ class AssignConverter:
     def convert(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         expr_stmt_obj = assign_obj.expr_stmt_obj
         var_type = expr_stmt_obj.expr_type.value
+        call_stack_name = assign_obj.call_stack_name
 
-        return AssignConverter._convert_to_assign_viz(expr_stmt_obj, viz_manager, assign_obj.targets, var_type)
+        return AssignConverter._convert_to_assign_viz(
+            expr_stmt_obj, viz_manager, assign_obj.targets, var_type, call_stack_name
+        )
 
     @staticmethod
-    def _convert_to_assign_viz(expr_stmt_obj, viz_manager, targets, var_type: str):
+    def _convert_to_assign_viz(expr_stmt_obj, viz_manager, targets, var_type: str, call_stack_name: str):
         variable_list = []
 
         for target in targets:
             AssignConverter._create_variable_list(expr_stmt_obj, viz_manager, target, var_type, variable_list)
 
-        return AssignViz(variables=variable_list)
+        return AssignViz(variables=variable_list, callStackName=call_stack_name)
 
     @staticmethod
     def _create_variable_list(expr_stmt_obj, viz_manager, target, var_type: str, variable_list):

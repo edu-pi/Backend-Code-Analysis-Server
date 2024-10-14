@@ -3,8 +3,11 @@ import ast
 from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
+from app.visualize.analysis.stmt.models.user_func_stmt_obj import UserFuncStmtObj
 from app.visualize.analysis.stmt.models.while_stmt_obj import WhileCycle, WhileStmtObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import UserFunc
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
@@ -56,7 +59,7 @@ class StmtTraveler:
 
         for i in for_stmt_obj.iter_obj.value:
             # init value 값 변경
-            elem_container.set_element(for_stmt_obj.target_name, i)
+            elem_container.add_element(for_stmt_obj.target_name, i)
             # for문 안 body 로직을 stmt 리스트로 변환
             body_steps = StmtTraveler._parse_for_body(node.body, elem_container)
 
@@ -88,7 +91,27 @@ class StmtTraveler:
 
     @staticmethod
     def _expr_travel(node: ast.Expr, elem_container: ElementContainer):
-        return ExprStmt.parse(node, elem_container)
+        expr_stmt_obj = ExprStmt.parse(node, elem_container)
+
+        if expr_stmt_obj.expr_type is ExprType.USER_FUNC:
+            user_func: UserFunc = expr_stmt_obj.value
+            func_name: str = user_func.name
+            func_signature: str = expr_stmt_obj.expressions
+            body_asts: ast = user_func.user_func_ast
+            args: dict = user_func.arguments
+
+            local_elem_container = elem_container.make_local_elem_container(func_name, args)
+
+            steps = [StmtTraveler.travel(body_ast, local_elem_container) for body_ast in body_asts]
+            return UserFuncStmtObj(
+                id=node.lineno,
+                func_name=func_name,
+                func_signature=func_signature,
+                args=args,
+                body_steps=steps,
+            )
+
+        return expr_stmt_obj
 
     @staticmethod
     def _if_travel(

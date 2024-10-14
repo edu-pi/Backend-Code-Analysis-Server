@@ -9,7 +9,9 @@ class StmtType(Enum):
     ELIF = "elif"
     ELSE = "else"
     WHILE = "while"
+
     FUNC_DEF = "func_def"
+    USER_FUNC = "user_func"
 
     FLOW_CONTROL = "flow_control"
     PASS = "pass"

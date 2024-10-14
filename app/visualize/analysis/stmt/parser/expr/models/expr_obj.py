@@ -1,3 +1,4 @@
+import ast
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -150,3 +151,17 @@ class ArgumentsObj(ExprObj):
     value: tuple[str, ...]
     expressions: tuple[str, ...]
     type: ExprType = field(default=ExprType.VARIABLE, init=False)
+
+
+@dataclass(frozen=True)
+class UserFunc:
+    name: str
+    user_func_ast: ast
+    arguments: dict
+
+
+@dataclass(frozen=True)
+class UserFuncObj(ExprObj):
+    value: UserFunc
+    expressions: tuple[str, ...]
+    type: ExprType = field(default=ExprType.USER_FUNC, init=False)

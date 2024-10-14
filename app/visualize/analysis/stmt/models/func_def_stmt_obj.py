@@ -15,4 +15,5 @@ class FuncDetails:
 class FuncDefStmtObj:
     target: str
     expr_stmt_obj: ExprStmtObj
+    call_stack_name: str
     type: StmtType = field(default_factory=lambda: StmtType.FUNC_DEF, init=False)

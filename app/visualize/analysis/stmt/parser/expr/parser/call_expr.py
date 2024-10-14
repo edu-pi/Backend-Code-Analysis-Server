@@ -8,6 +8,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.input_expr import InputExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.user_func_expr import UserFuncExpr
 from app.visualize.container.element_container import ElementContainer
 
 
@@ -28,6 +29,10 @@ class CallExpr:
     def _built_in_call_parse(
         func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
     ):
+
+        if elem_container.get_element(func_name) is not None:
+            user_func_obj = UserFuncExpr.parse(func_name, args, elem_container)
+            return user_func_obj
 
         if ExprType(func_name) is ExprType.PRINT:
             print_obj = PrintExpr.parse(args, keyword_arg_dict)
