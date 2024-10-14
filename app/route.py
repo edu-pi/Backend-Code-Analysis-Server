@@ -2,8 +2,17 @@ from fastapi import FastAPI
 
 from app.models.request_code import RequestCode
 from app.visualize.code_visualizer import CodeVisualizer
+from app.web import exception_handler
+from app.web.logger import log_request, log_response
 
 app = FastAPI()
+
+# 미들웨어 등록
+app.middleware("http")(log_request)
+app.middleware("http")(log_response)
+
+# 핸들러 등록
+exception_handler.setup_exception_handlers(app)
 
 
 @app.get("/edupi-visualize")
