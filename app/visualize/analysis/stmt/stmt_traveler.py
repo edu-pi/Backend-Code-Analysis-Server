@@ -79,7 +79,7 @@ class StmtTraveler:
                 body_steps=steps,
                 return_argument_name=assign_obj.targets[0],
                 value=0 if return_obj is None else return_obj.value,
-                expr="" if return_obj is None else return_obj.expr,
+                expr=("",) if return_obj is None else return_obj.expr,
             )
 
             return AssignStmtObj(
@@ -158,7 +158,7 @@ class StmtTraveler:
                 body_steps=steps,
                 return_argument_name="",
                 value=0 if return_obj is None else return_obj.value,
-                expr="" if return_obj is None else return_obj.expr,
+                expr=("",) if return_obj is None else return_obj.expr,
             )
 
         return expr_stmt_obj

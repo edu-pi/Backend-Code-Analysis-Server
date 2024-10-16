@@ -13,6 +13,6 @@ class UserFuncStmtObj:
     body_steps: list[Any]
     args: dict
     value: Any
-    expr: str
+    expr: tuple
     return_argument_name: str
     type: StmtType = field(default_factory=lambda: StmtType.USER_FUNC, init=False)
