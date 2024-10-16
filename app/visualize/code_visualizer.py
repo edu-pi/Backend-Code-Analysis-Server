@@ -11,7 +11,7 @@ class CodeVisualizer:
 
     def __init__(self, request_code: RequestCode):
         self._parsed_node = ast.parse(request_code.source_code)
-        self._elem_container = ElementContainer(request_code.input)
+        self._elem_container = ElementContainer(request_code.input, "main")
         self._visualization_manager = VisualizationManager(request_code.source_code)
 
     def visualize_code(self):

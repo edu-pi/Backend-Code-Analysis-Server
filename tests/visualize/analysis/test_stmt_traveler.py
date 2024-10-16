@@ -57,8 +57,8 @@ for i in range(10):
 )
 def test__for_travel(mocker, code, create_ast, elem_container):
     for_node = create_ast(code)
-    elem_container = ElementContainer([])
-    elem_container.set_element("a", 10)
+    elem_container = ElementContainer([], "main")
+    elem_container.add_element("a", 10)
 
     actual = StmtTraveler._for_travel(for_node, elem_container)
 
@@ -74,6 +74,7 @@ def test__for_travel(mocker, code, create_ast, elem_container):
                 AssignStmtObj(
                     targets=("a",),
                     expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 ExprStmtObj(id=2, value="'hello'\n", expressions=("'hello'",), expr_type=ExprType.PRINT),
             ],
@@ -84,10 +85,12 @@ def test__for_travel(mocker, code, create_ast, elem_container):
                 AssignStmtObj(
                     targets=("left",),
                     expr_stmt_obj=ExprStmtObj(id=2, value=0, expressions=("0",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 AssignStmtObj(
                     targets=("right",),
                     expr_stmt_obj=ExprStmtObj(id=3, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(
@@ -356,6 +359,7 @@ while a < 11:
                     expr_stmt_obj=ExprStmtObj(
                         id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
                     ),
+                    call_stack_name="main",
                 ),
             ],
             WhileStmtObj(
@@ -371,6 +375,7 @@ while a < 11:
                                 expr_stmt_obj=ExprStmtObj(
                                     id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
                                 ),
+                                call_stack_name="main",
                             ),
                         ],
                     ),

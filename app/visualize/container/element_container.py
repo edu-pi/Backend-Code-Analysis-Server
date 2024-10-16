@@ -3,18 +3,35 @@ from app.visualize.utils import utils
 
 class ElementContainer:
 
-    def __init__(self, input_list: list):
+    def __init__(self, input_list: list, call_stack_name, input_index=0):
+        self._call_stack_name = call_stack_name
         self._element_dict = {}
         self._input_list = input_list
-        self._input_index = 0
+        self._input_index = input_index
+
+    def make_local_elem_container(self, func_name, args: dict):
+        # 매개변수 개수와 들어온 값이 다른경우
+        # if arg_names.length != args.length:
+        #     raise ValueError("Argument length is not equal to input length")
+
+        local_elem_container = ElementContainer(self._input_list, func_name, self._input_index)
+
+        for var_name, var_value in self._element_dict.items():
+            local_elem_container.add_element(var_name, var_value)
+
+        # 매개변수 저장
+        for arg_name, arg_value in args.items():
+            local_elem_container.add_element(arg_name, arg_value)
+
+        return local_elem_container
 
     def get_element(self, name):
         if name in self._element_dict:
             return self._element_dict[name]
 
-        raise NameError(f"변수 '{name}'가 정의되지 않았습니다. ")
+        return None
 
-    def set_element(self, name, value):
+    def add_element(self, name, value):
         if utils.is_array(name) and utils.is_array(value):
             for i in range(len(name)):
                 self._element_dict[name[i]] = value[i]
@@ -68,3 +85,6 @@ class ElementContainer:
         return_input = self._input_list[self._input_index]
         self._input_index += 1
         return return_input
+
+    def get_call_stack_name(self):
+        return self._call_stack_name
