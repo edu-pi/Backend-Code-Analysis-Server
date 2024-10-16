@@ -16,7 +16,7 @@ class FuncDefStmt:
         body = node.body
 
         # Todo default 추가
-        details = FuncDetails(args=arguments_obj.value, body=body)
+        details = FuncDetails(id=node.lineno, args=arguments_obj.value, body=body)
         elem_container.add_element(name, details)
 
         expr_stmt_obj = ExprStmtObj(

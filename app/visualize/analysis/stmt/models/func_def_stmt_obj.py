@@ -7,6 +7,7 @@ from app.visualize.analysis.stmt.models.stmt_type import StmtType
 
 @dataclass(frozen=True)
 class FuncDetails:
+    id: int
     args: tuple[str, ...]
     body: ast
 

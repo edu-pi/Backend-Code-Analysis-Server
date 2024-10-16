@@ -17,6 +17,25 @@ class AssignConverter:
         )
 
     @staticmethod
+    def convert_user_func(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
+        user_func_stmt_obj = assign_obj.expr_stmt_obj
+        var_type = utils.getStringType(user_func_stmt_obj.expr[-1])
+        call_stack_name = assign_obj.call_stack_name
+
+        return AssignViz(
+            variables=[
+                Variable(
+                    id=user_func_stmt_obj.id,
+                    expr=user_func_stmt_obj.expr[-1],
+                    name=assign_obj.targets[0],
+                    code=viz_manager.get_code_by_idx(user_func_stmt_obj.id),
+                    type=var_type,
+                )
+            ],
+            callStackName=call_stack_name,
+        )
+
+    @staticmethod
     def _convert_to_assign_viz(expr_stmt_obj, viz_manager, targets, var_type: str, call_stack_name: str):
         variable_list = []
 

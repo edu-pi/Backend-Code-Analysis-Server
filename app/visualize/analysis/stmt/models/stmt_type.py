@@ -17,3 +17,4 @@ class StmtType(Enum):
     PASS = "pass"
     BREAK = "break"
     CONTINUE = "continue"
+    RETURN = "return"

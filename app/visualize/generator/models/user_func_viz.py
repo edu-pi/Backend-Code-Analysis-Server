@@ -31,6 +31,10 @@ class CreateCallStackViz:
 @dataclass(frozen=True)
 class EndUserFuncViz:
     id: int
-    returnValue: str
     depth: int
+    returnExpr: str
+    returnArgName: str
+    code: str
+    delFuncName: str
+    delFuncId: int
     type: str = field(default="endUserFunc", init=False)

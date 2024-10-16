@@ -9,8 +9,8 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 @pytest.mark.parametrize(
     "flow_control_obj, expected",
     [
-        pytest.param(PassStmtObj(id=1), FlowControlViz(1, 1, "pass", [0, 1, 2, 3], code="")),
-        pytest.param(BreakStmtObj(id=1), FlowControlViz(1, 1, "break", [0, 1, 2, 3, 4], code="")),
+        pytest.param(PassStmtObj(id=1), (FlowControlViz(1, 1, "pass", [0, 1, 2, 3], code=""),)),
+        pytest.param(BreakStmtObj(id=1), (FlowControlViz(1, 1, "break", [0, 1, 2, 3, 4], code=""),)),
     ],
 )
 def test_converter(viz_manager, flow_control_obj: PassStmtObj | BreakStmtObj, expected):

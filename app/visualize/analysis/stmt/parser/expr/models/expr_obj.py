@@ -155,6 +155,7 @@ class ArgumentsObj(ExprObj):
 
 @dataclass(frozen=True)
 class UserFunc:
+    id: int
     name: str
     user_func_ast: ast
     arguments: dict

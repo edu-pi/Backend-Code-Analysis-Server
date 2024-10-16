@@ -1,5 +1,5 @@
 from app.visualize.analysis.stmt.models.user_func_stmt_obj import UserFuncStmtObj
-from app.visualize.generator.models.user_func_viz import CallUserFuncViz, CreateCallStackViz, Argument
+from app.visualize.generator.models.user_func_viz import CallUserFuncViz, CreateCallStackViz, Argument, EndUserFuncViz
 from app.visualize.generator.visualization_manager import VisualizationManager
 from app.visualize.utils.utils import getStringType
 
@@ -11,7 +11,7 @@ class UserFuncConverter:
 
         return CallUserFuncViz(
             id=user_func_stmt_obj.id,
-            assignName="",
+            assignName=user_func_stmt_obj.return_argument_name,
             depth=viz_manager.get_depth(),
             signature=user_func_stmt_obj.func_signature[0],
             code=viz_manager.get_code_by_idx(user_func_stmt_obj.id),
@@ -31,5 +31,14 @@ class UserFuncConverter:
         )
 
     @staticmethod
-    def convert_to_end_user_func():
-        return 0
+    def convert_to_end_user_func(user_func_stmt_obj: UserFuncStmtObj, targets, viz_manager: VisualizationManager):
+
+        return EndUserFuncViz(
+            id=user_func_stmt_obj.id,
+            depth=viz_manager.get_depth(),
+            returnExpr=user_func_stmt_obj.expr[-1],
+            returnArgName=targets[0],
+            code=viz_manager.get_code_by_idx(user_func_stmt_obj.id),
+            delFuncName=user_func_stmt_obj.func_name,
+            delFuncId=user_func_stmt_obj.func_id,
+        )

@@ -14,8 +14,6 @@ class AssignStmt:
         target_names = AssignStmt._get_target_names(node.targets, elem_container)
         expr_obj = AssignStmt._change_node_to_expr_obj(node.value, elem_container)
 
-        AssignStmt._set_value_to_target(target_names, expr_obj, elem_container)
-
         expr_stmt_obj = ExprStmtObj(
             id=node.lineno,
             expressions=expr_obj.expressions,
@@ -61,7 +59,7 @@ class AssignStmt:
         return ExprTraveler.travel(node, elem_container)
 
     @staticmethod
-    def _set_value_to_target(target_names: tuple, expr_obj, elem_container: ElementContainer):
+    def set_value_to_target(target_names: tuple, expr_obj, elem_container: ElementContainer):
         for target_name in target_names:
 
             if expr_obj.type is ExprType.LIST:

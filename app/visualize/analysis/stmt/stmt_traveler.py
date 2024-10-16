@@ -1,6 +1,7 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj
+from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, ContinueStmtObj, ReturnStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.models.user_func_stmt_obj import UserFuncStmtObj
@@ -9,7 +10,7 @@ from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import UserFunc
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
-from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt, ReturnStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 from app.visualize.analysis.stmt.parser.func_def_stmt import FuncDefStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
@@ -33,8 +34,8 @@ class StmtTraveler:
         elif isinstance(node, ast.If):
             return StmtTraveler._if_travel(node, [], [], elem_container)
 
-        elif isinstance(node, ast.Pass | ast.Break | ast.Continue):
-            return StmtTraveler._flow_control_travel(node)
+        elif isinstance(node, ast.Pass | ast.Break | ast.Continue | ast.Return):
+            return StmtTraveler._flow_control_travel(node, elem_container)
 
         elif isinstance(node, ast.While):
             return StmtTraveler._while_travel(node, elem_container)
@@ -47,7 +48,47 @@ class StmtTraveler:
 
     @staticmethod
     def _assign_travel(node: ast.Assign, elem_container: ElementContainer):
-        return AssignStmt.parse(node, elem_container)
+        assign_obj = AssignStmt.parse(node, elem_container)
+        expr_stmt_obj = assign_obj.expr_stmt_obj
+
+        if expr_stmt_obj.expr_type is ExprType.USER_FUNC:
+            user_func: UserFunc = expr_stmt_obj.value
+            func_name: str = user_func.name
+            func_signature: str = expr_stmt_obj.expressions
+            body_asts: ast = user_func.user_func_ast
+            args: dict = user_func.arguments
+
+            local_elem_container = elem_container.make_local_elem_container(func_name, args)
+
+            steps = [StmtTraveler.travel(body_ast, local_elem_container) for body_ast in body_asts]
+
+            return_obj = None
+            if isinstance(steps[-1], ReturnStmtObj):
+                return_obj = steps[-1]
+
+            AssignStmt.set_value_to_target(
+                target_names=assign_obj.targets, expr_obj=return_obj, elem_container=elem_container
+            )
+
+            user_func_stmt_obj = UserFuncStmtObj(
+                id=node.lineno,
+                func_id=user_func.id,
+                func_name=func_name,
+                func_signature=func_signature,
+                args=args,
+                body_steps=steps,
+                return_argument_name=assign_obj.targets[0],
+                value=0 if return_obj is None else return_obj.value,
+                expr="" if return_obj is None else return_obj.expr,
+            )
+
+            return AssignStmtObj(
+                targets=assign_obj.targets,
+                expr_stmt_obj=user_func_stmt_obj,
+                call_stack_name=elem_container.get_call_stack_name(),
+            )
+
+        return assign_obj
 
     @staticmethod
     def _for_travel(node: ast.For, elem_container: ElementContainer):
@@ -103,12 +144,21 @@ class StmtTraveler:
             local_elem_container = elem_container.make_local_elem_container(func_name, args)
 
             steps = [StmtTraveler.travel(body_ast, local_elem_container) for body_ast in body_asts]
+
+            return_obj = None
+            if isinstance(steps[-1], ReturnStmtObj):
+                return_obj = steps[-1]
+
             return UserFuncStmtObj(
                 id=node.lineno,
+                func_id=user_func.id,
                 func_name=func_name,
                 func_signature=func_signature,
                 args=args,
                 body_steps=steps,
+                return_argument_name="",
+                value=0 if return_obj is None else return_obj.value,
+                expr="" if return_obj is None else return_obj.expr,
             )
 
         return expr_stmt_obj
@@ -185,7 +235,7 @@ class StmtTraveler:
         conditions.append(condition)
 
     @staticmethod
-    def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue):
+    def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue, elem_container: ElementContainer):
         if isinstance(node, ast.Pass):
             return PassStmt.parse(node)
 
@@ -194,6 +244,9 @@ class StmtTraveler:
 
         elif isinstance(node, ast.Continue):
             return ContinueStmt.parse(node)
+
+        elif isinstance(node, ast.Return):
+            return ReturnStmt.parse(node, elem_container)
 
         else:
             raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
