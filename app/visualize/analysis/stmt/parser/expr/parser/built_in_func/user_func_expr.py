@@ -6,13 +6,12 @@ class UserFuncExpr:
 
     @staticmethod
     def parse(func_name: str, arg_objs: list[ExprObj], elem_container: ElementContainer):
-        user_details = elem_container.get_element(func_name)
-        user_func_id = user_details.id
-        user_func_body = user_details.body
-        user_func_arg_names = user_details.args
+        user_func = elem_container.get_element(func_name)
+        user_func_id = user_func.id
+        user_func_body = user_func.body
+        user_func_arg_names = user_func.args
 
         arguments = {}
-
         for arg_idx in range(len(user_func_arg_names)):
             arguments[user_func_arg_names[arg_idx]] = arg_objs[arg_idx].value
 

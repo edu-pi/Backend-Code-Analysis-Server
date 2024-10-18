@@ -18,22 +18,30 @@ class CallExpr:
     def parse(
         func_name: str | AttributeObj, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
     ):
-
         if isinstance(func_name, str):
-            return CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict, elem_container)
+            return CallExpr._string_call_parse(func_name, args, keyword_arg_dict, elem_container)
 
         elif isinstance(func_name, AttributeObj):
             return CallExpr._attribute_call_parse(func_name, args)
 
     @staticmethod
+    def _string_call_parse(
+        func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
+    ):
+        if elem_container.get_element(func_name) is not None:
+            return CallExpr._user_call_parse(args, elem_container, func_name)
+
+        return CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict, elem_container)
+
+    @staticmethod
+    def _user_call_parse(args, elem_container, func_name):
+        user_func_obj = UserFuncExpr.parse(func_name, args, elem_container)
+        return user_func_obj
+
+    @staticmethod
     def _built_in_call_parse(
         func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
     ):
-
-        if elem_container.get_element(func_name) is not None:
-            user_func_obj = UserFuncExpr.parse(func_name, args, elem_container)
-            return user_func_obj
-
         if ExprType(func_name) is ExprType.PRINT:
             print_obj = PrintExpr.parse(args, keyword_arg_dict)
             return print_obj
