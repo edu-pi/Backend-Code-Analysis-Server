@@ -1,7 +1,10 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj, PassStmtObj, ContinueStmtObj
-from app.visualize.analysis.stmt.models.stmt_type import StmtType
+from app.visualize.analysis.stmt.models.flow_control_obj import (
+    BreakStmtObj,
+    PassStmtObj,
+    ContinueStmtObj,
+)
 
 
 class BreakStmt:

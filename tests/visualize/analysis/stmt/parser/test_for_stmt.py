@@ -1,14 +1,12 @@
 import ast
-import pytest
 
+import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.flow_control_obj import BreakStmtObj
-from app.visualize.analysis.stmt.models.for_stmt_obj import BodyObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj, ConditionObj
 from app.visualize.analysis.stmt.models.stmt_type import StmtType
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 
@@ -47,6 +45,7 @@ def test__get_target_name_fail(elem_container, target):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -57,6 +56,7 @@ def test__get_target_name_fail(elem_container, target):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             id="for문 안에 break 존재",
@@ -66,11 +66,13 @@ def test__get_target_name_fail(elem_container, target):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 BreakStmtObj(id=0),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             id="for문의 if문안에 break 존재",
@@ -92,6 +94,7 @@ def test_contains_break_success(body_steps):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -99,12 +102,14 @@ def test_contains_break_success(body_steps):
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             id="for문 안에 break 미존재",
@@ -114,10 +119,12 @@ def test_contains_break_success(body_steps):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             id="for문의 if문안에 break 미존재",
@@ -139,6 +146,7 @@ def test_contains_break_fail(body_steps):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -146,23 +154,27 @@ def test_contains_break_fail(body_steps):
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                         BreakStmtObj(id=0),
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             [
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -170,6 +182,7 @@ def test_contains_break_fail(body_steps):
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                         BreakStmtObj(id=0),
                     ],
@@ -182,6 +195,7 @@ def test_contains_break_fail(body_steps):
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -189,22 +203,26 @@ def test_contains_break_fail(body_steps):
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             [
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
                 IfStmtObj(
                     conditions=(ConditionObj(id=0, expressions=("",), result=True, type=StmtType.IF),),
@@ -212,16 +230,19 @@ def test_contains_break_fail(body_steps):
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                         AssignStmtObj(
                             targets=(),
                             expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
                     expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    call_stack_name="main",
                 ),
             ],
             id="break가 존재하지 않을 때",

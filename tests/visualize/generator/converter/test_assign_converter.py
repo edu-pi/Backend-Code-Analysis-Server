@@ -13,7 +13,9 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 def create_assign():
     def _create_assign_obj(targets, value, expressions, var_type):
         return AssignStmtObj(
-            targets=targets, expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, expr_type=var_type)
+            targets=targets,
+            expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, expr_type=var_type),
+            call_stack_name="main",
         )
 
     return _create_assign_obj
@@ -27,7 +29,7 @@ def create_assign():
             3,
             ["3"],
             ExprType.VARIABLE,
-            AssignViz(variables=[Variable(id=1, name="a", expr="3", type="variable", code="")]),
+            AssignViz(variables=[Variable(id=1, name="a", expr="3", type="variable", code="")], callStackName="main"),
             id="a = 3: success case",
         ),
         pytest.param(
@@ -35,7 +37,7 @@ def create_assign():
             4,
             ["a + 1", "3 + 1", "4"],
             ExprType.VARIABLE,
-            AssignViz(variables=[Variable(id=1, name="b", expr="4", type="variable", code="")]),
+            AssignViz(variables=[Variable(id=1, name="b", expr="4", type="variable", code="")], callStackName="main"),
             id="b = a + 1: success case",
         ),
         pytest.param(
@@ -48,6 +50,7 @@ def create_assign():
                     Variable(id=1, name="c", expr="5", type="variable", code=""),
                     Variable(id=1, name="d", expr="5", type="variable", code=""),
                 ],
+                callStackName="main",
             ),
             id="c, d = b + 1: success case",
         ),
@@ -58,6 +61,7 @@ def create_assign():
             ExprType.LIST,
             AssignViz(
                 variables=[Variable(id=1, name="e", expr="[1,2,3]", type="list", code="")],
+                callStackName="main",
             ),
             id="e = [1, 2, 3]: success case",
         ),
@@ -68,6 +72,7 @@ def create_assign():
             ExprType.LIST,
             AssignViz(
                 variables=[Variable(id=1, name="f", expr="['Hello','World']", type="list", code="")],
+                callStackName="main",
             ),
             id="f = ['Hello', 'World']: success case",
         ),
@@ -76,9 +81,7 @@ def create_assign():
             [11, "Hello"],
             ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
             ExprType.LIST,
-            AssignViz(
-                variables=[Variable(id=1, name="g", expr="[11,10]", type="list", code="")],
-            ),
+            AssignViz(variables=[Variable(id=1, name="g", expr="[11,10]", type="list", code="")], callStackName="main"),
             id="g = [a + 1, b]: success case",
         ),
     ],
