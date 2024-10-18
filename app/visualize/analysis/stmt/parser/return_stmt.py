@@ -1,6 +1,6 @@
 import ast
 
-from app.visualize.analysis.stmt.models.flow_control_obj import ReturnStmtObj
+from app.visualize.analysis.stmt.models.return_stmt_obj import ReturnStmtObj
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.container.element_container import ElementContainer
 

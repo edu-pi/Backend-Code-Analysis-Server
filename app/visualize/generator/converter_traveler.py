@@ -11,6 +11,7 @@ from app.visualize.generator.converter.flow_control_converter import FlowControl
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
 from app.visualize.generator.converter.func_def_converter import FuncDefConverter
 from app.visualize.generator.converter.if_converter import IfConverter
+from app.visualize.generator.converter.return_converter import ReturnConverter
 from app.visualize.generator.converter.user_func_converter import UserFuncConverter
 from app.visualize.generator.converter.while_converter import WhileConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -37,6 +38,9 @@ class ConverterTraveler:
 
             elif analysis_obj.type == StmtType.FLOW_CONTROL:
                 viz_objs.extend(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.RETURN:
+                viz_objs.extend(ConverterTraveler._convert_to_return_control_viz(analysis_obj, viz_manager))
 
             elif analysis_obj.type == StmtType.WHILE:
                 viz_objs.extend(ConverterTraveler._convert_to_while_viz(analysis_obj, viz_manager))
@@ -112,6 +116,12 @@ class ConverterTraveler:
         flow_control_viz = FlowControlConverter.convert(flow_control_obj, viz_manager)
 
         return flow_control_viz
+
+    @staticmethod
+    def _convert_to_return_control_viz(return_obj, viz_manager: VisualizationManager):
+        return_viz = ReturnConverter.convert(return_obj, viz_manager)
+
+        return return_viz
 
     @staticmethod
     def _convert_to_while_viz(while_obj: WhileStmtObj, viz_manager: VisualizationManager):
