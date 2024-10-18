@@ -85,6 +85,12 @@ class InputObj(CallObj):
 
 
 @dataclass(frozen=True)
+class LenObj(CallObj):
+    value: str
+    type: ExprType = field(default=ExprType.LEN, init=False)
+
+
+@dataclass(frozen=True)
 class SubscriptObj(ExprObj):
     expressions = tuple[str, ...]
     type: ExprType

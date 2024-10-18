@@ -6,6 +6,7 @@ from app.visualize.generator.highlight.expr_highlight import ExprHighlight
 from app.visualize.generator.models.append_viz import AttributeViz
 from app.visualize.generator.models.expr_viz import ExprViz
 from app.visualize.generator.models.input_viz import InputViz
+from app.visualize.generator.models.len_viz import LenViz
 from app.visualize.generator.models.print_viz import PrintViz
 from app.visualize.generator.models.variable_vlz import Variable
 from app.visualize.generator.visualization_manager import VisualizationManager
@@ -48,6 +49,9 @@ class ExprConverter:
 
         elif var_type is ExprType.INPUT:
             return ExprConverter._convert_to_input_viz(expr_stmt_obj, viz_manager, call_id, depth)
+
+        elif var_type is ExprType.LEN:
+            return ExprConverter._convert_to_len_viz(expr_stmt_obj, viz_manager, call_id, depth)
 
         else:
             raise TypeError(f"[ExprConverter]:{var_type}는 지원하지 않습니다.")
@@ -149,3 +153,14 @@ class ExprConverter:
             )
         )
         return input_vizs
+
+    @staticmethod
+    def _convert_to_len_viz(expr_stmt_obj: ExprStmtObj, viz_manager: VisualizationManager, call_id, depth):
+        return [
+            LenViz(
+                id=call_id,
+                depth=depth,
+                expr=expr_stmt_obj.expressions[1],
+                code=viz_manager.get_code_by_idx(call_id),
+            )
+        ]

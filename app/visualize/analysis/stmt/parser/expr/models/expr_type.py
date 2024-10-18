@@ -21,6 +21,7 @@ class ExprType(Enum):
     RANGE = "range"
     PRINT = "print"
     INPUT = "input"
+    LEN = "len"
 
     # attribute
     APPEND = "append"
