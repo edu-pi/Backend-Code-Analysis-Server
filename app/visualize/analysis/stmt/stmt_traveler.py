@@ -10,10 +10,11 @@ from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import UserFunc
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
-from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt, ReturnStmt
+from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
 from app.visualize.analysis.stmt.parser.for_stmt import ForStmt
 from app.visualize.analysis.stmt.parser.func_def_stmt import FuncDefStmt
 from app.visualize.analysis.stmt.parser.if_stmt import IfStmt
+from app.visualize.analysis.stmt.parser.return_stmt import ReturnStmt
 from app.visualize.analysis.stmt.parser.while_stmt import WhileStmt
 from app.visualize.container.element_container import ElementContainer
 
@@ -34,8 +35,11 @@ class StmtTraveler:
         elif isinstance(node, ast.If):
             return StmtTraveler._if_travel(node, [], [], elem_container)
 
-        elif isinstance(node, ast.Pass | ast.Break | ast.Continue | ast.Return):
-            return StmtTraveler._flow_control_travel(node, elem_container)
+        elif isinstance(node, ast.Pass | ast.Break | ast.Continue):
+            return StmtTraveler._flow_control_travel(node)
+
+        elif isinstance(node, ast.Return):
+            return StmtTraveler._return_travel(node, elem_container)
 
         elif isinstance(node, ast.While):
             return StmtTraveler._while_travel(node, elem_container)
@@ -235,7 +239,7 @@ class StmtTraveler:
         conditions.append(condition)
 
     @staticmethod
-    def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue, elem_container: ElementContainer):
+    def _flow_control_travel(node: ast.Pass | ast.Break | ast.Continue):
         if isinstance(node, ast.Pass):
             return PassStmt.parse(node)
 
@@ -245,11 +249,12 @@ class StmtTraveler:
         elif isinstance(node, ast.Continue):
             return ContinueStmt.parse(node)
 
-        elif isinstance(node, ast.Return):
-            return ReturnStmt.parse(node, elem_container)
-
         else:
             raise TypeError(f"[FlowControlTravel] {type(node)}는 잘못된 타입입니다.")
+
+    @staticmethod
+    def _return_travel(node: ast.Return, elem_container: ElementContainer):
+        return ReturnStmt.parse(node, elem_container)
 
     @staticmethod
     def _while_travel(node: ast.While, elem_container: ElementContainer):
