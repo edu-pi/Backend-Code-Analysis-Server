@@ -38,8 +38,9 @@ class ExprType(Enum):
         if isinstance(value, str):
             try:
                 value = eval(value)
+                ExprType.judge_collection_type(value)
             except (SyntaxError, NameError):
-                return ExprType.VARIABLE
+                raise TypeError(f"[ExprType] {type(value)}는 잘못된 타입입니다.")
 
         if isinstance(value, list):
             return ExprType.LIST

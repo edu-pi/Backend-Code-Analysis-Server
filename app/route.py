@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.responses import JSONResponse
 
 from app.models.request_code import RequestCode
 from app.visualize.code_visualizer import CodeVisualizer
@@ -6,9 +7,9 @@ from app.visualize.code_visualizer import CodeVisualizer
 app = FastAPI()
 
 
-@app.get("/edupi-visualize")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/edupi-visualize/health-check")
+def root():
+    return JSONResponse(status_code=200, content="ok")
 
 
 @app.post("/edupi-visualize/v1/python")
