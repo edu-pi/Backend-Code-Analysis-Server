@@ -36,7 +36,7 @@ from app.visualize.container.element_container import ElementContainer
 )
 def test_built_in_parse(mocker, func_name: str | AttributeObj, args: list[ExprObj], keyword_arg_dict: dict, expected):
     mock_built_in_call_parse = mocker.patch.object(CallExpr, "_built_in_call_parse", return_value=expected)
-    elem_container = ElementContainer([])
+    elem_container = ElementContainer([], "main")
 
     result = CallExpr.parse(func_name, args, keyword_arg_dict, elem_container)
 
@@ -58,7 +58,7 @@ def test_built_in_parse(mocker, func_name: str | AttributeObj, args: list[ExprOb
 )
 def test_built_in_print_call_parse(mocker, func_name: str, args: list[ExprObj], keyword_arg_dict: dict, expected):
     mock_print_expr_class = mocker.patch.object(PrintExpr, "parse", return_value=expected)
-    elem_container = ElementContainer([])
+    elem_container = ElementContainer([], "main")
 
     result = CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict, elem_container)
 
@@ -80,7 +80,7 @@ def test_built_in_print_call_parse(mocker, func_name: str, args: list[ExprObj], 
 )
 def test_built_in_range_call_parse(mocker, func_name: str, args: list[ExprObj], keyword_arg_dict: dict, expected):
     mock_range_expr_class = mocker.patch.object(RangeExpr, "parse", return_value=expected)
-    elem_container = ElementContainer([])
+    elem_container = ElementContainer([], "main")
 
     result = CallExpr._built_in_call_parse(func_name, args, keyword_arg_dict, elem_container)
 

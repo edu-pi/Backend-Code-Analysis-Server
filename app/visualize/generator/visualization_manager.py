@@ -1,12 +1,11 @@
 class VisualizationManager:
     def __init__(self, source_code=""):
-        self.source_code = source_code
-        self.processed_lines = self.process_code()
+        self.processed_lines = self.process_code(source_code)
         self.depth = 1
 
-    def process_code(self):
+    def process_code(self, source_code):
         # 줄 단위로 분리
-        lines = self.source_code.split("\n")
+        lines = source_code.split("\n")
         processed_lines = []
 
         for line in lines:

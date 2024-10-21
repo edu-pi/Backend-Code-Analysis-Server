@@ -3,6 +3,7 @@ import ast
 import pytest
 
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
+from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     ExprObj,
@@ -12,7 +13,6 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     ConstantObj,
     BinopObj,
 )
-from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 
 
@@ -44,7 +44,6 @@ def test_parse(mocker, create_ast, elem_container, code, mock_target_names, mock
     mock_change_node_to_expr_obj = mocker.patch.object(
         AssignStmt, "_change_node_to_expr_obj", return_value=mock_expr_obj
     )
-    mock_set_value_to_target = mocker.patch.object(AssignStmt, "_set_value_to_target")
     node = create_ast(code)
 
     result = AssignStmt.parse(node, elem_container)
@@ -52,7 +51,6 @@ def test_parse(mocker, create_ast, elem_container, code, mock_target_names, mock
     assert isinstance(result, AssignStmtObj)
     mock_get_target_names.assert_called_once_with(node.targets, elem_container)
     mock_change_node_to_expr_obj.assert_called_once_with(node.value, elem_container)
-    mock_set_value_to_target.assert_called_once_with(mock_target_names, mock_expr_obj, elem_container)
 
 
 @pytest.mark.parametrize(

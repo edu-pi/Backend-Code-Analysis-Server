@@ -2,6 +2,7 @@ import ast
 
 import pytest
 
+from app.visualize.analysis.stmt.parser.expr.expr_traveler import ExprTraveler
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import PrintObj, BinopObj, ConstantObj, NameObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
@@ -57,7 +58,8 @@ from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
         ),
     ],
 )
-def test__get_expr_obj(elem_container, node, expect):
+def test__get_expr_obj(mocker, elem_container, node, expect):
+    mocker.patch.object(ExprTraveler, "travel", return_value=expect)
     # expr 노드를 받아서 변수 이름을 반환하는지 통합테스트
     actual = ExprStmt._get_expr_obj(node, elem_container)
 

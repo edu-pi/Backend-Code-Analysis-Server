@@ -1,6 +1,7 @@
 import ast
 
 from app.visualize.analysis.stmt.parser.expr.models.expr_obj import ExprObj
+from app.visualize.analysis.stmt.parser.expr.parser.arguments_expr import ArgumentsExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attribute_expr import AttributeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.binop_expr import BinopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.call_expr import CallExpr
@@ -70,6 +71,10 @@ class ExprTraveler:
         elif isinstance(node, ast.JoinedStr):
             joined_str_obj = ExprTraveler._joined_str_travel(node, elem_container)
             return joined_str_obj
+
+        elif isinstance(node, ast.arguments):
+            arguments_obj = ExprTraveler._arguments_travel(node)
+            return arguments_obj
 
         else:
             raise TypeError(f"[ExprTraveler] {type(node)}는 잘못된 타입입니다.")
@@ -187,6 +192,7 @@ class ExprTraveler:
         operand_obj = ExprTraveler.travel(node.operand, elem_container)
         return UnaryOpExpr.parse(node.op, operand_obj)
 
+    @staticmethod
     def _formatted_value_travel(node: ast.FormattedValue, elem_container: ElementContainer):
         value = ExprTraveler.travel(node.value, elem_container)
         joined_str_obj = None
@@ -200,3 +206,9 @@ class ExprTraveler:
         value_objs = [ExprTraveler.travel(value, elem_container) for value in node.values]
 
         return JoinedStrExpr.parse(value_objs)
+
+    @staticmethod
+    def _arguments_travel(node: ast.arguments):
+        arguments_obj = ArgumentsExpr.parse(node)
+
+        return arguments_obj

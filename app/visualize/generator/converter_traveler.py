@@ -1,13 +1,18 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.analysis.stmt.models.for_stmt_obj import ForStmtObj
+from app.visualize.analysis.stmt.models.func_def_stmt_obj import FuncDefStmtObj
 from app.visualize.analysis.stmt.models.if_stmt_obj import IfStmtObj
 from app.visualize.analysis.stmt.models.stmt_type import StmtType
+from app.visualize.analysis.stmt.models.user_func_stmt_obj import UserFuncStmtObj
 from app.visualize.analysis.stmt.models.while_stmt_obj import WhileStmtObj
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.converter.expr_converter import ExprConverter
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.for_header_converter import ForHeaderConvertor
+from app.visualize.generator.converter.func_def_converter import FuncDefConverter
 from app.visualize.generator.converter.if_converter import IfConverter
+from app.visualize.generator.converter.return_converter import ReturnConverter
+from app.visualize.generator.converter.user_func_converter import UserFuncConverter
 from app.visualize.generator.converter.while_converter import WhileConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
 
@@ -32,10 +37,19 @@ class ConverterTraveler:
                 viz_objs.extend(ConverterTraveler._if_convert(analysis_obj, viz_manager))
 
             elif analysis_obj.type == StmtType.FLOW_CONTROL:
-                viz_objs.append(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
+                viz_objs.extend(ConverterTraveler._convert_to_flow_control_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.RETURN:
+                viz_objs.extend(ConverterTraveler._convert_to_return_control_viz(analysis_obj, viz_manager))
 
             elif analysis_obj.type == StmtType.WHILE:
                 viz_objs.extend(ConverterTraveler._convert_to_while_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.FUNC_DEF:
+                viz_objs.append(ConverterTraveler._convert_to_func_def_viz(analysis_obj, viz_manager))
+
+            elif analysis_obj.type == StmtType.USER_FUNC:
+                viz_objs.extend(ConverterTraveler._convert_to_user_func_viz(analysis_obj, viz_manager, ()))
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
@@ -45,8 +59,15 @@ class ConverterTraveler:
     @staticmethod
     def _convert_to_assign_vizs(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         steps = []
-        steps.extend(ConverterTraveler._convert_to_expr_vizs(assign_obj.expr_stmt_obj, viz_manager))
-        steps.append(AssignConverter.convert(assign_obj, viz_manager))
+
+        if assign_obj.expr_stmt_obj.type == StmtType.USER_FUNC:
+            steps.extend(
+                ConverterTraveler._convert_to_user_func_viz(assign_obj.expr_stmt_obj, viz_manager, assign_obj.targets)
+            )
+            steps.append(AssignConverter.convert_user_func(assign_obj, viz_manager))
+        else:
+            steps.extend(ConverterTraveler._convert_to_expr_vizs(assign_obj.expr_stmt_obj, viz_manager))
+            steps.append(AssignConverter.convert(assign_obj, viz_manager))
 
         return steps
 
@@ -97,6 +118,12 @@ class ConverterTraveler:
         return flow_control_viz
 
     @staticmethod
+    def _convert_to_return_control_viz(return_obj, viz_manager: VisualizationManager):
+        return_viz = ReturnConverter.convert(return_obj, viz_manager)
+
+        return return_viz
+
+    @staticmethod
     def _convert_to_while_viz(while_obj: WhileStmtObj, viz_manager: VisualizationManager):
         steps = []
         depth = viz_manager.get_depth()
@@ -115,3 +142,22 @@ class ConverterTraveler:
             viz_manager.decrease_depth()
 
         return steps
+
+    @staticmethod
+    def _convert_to_func_def_viz(func_def_stmt_obj: FuncDefStmtObj, viz_manager: VisualizationManager):
+        return FuncDefConverter.convert(func_def_stmt_obj, viz_manager)
+
+    @staticmethod
+    def _convert_to_user_func_viz(user_func_stmt_obj: UserFuncStmtObj, viz_manager: VisualizationManager, targets):
+        user_func_viz = []
+
+        user_func_viz.append(UserFuncConverter.convert_to_call_user_func(user_func_stmt_obj, viz_manager))
+        user_func_viz.append(UserFuncConverter.convert_to_create_call_stack(user_func_stmt_obj, viz_manager))
+
+        viz_manager.increase_depth()
+        user_func_viz.extend(ConverterTraveler.travel(user_func_stmt_obj.body_steps, viz_manager))
+        viz_manager.decrease_depth()
+
+        user_func_viz.append(UserFuncConverter.convert_to_end_user_func(user_func_stmt_obj, targets, viz_manager))
+
+        return user_func_viz

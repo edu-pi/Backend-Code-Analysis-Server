@@ -72,6 +72,7 @@ def test_convert_to_if_else_define_viz(conditions: tuple[ConditionObj, ...], exp
                         AssignStmtObj(
                             targets=("a",),
                             expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                            call_stack_name="main",
                         ),
                     ],
                 )
