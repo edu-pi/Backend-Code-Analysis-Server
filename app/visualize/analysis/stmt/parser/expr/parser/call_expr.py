@@ -42,6 +42,9 @@ class CallExpr:
     def _built_in_call_parse(
         func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
     ):
+        if all(func_name != item.value for item in ExprType):
+            raise NotImplementedError(f"[CallParser]: {func_name} 은 아직 지원하지 않습니다.")
+
         if ExprType(func_name) is ExprType.PRINT:
             print_obj = PrintExpr.parse(args, keyword_arg_dict)
             return print_obj
