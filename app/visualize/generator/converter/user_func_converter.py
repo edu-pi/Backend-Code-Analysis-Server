@@ -40,5 +40,4 @@ class UserFuncConverter:
             returnArgName="" if len(targets) == 0 else targets[0],
             code=viz_manager.get_code_by_idx(user_func_stmt_obj.id),
             delFuncName=user_func_stmt_obj.func_name,
-            delFuncId=user_func_stmt_obj.func_id,
         )

@@ -15,7 +15,7 @@ class UserFuncExpr:
         for arg_idx in range(len(user_func_arg_names)):
             arguments[user_func_arg_names[arg_idx]] = arg_objs[arg_idx].value
 
-        user_func = UserFunc(id=user_func_id, name=func_name, user_func_ast=user_func_body, arguments=arguments)
+        user_func = UserFunc(name=func_name, user_func_ast=user_func_body, arguments=arguments)
         expressions = UserFuncExpr._create_expressions(func_name, user_func_arg_names)
 
         return UserFuncObj(value=user_func, expressions=expressions)

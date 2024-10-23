@@ -7,7 +7,6 @@ from app.visualize.analysis.stmt.models.stmt_type import StmtType
 @dataclass(frozen=True)
 class UserFuncStmtObj:
     id: int
-    func_id: int
     func_name: str
     func_signature: str
     body_steps: list[Any]

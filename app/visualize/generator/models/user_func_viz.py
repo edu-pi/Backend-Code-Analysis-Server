@@ -36,5 +36,4 @@ class EndUserFuncViz:
     returnArgName: str
     code: str
     delFuncName: str
-    delFuncId: int
     type: str = field(default="endUserFunc", init=False)
