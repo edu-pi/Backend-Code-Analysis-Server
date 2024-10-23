@@ -8,7 +8,7 @@ from app.visualize.analysis.stmt.models.return_stmt_obj import ReturnStmtObj
 from app.visualize.analysis.stmt.models.user_func_stmt_obj import UserFuncStmtObj
 from app.visualize.analysis.stmt.models.while_stmt_obj import WhileCycle, WhileStmtObj
 from app.visualize.analysis.stmt.parser.assign_stmt import AssignStmt
-from app.visualize.analysis.stmt.parser.expr.models.expr_obj import UserFunc
+from app.visualize.analysis.stmt.parser.expr.models.expr_obj import UserFunc, ExprObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr_stmt import ExprStmt
 from app.visualize.analysis.stmt.parser.flow_control_stmt import PassStmt, BreakStmt, ContinueStmt
@@ -92,6 +92,11 @@ class StmtTraveler:
                 expr_stmt_obj=user_func_stmt_obj,
                 call_stack_name=elem_container.get_call_stack_name(),
             )
+        expr_stmt_obj = assign_obj.expr_stmt_obj
+        expr_obj = ExprObj(
+            value=expr_stmt_obj.value, expressions=expr_stmt_obj.expressions, type=expr_stmt_obj.expr_type
+        )
+        AssignStmt.set_value_to_target(assign_obj.targets, expr_obj, elem_container)
 
         return assign_obj
 
