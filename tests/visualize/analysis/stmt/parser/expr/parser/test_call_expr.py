@@ -7,7 +7,6 @@ from app.visualize.analysis.stmt.parser.expr.models.expr_obj import (
     PrintObj,
     RangeObj,
 )
-from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.analysis.stmt.parser.expr.models.range_expression import RangeExpression
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
@@ -48,7 +47,7 @@ def test_built_in_parse(mocker, func_name: str | AttributeObj, args: list[ExprOb
     "func_name, args, keyword_arg_dict, expected",
     [
         pytest.param(
-            ExprType.PRINT,
+            "print",
             [ConstantObj(value="Hello, World!", expressions=("Hello, World!",))],
             {},
             PrintObj(value="Hello, World!", expressions=("Hello, World!",)),

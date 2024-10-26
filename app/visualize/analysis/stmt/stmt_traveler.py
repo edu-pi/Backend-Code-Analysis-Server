@@ -77,7 +77,6 @@ class StmtTraveler:
 
             user_func_stmt_obj = UserFuncStmtObj(
                 id=node.lineno,
-                func_id=user_func.id,
                 func_name=func_name,
                 func_signature=func_signature,
                 args=args,
