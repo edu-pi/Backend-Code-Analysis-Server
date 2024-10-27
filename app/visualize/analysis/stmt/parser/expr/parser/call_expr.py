@@ -6,6 +6,7 @@ from app.visualize.analysis.stmt.parser.expr.parser.attr_func.insert_expr import
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.pop_expr import PopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.input_expr import InputExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.len_expr import LenExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.user_func_expr import UserFuncExpr
@@ -56,6 +57,10 @@ class CallExpr:
         elif ExprType(func_name) is ExprType.INPUT:
             input_obj = InputExpr.parse(args, elem_container)
             return input_obj
+
+        elif ExprType(func_name) is ExprType.LEN:
+            len_obj = LenExpr.parse(args)
+            return len_obj
 
         else:
             raise NotImplementedError(f"[CallParser]: {func_name} 은 아직 지원하지 않습니다.")
