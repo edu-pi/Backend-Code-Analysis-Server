@@ -36,7 +36,7 @@ def test_travel(mocker, code: str, called_func: str, create_ast, elem_container)
     stmt_node = create_ast(code)
     mock_travel = mocker.patch.object(StmtTraveler, called_func)
 
-    StmtTraveler.travel(stmt_node, elem_container)
+    StmtTraveler.travel([stmt_node], elem_container)
 
     mock_travel.assert_called_once()
 
@@ -110,7 +110,7 @@ def test__for_travel(mocker, code, create_ast, elem_container):
 )
 def test__parse_for_body_success(mocker, elem_container, code: str, mock_result):
     """리스트 형태와 body의 개수 만큼 obj를 생성하여 반환하는지 검증"""
-    mocker.patch.object(StmtTraveler, "travel", side_effect=mock_result)
+    mocker.patch.object(StmtTraveler, "travel", return_value=mock_result)
 
     actual = StmtTraveler._parse_for_body(ast.parse(code).body, elem_container)
 
@@ -155,7 +155,7 @@ def test_if_travel(mocker, code: str, expect, elem_container):
     )
     mocker.patch.object(StmtTraveler, "travel", return_value=[])
 
-    actual = StmtTraveler._if_travel(ast_if, [], [], elem_container)
+    actual = StmtTraveler._if_travel(ast_if, [], [[]], elem_container)
 
     assert actual == expect
 
@@ -225,7 +225,7 @@ def test_parse_if_body_추가(mocker, node: ast.If, conditions: list[ConditionOb
     mocker.patch.object(
         StmtTraveler,
         "travel",
-        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT),
+        return_value=[ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)],
     )
     StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
 
@@ -392,10 +392,10 @@ while a < 11:
 def test__while_travel(mocker, create_ast, elem_container, while_code, condition_objs, body_objs, expected):
     ast_while = create_ast(while_code)
     mock_while_stmt = mocker.patch.object(WhileStmt, "parse_condition", side_effect=condition_objs)
-    mock_stmt_traveler = mocker.patch.object(StmtTraveler, "travel", side_effect=body_objs)
+    mocker.patch.object(StmtTraveler, "_parse_for_body", return_value=body_objs)
+    mocker.patch.object(StmtTraveler, "travel", return_value=[])
 
     result = StmtTraveler._while_travel(ast_while, elem_container)
 
     assert mock_while_stmt.call_count == len(condition_objs)
-    assert mock_stmt_traveler.call_count == len(body_objs)
     assert result == expected

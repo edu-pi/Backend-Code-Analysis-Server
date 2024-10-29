@@ -15,10 +15,5 @@ class CodeVisualizer:
         self._visualization_manager = VisualizationManager(request_code.source_code)
 
     def visualize_code(self):
-        analyzed_stmt_list = self.get_analyzed_stmt_nodes()
+        analyzed_stmt_list = StmtTraveler.travel(self._parsed_node.body, self._elem_container)
         return ConverterTraveler.travel(analyzed_stmt_list, self._visualization_manager)
-
-    def get_analyzed_stmt_nodes(self):
-        steps = [StmtTraveler.travel(node, self._elem_container) for node in self._parsed_node.body]
-
-        return steps
