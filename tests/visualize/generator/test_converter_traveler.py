@@ -20,7 +20,11 @@ def get_if_stmt_obj():
                 IfConditionObj(id=1, expressions=("9 == 10", "False"), result=False),
                 ElifConditionObj(id=3, expressions=("9 < 10", "True"), result=True),
             ),
-            body_steps=[ExprStmtObj(id=4, value="world\n", expressions=("'world'",), expr_type=ExprType.PRINT)],
+            body_steps=[
+                ExprStmtObj(
+                    id=4, value="world\n", expressions=("'world'",), expr_type=ExprType.PRINT, call_stack_name="main"
+                )
+            ],
         )
 
     return _get_if_stmt_obj

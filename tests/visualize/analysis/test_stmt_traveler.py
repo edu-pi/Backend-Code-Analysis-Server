@@ -73,10 +73,14 @@ def test__for_travel(mocker, code, create_ast, elem_container):
             [
                 AssignStmtObj(
                     targets=("a",),
-                    expr_stmt_obj=ExprStmtObj(id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value=10, expressions=("10",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
-                ExprStmtObj(id=2, value="'hello'\n", expressions=("'hello'",), expr_type=ExprType.PRINT),
+                ExprStmtObj(
+                    id=2, value="'hello'\n", expressions=("'hello'",), expr_type=ExprType.PRINT, call_stack_name="main"
+                ),
             ],
         ),
         pytest.param(
@@ -84,12 +88,16 @@ def test__for_travel(mocker, code, create_ast, elem_container):
             [
                 AssignStmtObj(
                     targets=("left",),
-                    expr_stmt_obj=ExprStmtObj(id=2, value=0, expressions=("0",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=2, value=0, expressions=("0",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 AssignStmtObj(
                     targets=("right",),
-                    expr_stmt_obj=ExprStmtObj(id=3, value=10, expressions=("10",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=3, value=10, expressions=("10",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -101,7 +109,13 @@ def test__for_travel(mocker, code, create_ast, elem_container):
                         ),
                     ),
                     body_steps=[
-                        ExprStmtObj(id=5, value="'check'\n", expressions=("'check'",), expr_type=ExprType.PRINT)
+                        ExprStmtObj(
+                            id=5,
+                            value="'check'\n",
+                            expressions=("'check'",),
+                            expr_type=ExprType.PRINT,
+                            call_stack_name="main",
+                        )
                     ],
                 ),
             ],
@@ -225,11 +239,15 @@ def test_parse_if_body_추가(mocker, node: ast.If, conditions: list[ConditionOb
     mocker.patch.object(
         StmtTraveler,
         "travel",
-        return_value=[ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)],
+        return_value=[
+            ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT, call_stack_name="main")
+        ],
     )
     StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
 
-    assert body_objs[-1] == ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)
+    assert body_objs[-1] == ExprStmtObj(
+        id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT, call_stack_name="main"
+    )
 
 
 @pytest.mark.parametrize(
@@ -238,7 +256,11 @@ def test_parse_if_body_추가(mocker, node: ast.If, conditions: list[ConditionOb
         pytest.param(
             ast.parse("if a < 10: \n    print('hello')").body[0],
             [IfConditionObj(id=1, expressions=("a<10",), result=False)],
-            [ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT)],
+            [
+                ExprStmtObj(
+                    id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT, call_stack_name="main"
+                )
+            ],
             id="if condition is False - 바디 추가 안함",
         )
     ],
@@ -249,7 +271,9 @@ def test_parse_if_body_추가_안함(
     mocker.patch.object(
         StmtTraveler,
         "travel",
-        return_value=ExprStmtObj(id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT),
+        return_value=ExprStmtObj(
+            id=0, value="hello", expressions=("hello",), expr_type=ExprType.PRINT, call_stack_name="main"
+        ),
     )
     temp_body_objs = list(body_objs)
     StmtTraveler._parse_if_body(node, conditions, body_objs, MagicMock())
@@ -353,11 +377,17 @@ while a < 11:
                 CompareObj(value=False, expressions=("a < 11", "11 < 11", "False")),
             ],
             [
-                ExprStmtObj(id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT),
+                ExprStmtObj(
+                    id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT, call_stack_name="main"
+                ),
                 AssignStmtObj(
                     targets=("a",),
                     expr_stmt_obj=ExprStmtObj(
-                        id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
+                        id=3,
+                        value=11,
+                        expressions=("a + 1", "10 + 1", "11"),
+                        expr_type=ExprType.VARIABLE,
+                        call_stack_name="main",
                     ),
                     call_stack_name="main",
                 ),
@@ -369,11 +399,21 @@ while a < 11:
                     WhileCycle(
                         condition_exprs=("a < 11", "10 < 11", "True"),
                         body_objs=[
-                            ExprStmtObj(id=2, value="10\n", expressions=("a", "10\n"), expr_type=ExprType.PRINT),
+                            ExprStmtObj(
+                                id=2,
+                                value="10\n",
+                                expressions=("a", "10\n"),
+                                expr_type=ExprType.PRINT,
+                                call_stack_name="main",
+                            ),
                             AssignStmtObj(
                                 targets=("a",),
                                 expr_stmt_obj=ExprStmtObj(
-                                    id=3, value=11, expressions=("a + 1", "10 + 1", "11"), expr_type=ExprType.VARIABLE
+                                    id=3,
+                                    value=11,
+                                    expressions=("a + 1", "10 + 1", "11"),
+                                    expr_type=ExprType.VARIABLE,
+                                    call_stack_name="main",
                                 ),
                                 call_stack_name="main",
                             ),

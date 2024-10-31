@@ -44,7 +44,9 @@ def test__get_target_name_fail(elem_container, target):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -55,7 +57,9 @@ def test__get_target_name_fail(elem_container, target):
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
@@ -65,13 +69,17 @@ def test__get_target_name_fail(elem_container, target):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 BreakStmtObj(id=0),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
@@ -93,7 +101,9 @@ def test_contains_break_success(body_steps):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -101,14 +111,18 @@ def test_contains_break_success(body_steps):
                     body_steps=[
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
@@ -118,12 +132,16 @@ def test_contains_break_success(body_steps):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
@@ -145,7 +163,9 @@ def test_contains_break_fail(body_steps):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -153,27 +173,35 @@ def test_contains_break_fail(body_steps):
                     body_steps=[
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                         BreakStmtObj(id=0),
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -181,7 +209,9 @@ def test_contains_break_fail(body_steps):
                     body_steps=[
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                         BreakStmtObj(id=0),
@@ -194,7 +224,9 @@ def test_contains_break_fail(body_steps):
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -202,26 +234,34 @@ def test_contains_break_fail(body_steps):
                     body_steps=[
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],
             [
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
                 IfStmtObj(
@@ -229,19 +269,25 @@ def test_contains_break_fail(body_steps):
                     body_steps=[
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                         AssignStmtObj(
                             targets=(),
-                            expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                            expr_stmt_obj=ExprStmtObj(
+                                id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                            ),
                             call_stack_name="main",
                         ),
                     ],
                 ),
                 AssignStmtObj(
                     targets=(),
-                    expr_stmt_obj=ExprStmtObj(id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE),
+                    expr_stmt_obj=ExprStmtObj(
+                        id=1, value="", expressions=("",), expr_type=ExprType.VARIABLE, call_stack_name="main"
+                    ),
                     call_stack_name="main",
                 ),
             ],

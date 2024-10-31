@@ -14,7 +14,9 @@ def create_assign():
     def _create_assign_obj(targets, value, expressions, var_type):
         return AssignStmtObj(
             targets=targets,
-            expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, expr_type=var_type),
+            expr_stmt_obj=ExprStmtObj(
+                id=1, value=value, expressions=expressions, expr_type=var_type, call_stack_name="main"
+            ),
             call_stack_name="main",
         )
 
