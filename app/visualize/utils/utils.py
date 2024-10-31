@@ -1,4 +1,7 @@
 # util 함수들을 모아놓은 파일
+import re
+
+from app.visualize.generator.models.variable_vlz import SubscriptIdx
 
 
 # 변수들의 표현식 리스트를 받아와서 배열의 행과 열을 바꿔주고 마지막 값으로 채워주는 함수
@@ -32,6 +35,30 @@ def is_array(target):
         return True
 
     return False
+
+
+def is_subscript(target):
+    match = re.match(r"(.+?)\[(.+?)\]", target)
+    return match is not None
+
+
+def extract_subscript(target):
+    match = re.match(r"(.+?)\[(.+?)\]", target)
+
+    if match:
+        # 그룹별로 추출
+        target_name = match.group(1)  # '[' 앞의 이름
+        subscript_index = match.group(2)  # '[ ]' 사이의 값
+
+        if ":" in subscript_index:
+            start, end = map(int, subscript_index.split(":", 1))
+            subscript_index = SubscriptIdx(start=start, end=end)
+        else:
+            subscript_index = SubscriptIdx(start=int(subscript_index), end=int(subscript_index))
+
+        return target_name, subscript_index
+
+    return target, None
 
 
 def is_same_len(array1, array2):

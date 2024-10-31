@@ -1,6 +1,6 @@
 from app.visualize.analysis.stmt.models.assign_stmt_obj import AssignStmtObj
 from app.visualize.generator.models.assign_viz import AssignViz
-from app.visualize.generator.models.variable_vlz import Variable
+from app.visualize.generator.models.variable_vlz import Variable, SubscriptIdx
 from app.visualize.generator.visualization_manager import VisualizationManager
 from app.visualize.utils import utils
 
@@ -69,6 +69,20 @@ class AssignConverter:
                     for idx in range(len(target))
                 ]
             )
+
+        elif utils.is_subscript(target):
+            target, idx = utils.extract_subscript(target)
+            variable_list.append(
+                Variable(
+                    id=expr_stmt_obj.id,
+                    expr=expr_stmt_obj.expressions[-1] if expr_stmt_obj.expressions else None,
+                    name=target,
+                    idx=idx,
+                    code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
+                    type=var_type,
+                )
+            )
+
         # 이외의 모든 경우
         else:
             variable_list.append(
@@ -76,6 +90,7 @@ class AssignConverter:
                     id=expr_stmt_obj.id,
                     expr=expr_stmt_obj.expressions[-1] if expr_stmt_obj.expressions else None,
                     name=target,
+                    idx=SubscriptIdx(start=0, end=len(expr_stmt_obj.value) - 1) if var_type == "list" else None,
                     code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
                     type=var_type,
                 )

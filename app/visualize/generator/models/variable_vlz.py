@@ -1,4 +1,10 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class SubscriptIdx:
+    start: int
+    end: int
 
 
 @dataclass(frozen=True)
@@ -8,3 +14,4 @@ class Variable:
     name: str
     code: str
     type: str
+    idx: SubscriptIdx = field(default=None)
