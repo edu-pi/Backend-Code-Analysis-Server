@@ -105,6 +105,7 @@ class ExprConverter:
                     type=getStringType(expr_stmt_obj.expressions[-1]),
                 ),
                 type=expr_stmt_obj.expr_type.value,
+                callStackName=expr_stmt_obj.call_stack_name,
             )
         )
 

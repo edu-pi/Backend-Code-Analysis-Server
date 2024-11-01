@@ -19,6 +19,7 @@ class AssignStmt:
             expressions=expr_obj.expressions,
             value=expr_obj.value,
             expr_type=expr_obj.type,
+            call_stack_name=elem_container.get_call_stack_name(),
         )
 
         return AssignStmtObj(

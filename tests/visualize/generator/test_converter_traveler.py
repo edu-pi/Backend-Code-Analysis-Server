@@ -2,9 +2,10 @@ from unittest.mock import patch
 
 import pytest
 
-from app.models.request_code import RequestCode
+from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.models.flow_control_obj import PassStmtObj
-from app.visualize.code_visualizer import CodeVisualizer
+from app.visualize.analysis.stmt.models.if_stmt_obj import IfConditionObj, IfStmtObj, ElifConditionObj
+from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.converter.flow_control_converter import FlowControlConverter
 from app.visualize.generator.converter.if_converter import IfConverter
 from app.visualize.generator.converter_traveler import ConverterTraveler
@@ -13,16 +14,25 @@ from app.visualize.generator.visualization_manager import VisualizationManager
 
 @pytest.fixture
 def get_if_stmt_obj():
-    def _get_if_stmt_obj(code):
-        request_code = RequestCode(code, "")
-        code_analyzer = CodeVisualizer(request_code)
-        return code_analyzer.get_analyzed_stmt_nodes()[0]
+    def _get_if_stmt_obj():
+        return IfStmtObj(
+            conditions=(
+                IfConditionObj(id=1, expressions=("9 == 10", "False"), result=False),
+                ElifConditionObj(id=3, expressions=("9 < 10", "True"), result=True),
+            ),
+            body_steps=[
+                ExprStmtObj(
+                    id=4, value="world\n", expressions=("'world'",), expr_type=ExprType.PRINT, call_stack_name="main"
+                )
+            ],
+        )
 
     return _get_if_stmt_obj
 
 
 def test__if_convert(mocker, get_if_stmt_obj, mock_viz_manager_with_custom_depth):
-    if_stmt_obj = get_if_stmt_obj("if 9 == 10:\n    print('hello')\nelif 9 < 10:\n    print('world')\n")
+    if_stmt_obj = get_if_stmt_obj()
+
     mock_get_header_define_viz = mocker.patch.object(IfConverter, "convert_to_if_else_define_viz")
     mock_get_header_change_steps = mocker.patch.object(IfConverter, "convert_to_if_else_change_viz")
     mock_get_if_body_viz_list = mocker.patch.object(ConverterTraveler, "_get_if_body_viz_list")
@@ -37,7 +47,8 @@ def test__if_convert(mocker, get_if_stmt_obj, mock_viz_manager_with_custom_depth
 
 
 def test__get_if_body_viz_list(mocker, get_if_stmt_obj):
-    if_stmt_obj = get_if_stmt_obj("if 9 == 10:\n    print('hello')\nelif 9 < 10:\n    print('world')\n")
+    if_stmt_obj = get_if_stmt_obj()
+
     mock_travel = mocker.patch.object(ConverterTraveler, "travel")
     viz_manager = VisualizationManager()
 

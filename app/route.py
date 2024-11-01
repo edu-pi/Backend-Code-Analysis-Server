@@ -26,4 +26,4 @@ def read_root(request_code: RequestCode):
     # 코드 분석 인스턴스 생성
     code_analyzer = CodeVisualizer(request_code)
 
-    return code_analyzer.visualize_code()
+    return {"result": {"code": code_analyzer.visualize_code()}}

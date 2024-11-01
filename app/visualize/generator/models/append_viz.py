@@ -7,3 +7,4 @@ from app.visualize.generator.models.variable_vlz import Variable
 class AttributeViz:
     variable: Variable
     type: str
+    callStackName: str

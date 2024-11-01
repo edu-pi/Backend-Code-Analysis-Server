@@ -41,7 +41,7 @@ class ExprType(Enum):
                 value = eval(value)
                 ExprType.judge_collection_type(value)
             except (SyntaxError, NameError):
-                raise TypeError(f"[ExprType] {type(value)}는 잘못된 타입입니다.")
+                value = value  # 그냥 문자열이 들어오는 경우
 
         if isinstance(value, list):
             return ExprType.LIST

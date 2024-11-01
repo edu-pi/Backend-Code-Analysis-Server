@@ -5,7 +5,7 @@ from app.visualize.analysis.stmt.models.expr_stmt_obj import ExprStmtObj
 from app.visualize.analysis.stmt.parser.expr.models.expr_type import ExprType
 from app.visualize.generator.converter.assign_converter import AssignConverter
 from app.visualize.generator.models.assign_viz import AssignViz
-from app.visualize.generator.models.variable_vlz import Variable
+from app.visualize.generator.models.variable_vlz import Variable, SubscriptIdx
 from app.visualize.generator.visualization_manager import VisualizationManager
 
 
@@ -14,7 +14,9 @@ def create_assign():
     def _create_assign_obj(targets, value, expressions, var_type):
         return AssignStmtObj(
             targets=targets,
-            expr_stmt_obj=ExprStmtObj(id=1, value=value, expressions=expressions, expr_type=var_type),
+            expr_stmt_obj=ExprStmtObj(
+                id=1, value=value, expressions=expressions, expr_type=var_type, call_stack_name="main"
+            ),
             call_stack_name="main",
         )
 
@@ -60,7 +62,9 @@ def create_assign():
             ["[1,2,3]"],
             ExprType.LIST,
             AssignViz(
-                variables=[Variable(id=1, name="e", expr="[1,2,3]", type="list", code="")],
+                variables=[
+                    Variable(id=1, name="e", expr="[1,2,3]", type="list", code="", idx=SubscriptIdx(start=0, end=2))
+                ],
                 callStackName="main",
             ),
             id="e = [1, 2, 3]: success case",
@@ -71,7 +75,11 @@ def create_assign():
             ["['Hello','World']"],
             ExprType.LIST,
             AssignViz(
-                variables=[Variable(id=1, name="f", expr="['Hello','World']", type="list", code="")],
+                variables=[
+                    Variable(
+                        id=1, name="f", expr="['Hello','World']", type="list", code="", idx=SubscriptIdx(start=0, end=1)
+                    )
+                ],
                 callStackName="main",
             ),
             id="f = ['Hello', 'World']: success case",
@@ -81,7 +89,12 @@ def create_assign():
             [11, "Hello"],
             ["[a + 1,b]", "[10 + 1,10]", "[11,10]"],
             ExprType.LIST,
-            AssignViz(variables=[Variable(id=1, name="g", expr="[11,10]", type="list", code="")], callStackName="main"),
+            AssignViz(
+                variables=[
+                    Variable(id=1, name="g", expr="[11,10]", type="list", code="", idx=SubscriptIdx(start=0, end=1))
+                ],
+                callStackName="main",
+            ),
             id="g = [a + 1, b]: success case",
         ),
     ],

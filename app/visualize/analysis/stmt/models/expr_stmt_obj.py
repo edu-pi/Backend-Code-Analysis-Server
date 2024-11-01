@@ -11,4 +11,5 @@ class ExprStmtObj:
     value: Any
     expressions: tuple[str, ...]
     expr_type: ExprType
+    call_stack_name: str
     type: StmtType = field(default_factory=lambda: StmtType.EXPR, init=False)
