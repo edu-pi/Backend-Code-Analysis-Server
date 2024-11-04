@@ -90,7 +90,11 @@ class AssignConverter:
                     id=expr_stmt_obj.id,
                     expr=expr_stmt_obj.expressions[-1] if expr_stmt_obj.expressions else None,
                     name=target,
-                    idx=SubscriptIdx(start=0, end=len(expr_stmt_obj.value) - 1) if var_type == "list" else None,
+                    idx=(
+                        SubscriptIdx(start=0, end=len(expr_stmt_obj.value) - 1)
+                        if var_type == "list"
+                        else SubscriptIdx(start=0, end=0)
+                    ),
                     code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
                     type=var_type,
                 )

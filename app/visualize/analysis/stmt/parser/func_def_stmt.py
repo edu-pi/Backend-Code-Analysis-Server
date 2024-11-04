@@ -24,6 +24,7 @@ class FuncDefStmt:
             expressions=FuncDefStmt.makeExpressions(name, arguments_obj.value),
             value=name,
             expr_type=ExprType.FUNC,
+            call_stack_name=elem_container.get_call_stack_name(),
         )
         return FuncDefStmtObj(
             target=name, expr_stmt_obj=expr_stmt_obj, call_stack_name=elem_container.get_call_stack_name()
