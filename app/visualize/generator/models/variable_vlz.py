@@ -14,4 +14,4 @@ class Variable:
     name: str
     code: str
     type: str
-    idx: SubscriptIdx = field(default=None)
+    idx: SubscriptIdx = field(default=SubscriptIdx(0, 0))
