@@ -92,7 +92,7 @@ class AssignConverter:
                     name=target,
                     idx=(
                         SubscriptIdx(start=0, end=len(expr_stmt_obj.value) - 1)
-                        if var_type == "list"
+                        if var_type in ("list", "tuple")
                         else SubscriptIdx(start=0, end=0)
                     ),
                     code=viz_manager.get_code_by_idx(expr_stmt_obj.id),
