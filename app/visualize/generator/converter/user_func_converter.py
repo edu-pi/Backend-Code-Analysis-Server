@@ -29,7 +29,7 @@ class UserFuncConverter:
                 code=viz_manager.get_code_by_idx(user_func_stmt_obj.id),
                 idx=(
                     SubscriptIdx(start=0, end=len(arg_value) - 1)
-                    if getStringType(arg_value) == "list"
+                    if getStringType(arg_value) in ("list", "tuple")
                     else SubscriptIdx(start=0, end=0)
                 ),
             )
