@@ -187,7 +187,7 @@ class StmtTraveler:
             if isinstance(last_step, ReturnStmtObj):
                 return_obj = last_step
             elif isinstance(last_step, IfStmtObj):
-                while last_step.body_steps:
+                while hasattr(last_step, "body_steps") and last_step.body_steps:
                     if last_step.body_steps[-1].type == StmtType.RETURN:
                         return_obj = last_step.body_steps[-1]
                         break
