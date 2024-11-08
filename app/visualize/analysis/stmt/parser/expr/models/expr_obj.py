@@ -87,7 +87,7 @@ class InputObj(CallObj):
 
 @dataclass(frozen=True)
 class LenObj(CallObj):
-    value: str
+    value: int
     type: ExprType = field(default=ExprType.LEN, init=False)
 
 
