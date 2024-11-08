@@ -15,6 +15,8 @@ from app.visualize.generator.converter.return_converter import ReturnConverter
 from app.visualize.generator.converter.user_func_converter import UserFuncConverter
 from app.visualize.generator.converter.while_converter import WhileConverter
 from app.visualize.generator.visualization_manager import VisualizationManager
+from app.web.exception.code_visualize_error import CodeVisualizeError
+from app.web.exception.error_enum import ErrorEnum
 
 
 class ConverterTraveler:
@@ -53,6 +55,9 @@ class ConverterTraveler:
 
             else:
                 raise TypeError(f"지원하지 않는 노드 타입입니다.: {analysis_obj.type}")
+
+        if len(viz_objs) > 1000:
+            raise CodeVisualizeError(ErrorEnum.VISUALIZE_TIMEOUT)
 
         return viz_objs
 
