@@ -151,6 +151,9 @@ class ExprTraveler:
         elif isinstance(node, ast.Constant):
             return ExprTraveler.travel(node, elem_container)
 
+        elif isinstance(node, ast.Subscript):
+            return ExprTraveler.travel(node, elem_container)
+
         else:
             raise TypeError(f"[ExprTraveler - compare parsing 중  {type(node)}는 잘못된 타입입니다.")
 
