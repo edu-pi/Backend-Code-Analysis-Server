@@ -12,7 +12,7 @@ class LenExpr:
 
     @staticmethod
     def _get_value(args):
-        return str(len(args[0].value))
+        return len(args[0].value)
 
     @staticmethod
     def _create_expressions(args: list[ExprObj], value):

@@ -4,7 +4,8 @@ from enum import Enum
 class ErrorEnum(Enum):
 
     # 400
-    CODE_EXEC_ERROR = "CS-400001", "지원하지 않는 형식입니다."
+    NOT_SUPPORTED_VISUALIZE = "CV-400001", "It contains syntax that we can't visualize yet."
+    VISUALIZE_TIMEOUT = "CV-400002", "The code is too long."
 
     def __init__(self, code, detail):
         self.code = code
