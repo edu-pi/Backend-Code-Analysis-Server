@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -8,4 +8,4 @@ class InputViz:
     expr: str
     console: str | None
     code: str
-    type: str = field(default="input", init=False)
+    type: str
