@@ -3,13 +3,14 @@ from app.visualize.generator.models.assign_viz import AssignViz
 from app.visualize.generator.models.variable_vlz import Variable, SubscriptIdx
 from app.visualize.generator.visualization_manager import VisualizationManager
 from app.visualize.utils import utils
+from app.visualize.utils.utils import getStringType
 
 
 class AssignConverter:
     @staticmethod
     def convert(assign_obj: AssignStmtObj, viz_manager: VisualizationManager):
         expr_stmt_obj = assign_obj.expr_stmt_obj
-        var_type = expr_stmt_obj.expr_type.value
+        var_type = getStringType(expr_stmt_obj.value)
         call_stack_name = assign_obj.call_stack_name
 
         return AssignConverter._convert_to_assign_viz(

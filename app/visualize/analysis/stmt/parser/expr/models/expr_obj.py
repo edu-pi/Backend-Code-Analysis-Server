@@ -86,6 +86,13 @@ class InputObj(CallObj):
 
 
 @dataclass(frozen=True)
+class BuiltinObj(ExprObj):
+    value = str
+    expressions: tuple[str, ...]
+    type: ExprType
+
+
+@dataclass(frozen=True)
 class LenObj(CallObj):
     value: int
     type: ExprType = field(default=ExprType.LEN, init=False)

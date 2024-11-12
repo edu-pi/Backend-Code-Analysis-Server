@@ -38,7 +38,7 @@ class EndUserFuncViz:
     id: int
     depth: int
     returnExpr: str
-    returnArgName: str
+    returnName: str
     code: str
     delFuncName: str
     type: str = field(default="endUserFunc", init=False)

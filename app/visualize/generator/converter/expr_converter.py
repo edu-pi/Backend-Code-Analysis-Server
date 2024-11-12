@@ -142,6 +142,7 @@ class ExprConverter:
                 expr=expr_stmt_obj.expressions[0],
                 console=f">> {console}",
                 code=viz_manager.get_code_by_idx(call_id),
+                type="input",
             )
         )
         input_vizs.append(
@@ -151,6 +152,7 @@ class ExprConverter:
                 expr=expr_stmt_obj.expressions[1],
                 console=expr_stmt_obj.value + "\n",
                 code=viz_manager.get_code_by_idx(call_id),
+                type=getStringType(expr_stmt_obj.value),
             )
         )
         return input_vizs
