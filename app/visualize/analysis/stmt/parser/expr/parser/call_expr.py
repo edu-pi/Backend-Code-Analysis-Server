@@ -5,11 +5,13 @@ from app.visualize.analysis.stmt.parser.expr.parser.attr_func.extend_expr import
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.insert_expr import InsertExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.pop_expr import PopExpr
 from app.visualize.analysis.stmt.parser.expr.parser.attr_func.remove_expr import RemoveExpr
+from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.builtin_expr import BuiltinExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.input_expr import InputExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.len_expr import LenExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.print_expr import PrintExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.range_expr import RangeExpr
 from app.visualize.analysis.stmt.parser.expr.parser.built_in_func.user_func_expr import UserFuncExpr
+from app.visualize.analysis.stmt.parser.expr.parser.list_expr import ListExpr
 from app.visualize.container.element_container import ElementContainer
 
 
@@ -43,8 +45,16 @@ class CallExpr:
     def _built_in_call_parse(
         func_name: str, args: list[ExprObj], keyword_arg_dict: dict, elem_container: ElementContainer
     ):
-        if all(func_name != item.value for item in ExprType):
+        if not BuiltinExpr.is_builtin_func(func_name):
             raise NotImplementedError(f"[CallParser]: {func_name} 은 아직 지원하지 않습니다.")
+
+        if all(func_name != item.value for item in ExprType):
+            common_obj = BuiltinExpr.parse(func_name, args)
+            return common_obj
+
+        if ExprType(func_name) is ExprType.LIST:
+            list_obj = ListExpr.parse(args)
+            return list_obj
 
         if ExprType(func_name) is ExprType.PRINT:
             print_obj = PrintExpr.parse(args, keyword_arg_dict)
